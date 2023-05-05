@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './screens/dashboard_screen.dart';
+import './screens/tabs.dart';
 
 void main() => runApp(const MyApp());
 
@@ -11,10 +11,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
+        colorScheme: const ColorScheme.dark(
+          primary: Color.fromARGB(255, 32, 249, 210),
+          background: Color.fromARGB(255, 32, 32, 32),
+          surface: Color.fromARGB(255, 32, 32, 32),
+        ),
       ),
-      routes: {
-        '/': (_) => const DashboardScreen(),
-      },
+      home: const TabsScreen(),
     );
   }
 }
