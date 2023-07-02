@@ -1,6 +1,7 @@
 import 'package:classinsights/screens/classes_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
 import 'package:classinsights/screens/profile_screen.dart';
+import 'package:classinsights/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class _TabsScreenState extends State<TabsScreen> {
   Widget _currentScreen = const DashboardScreen();
 
   final _screens = const [
-    DashboardScreen(),
+    DashboardScreen(key: Key("DashboardScreen")),
     ClassesScreen(),
     ProfileScreen(),
   ];
@@ -28,25 +29,21 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          // padding: EdgeInsets.symmetric(horizontal: 0.0),
-          child: Text('HAK/HAS/HLW Landeck'),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 35.0),
-            child: Divider(
-              color: Theme.of(context).colorScheme.primary,
-              thickness: 0.5,
-            ),
+      body: Column(
+        children: [
+          CustomAppBar(
+            height: 60,
+            title: "HAK/HAS/HLW Landeck",
+            index: _currentIndex,
           ),
-        ),
+          Expanded(
+            child: _currentScreen,
+          ),
+        ],
       ),
-      body: _currentScreen,
       bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          elevation: 0,
           onTap: _selectTab,
           currentIndex: _currentIndex,
           showSelectedLabels: false,
