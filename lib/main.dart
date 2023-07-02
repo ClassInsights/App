@@ -61,6 +61,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
@@ -70,12 +77,6 @@ class MainApp extends StatelessWidget {
         hoverColor: Colors.transparent,
         scaffoldBackgroundColor: _lightColorScheme.background,
         colorScheme: _lightColorScheme,
-        appBarTheme: AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: _lightColorScheme.background,
-            systemNavigationBarColor: _lightColorScheme.background,
-          ),
-        ),
         textTheme: _textTheme.apply(
           bodyColor: _lightColorScheme.onBackground,
           displayColor: _lightColorScheme.onBackground,
@@ -88,12 +89,6 @@ class MainApp extends StatelessWidget {
         hoverColor: Colors.transparent,
         scaffoldBackgroundColor: _darkColorScheme.background,
         colorScheme: _darkColorScheme,
-        appBarTheme: AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: _darkColorScheme.background,
-            systemNavigationBarColor: _darkColorScheme.background,
-          ),
-        ),
         textTheme: _textTheme.apply(
           bodyColor: _darkColorScheme.onBackground,
           displayColor: _darkColorScheme.onBackground,
