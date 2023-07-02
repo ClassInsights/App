@@ -14,7 +14,7 @@ const _lightColorScheme = ColorScheme.dark(
   scrim: Color.fromRGBO(245, 245, 245, 1),
   onBackground: Color.fromRGBO(10, 10, 10, 1),
   error: Color.fromRGBO(195, 0, 0, 1),
-  onSurface: Color.fromRGBO(138, 138, 138, 1),
+  onSurface: Color.fromRGBO(239, 239, 239, 1),
 );
 
 const _darkColorScheme = ColorScheme.light(
@@ -37,13 +37,15 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         brightness: Brightness.light,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
         scaffoldBackgroundColor: _lightColorScheme.background,
         appBarTheme: AppBarTheme(
           backgroundColor: _lightColorScheme.background,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: _lightColorScheme.background,
             statusBarIconBrightness: Brightness.dark,
-            systemNavigationBarDividerColor: _lightColorScheme.onSurface,
           ),
           foregroundColor: _lightColorScheme.onBackground,
           elevation: 0,
@@ -52,6 +54,10 @@ class MainApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark().copyWith(
         brightness: Brightness.dark,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        scaffoldBackgroundColor: _darkColorScheme.background,
         colorScheme: _darkColorScheme,
       ),
       home: const TabsScreen(),
