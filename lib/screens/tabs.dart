@@ -1,9 +1,7 @@
+import 'package:classinsights/screens/classes_screen.dart';
+import 'package:classinsights/screens/dashboard_screen.dart';
+import 'package:classinsights/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
-
-import './dashboard_screen.dart';
-import './chart_screen.dart';
-import './monitor_screen.dart';
-import './settings_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -15,55 +13,58 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   var _currentIndex = 0;
   Widget _currentScreen = const DashboardScreen();
+
   final _screens = const [
     DashboardScreen(),
-    ChartScreen(),
-    MonitorScreen(),
-    SettingsScreen(),
+    ClassesScreen(),
+    ProfileScreen(),
   ];
 
-  void _selectPage(int index) => setState(() {
+  void _selectTab(int index) => setState(() {
         _currentIndex = index;
-        _currentScreen = _screens[index];
+        _currentScreen = _screens[_currentIndex];
       });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          // padding: EdgeInsets.symmetric(horizontal: 0.0),
+          child: Text('HAK/HAS/HLW Landeck'),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 35.0),
+            child: Divider(
+              color: Theme.of(context).colorScheme.primary,
+              thickness: 0.5,
+            ),
+          ),
+        ),
+      ),
       body: _currentScreen,
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedIconTheme: IconThemeData(
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        unselectedIconTheme: IconThemeData(
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
-        onTap: _selectPage,
-        currentIndex: _currentIndex,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: "",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.monitor_rounded),
-            label: "",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "",
-          ),
-        ],
-      ),
+          onTap: _selectTab,
+          currentIndex: _currentIndex,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.class_outlined),
+              label: "Classes",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline_outlined),
+              label: "Profile",
+            ),
+          ]),
     );
   }
 }

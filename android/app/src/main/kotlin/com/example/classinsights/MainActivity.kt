@@ -1,4 +1,4 @@
-package com.example.class_insights
+package com.example.classinsights
 
 import io.flutter.embedding.android.FlutterActivity
 

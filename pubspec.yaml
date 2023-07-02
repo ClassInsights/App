@@ -1,10 +1,10 @@
-name: class_insights
+name: classinsights
 description: A new Flutter project.
 publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: '>=3.0.5 <4.0.0'
 
 dependencies:
   flutter:
