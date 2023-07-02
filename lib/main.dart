@@ -11,10 +11,9 @@ const _lightColorScheme = ColorScheme.dark(
   secondaryContainer: Color.fromRGBO(197, 210, 244, 1),
   background: Color.fromRGBO(245, 245, 245, 1),
   surface: Color.fromRGBO(245, 245, 245, 1),
-  scrim: Color.fromRGBO(245, 245, 245, 1),
   onBackground: Color.fromRGBO(10, 10, 10, 1),
   error: Color.fromRGBO(195, 0, 0, 1),
-  onSurface: Color.fromRGBO(239, 239, 239, 1),
+  onSurface: Color.fromRGBO(235, 235, 235, 1),
 );
 
 const _darkColorScheme = ColorScheme.light(
@@ -28,11 +27,45 @@ const _darkColorScheme = ColorScheme.light(
   onSurface: Color.fromRGBO(10, 31, 89, 1),
 );
 
+TextTheme textTheme = const TextTheme().copyWith(
+    titleLarge: const TextStyle(
+      fontSize: 26.0,
+      fontWeight: FontWeight.bold,
+    ),
+    titleMedium: const TextStyle(
+      fontSize: 22.0,
+      fontWeight: FontWeight.bold,
+    ),
+    titleSmall: const TextStyle(
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+    ),
+    bodyLarge: const TextStyle(
+      fontSize: 14.0,
+      fontWeight: FontWeight.bold,
+    ),
+    bodyMedium: const TextStyle(
+      fontSize: 14.0,
+    ),
+    labelLarge: const TextStyle(
+      fontSize: 10.0,
+      fontWeight: FontWeight.bold,
+    ),
+    labelMedium: const TextStyle(
+      fontSize: 10.0,
+    ));
+
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+    );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
@@ -41,16 +74,11 @@ class MainApp extends StatelessWidget {
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
         scaffoldBackgroundColor: _lightColorScheme.background,
-        appBarTheme: AppBarTheme(
-          backgroundColor: _lightColorScheme.background,
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: _lightColorScheme.background,
-            statusBarIconBrightness: Brightness.dark,
-          ),
-          foregroundColor: _lightColorScheme.onBackground,
-          elevation: 0,
-        ),
         colorScheme: _lightColorScheme,
+        textTheme: textTheme.apply(
+          bodyColor: _lightColorScheme.onBackground,
+          displayColor: _lightColorScheme.onBackground,
+        ),
       ),
       darkTheme: ThemeData.dark().copyWith(
         brightness: Brightness.dark,
@@ -59,6 +87,10 @@ class MainApp extends StatelessWidget {
         hoverColor: Colors.transparent,
         scaffoldBackgroundColor: _darkColorScheme.background,
         colorScheme: _darkColorScheme,
+        textTheme: textTheme.apply(
+          bodyColor: _darkColorScheme.onBackground,
+          displayColor: _darkColorScheme.onBackground,
+        ),
       ),
       home: const TabsScreen(),
     );
