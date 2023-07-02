@@ -34,25 +34,27 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData.light().copyWith(
-          brightness: Brightness.light,
-          scaffoldBackgroundColor: _lightColorScheme.background,
-          appBarTheme: AppBarTheme(
-            backgroundColor: _lightColorScheme.background,
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: _lightColorScheme.background,
-              statusBarIconBrightness: Brightness.dark,
-              systemNavigationBarDividerColor: _lightColorScheme.onSurface,
-            ),
-            foregroundColor: _lightColorScheme.onBackground,
-            elevation: 0,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.light().copyWith(
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: _lightColorScheme.background,
+        appBarTheme: AppBarTheme(
+          backgroundColor: _lightColorScheme.background,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: _lightColorScheme.background,
+            statusBarIconBrightness: Brightness.dark,
+            systemNavigationBarDividerColor: _lightColorScheme.onSurface,
           ),
-          colorScheme: _lightColorScheme,
+          foregroundColor: _lightColorScheme.onBackground,
+          elevation: 0,
         ),
-        darkTheme: ThemeData.dark().copyWith(
-          brightness: Brightness.dark,
-          colorScheme: _darkColorScheme,
-        ),
-        home: const TabsScreen());
+        colorScheme: _lightColorScheme,
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        brightness: Brightness.dark,
+        colorScheme: _darkColorScheme,
+      ),
+      home: const TabsScreen(),
+    );
   }
 }
