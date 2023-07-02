@@ -6,8 +6,8 @@ void main() => runApp(const MainApp());
 
 const _lightColorScheme = ColorScheme.dark(
   primary: Color.fromRGBO(44, 99, 241, 1),
-  secondary: Color.fromRGBO(100, 121, 175, 1),
   primaryContainer: Color.fromRGBO(44, 99, 241, 1),
+  secondary: Color.fromRGBO(100, 121, 175, 1),
   secondaryContainer: Color.fromRGBO(197, 210, 244, 1),
   background: Color.fromRGBO(245, 245, 245, 1),
   surface: Color.fromRGBO(245, 245, 245, 1),
@@ -18,8 +18,8 @@ const _lightColorScheme = ColorScheme.dark(
 
 const _darkColorScheme = ColorScheme.light(
   primary: Color.fromRGBO(72, 123, 255, 1),
-  secondary: Color.fromRGBO(65, 111, 229, 1),
   primaryContainer: Color.fromRGBO(72, 123, 255, 1),
+  secondary: Color.fromRGBO(65, 111, 229, 1),
   secondaryContainer: Color.fromRGBO(5, 11, 26, 1),
   background: Color.fromRGBO(2, 5, 13, 1),
   onBackground: Color.fromRGBO(245, 245, 245, 1),
@@ -27,46 +27,40 @@ const _darkColorScheme = ColorScheme.light(
   onSurface: Color.fromRGBO(10, 31, 89, 1),
 );
 
-TextTheme textTheme = const TextTheme().copyWith(
-    titleLarge: const TextStyle(
-      fontSize: 26.0,
-      fontWeight: FontWeight.bold,
-    ),
-    titleMedium: const TextStyle(
-      fontSize: 22.0,
-      fontWeight: FontWeight.bold,
-    ),
-    titleSmall: const TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.bold,
-    ),
-    bodyLarge: const TextStyle(
-      fontSize: 14.0,
-      fontWeight: FontWeight.bold,
-    ),
-    bodyMedium: const TextStyle(
-      fontSize: 14.0,
-    ),
-    labelLarge: const TextStyle(
-      fontSize: 10.0,
-      fontWeight: FontWeight.bold,
-    ),
-    labelMedium: const TextStyle(
-      fontSize: 10.0,
-    ));
+TextTheme _textTheme = const TextTheme().copyWith(
+  titleLarge: const TextStyle(
+    fontSize: 26.0,
+    fontWeight: FontWeight.bold,
+  ),
+  titleMedium: const TextStyle(
+    fontSize: 22.0,
+    fontWeight: FontWeight.bold,
+  ),
+  titleSmall: const TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+  ),
+  bodyLarge: const TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.bold,
+  ),
+  bodyMedium: const TextStyle(
+    fontSize: 14.0,
+  ),
+  labelLarge: const TextStyle(
+    fontSize: 10.0,
+    fontWeight: FontWeight.bold,
+  ),
+  labelMedium: const TextStyle(
+    fontSize: 10.0,
+  ),
+);
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.transparent,
-      ),
-    );
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
@@ -76,7 +70,13 @@ class MainApp extends StatelessWidget {
         hoverColor: Colors.transparent,
         scaffoldBackgroundColor: _lightColorScheme.background,
         colorScheme: _lightColorScheme,
-        textTheme: textTheme.apply(
+        appBarTheme: AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: _lightColorScheme.background,
+            systemNavigationBarColor: _lightColorScheme.background,
+          ),
+        ),
+        textTheme: _textTheme.apply(
           bodyColor: _lightColorScheme.onBackground,
           displayColor: _lightColorScheme.onBackground,
         ),
@@ -88,7 +88,13 @@ class MainApp extends StatelessWidget {
         hoverColor: Colors.transparent,
         scaffoldBackgroundColor: _darkColorScheme.background,
         colorScheme: _darkColorScheme,
-        textTheme: textTheme.apply(
+        appBarTheme: AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: _darkColorScheme.background,
+            systemNavigationBarColor: _darkColorScheme.background,
+          ),
+        ),
+        textTheme: _textTheme.apply(
           bodyColor: _darkColorScheme.onBackground,
           displayColor: _darkColorScheme.onBackground,
         ),
