@@ -36,7 +36,9 @@ class _TabsScreenState extends State<TabsScreen> {
             title: "HAK/HAS/HLW Landeck",
             index: _currentIndex,
           ),
-          Expanded(
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: _currentScreen,
           ),
         ],
