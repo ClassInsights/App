@@ -1,15 +1,15 @@
 name: classinsights
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.0.5 <4.0.0'
+  sdk: ">=3.0.5 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.0.5
+  flutter_riverpod: ^2.3.6
 
 dev_dependencies:
   flutter_test:
