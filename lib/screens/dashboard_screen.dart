@@ -31,9 +31,6 @@ class DashboardScreen extends StatelessWidget {
             const SizedBox(
               height: 15.0,
             ),
-            const WidgetContainer(
-              title: "Deine Klassen",
-            ),
           ],
         ),
       ],
