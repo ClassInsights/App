@@ -1,17 +1,21 @@
+import 'dart:html';
+
+import 'package:classinsights/providers/timetable_provider.dart';
 import 'package:classinsights/screens/classes_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
 import 'package:classinsights/screens/profile_screen.dart';
 import 'package:classinsights/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() => _TabsScreenState();
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   var _currentIndex = 0;
   Widget _currentScreen = const DashboardScreen();
 
@@ -28,6 +32,8 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final data = ref.watch(timetableProvider);
+    print(data);
     return Scaffold(
       body: Column(
         children: [
@@ -39,9 +45,7 @@ class _TabsScreenState extends State<TabsScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: SingleChildScrollView(
-              child: _currentScreen,
-            ),
+            child: SingleChildScrollView(child: _currentScreen),
           ),
         ],
       ),
