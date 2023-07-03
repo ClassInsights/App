@@ -38,7 +38,7 @@ class _TabsScreenState extends State<TabsScreen> {
           ),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: _currentScreen,
           ),
         ],
@@ -46,6 +46,7 @@ class _TabsScreenState extends State<TabsScreen> {
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Theme.of(context).colorScheme.background,
           elevation: 0,
+          iconSize: 30.0,
           onTap: _selectTab,
           currentIndex: _currentIndex,
           showSelectedLabels: false,
