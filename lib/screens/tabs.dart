@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:classinsights/providers/timetable_provider.dart';
 import 'package:classinsights/screens/classes_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
