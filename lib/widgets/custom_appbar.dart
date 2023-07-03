@@ -5,11 +5,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final int index;
 
-  const CustomAppBar(
-      {super.key,
-      required this.height,
-      required this.title,
-      required this.index});
+  const CustomAppBar({
+    super.key,
+    required this.height,
+    required this.title,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,36 +19,37 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       margin: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top, bottom: 40.0),
       padding: const EdgeInsets.only(top: 10),
-      height: height,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(title),
-                index == 2
-                    ? Text(
-                        "Abmelden",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      )
-                    : Icon(
-                        Icons.add,
-                        color: Theme.of(context).colorScheme.primary,
-                      )
-              ],
+            SizedBox(
+              height: height,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(title),
+                  index == 2
+                      ? Text(
+                          "Abmelden",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        )
+                      : Icon(
+                          Icons.add,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                ],
+              ),
             ),
-            const SizedBox(height: 5.0),
             ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: Divider(
                 color: Theme.of(context).colorScheme.onSurface,
                 thickness: 2.0,
               ),
-            )
+            ),
           ],
         ),
       ),
