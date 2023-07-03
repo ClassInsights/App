@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 class WidgetContainer extends StatelessWidget {
   final bool primary;
   final double width;
-  final String label;
+  final String? label;
   final String title;
-  final Widget child;
+  final Widget? child;
+  final Function? action;
 
   const WidgetContainer({
     super.key,
     this.primary = false,
     this.width = double.infinity,
-    this.label = "",
+    this.label,
     required this.title,
-    this.child = const SizedBox(),
+    this.child,
+    this.action,
   });
 
   @override
@@ -41,13 +43,13 @@ class WidgetContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          label.isEmpty
+          label == null
               ? const SizedBox()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      label,
+                      label.toString(),
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: Theme.of(context).colorScheme.secondary,
                           ),
@@ -61,14 +63,14 @@ class WidgetContainer extends StatelessWidget {
             title,
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          child is SizedBox
-              ? child
+          child == null
+              ? const SizedBox()
               : Column(
                   children: [
                     const SizedBox(
                       height: 20.0,
                     ),
-                    child,
+                    child!,
                   ],
                 ),
         ],
