@@ -39,7 +39,9 @@ class _TabsScreenState extends State<TabsScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: _currentScreen,
+            child: SingleChildScrollView(
+              child: _currentScreen,
+            ),
           ),
         ],
       ),
