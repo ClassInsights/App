@@ -1,8 +1,13 @@
 import 'package:classinsights/screens/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() => runApp(const MainApp());
+void main() => runApp(
+      const ProviderScope(
+        child: App(),
+      ),
+    );
 
 const _lightColorScheme = ColorScheme.dark(
   primary: Color.fromRGBO(44, 99, 241, 1),
@@ -56,8 +61,8 @@ TextTheme _textTheme = const TextTheme().copyWith(
   ),
 );
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
