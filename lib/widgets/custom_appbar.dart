@@ -20,7 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           top: MediaQuery.of(context).padding.top, bottom: 40.0),
       padding: const EdgeInsets.only(top: 10),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: [
             SizedBox(
