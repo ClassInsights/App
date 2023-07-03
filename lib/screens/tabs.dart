@@ -32,7 +32,7 @@ class _TabsScreenState extends State<TabsScreen> {
       body: Column(
         children: [
           CustomAppBar(
-            height: 60,
+            height: 50,
             title: "HAK/HAS/HLW Landeck",
             index: _currentIndex,
           ),
