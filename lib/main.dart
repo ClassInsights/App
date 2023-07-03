@@ -68,6 +68,11 @@ class MainApp extends StatelessWidget {
         statusBarIconBrightness: Brightness.dark,
       ),
     );
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
