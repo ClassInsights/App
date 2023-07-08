@@ -5,8 +5,11 @@ class TimetableNotifier extends StateNotifier<List<Lesson>> {
   TimetableNotifier() : super([]);
 
   List<Lesson> get lessons => state;
+
+  void setLessons(List<Lesson> lessons) => state = lessons;
 }
 
 final timetableProvider =
     StateNotifierProvider<TimetableNotifier, List<Lesson>>(
-        (ref) => TimetableNotifier());
+  (_) => TimetableNotifier(),
+);
