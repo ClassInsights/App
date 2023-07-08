@@ -1,19 +1,17 @@
-import 'package:classinsights/providers/timetable_provider.dart';
 import 'package:classinsights/screens/classes_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
 import 'package:classinsights/screens/profile_screen.dart';
 import 'package:classinsights/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TabsScreen extends ConsumerStatefulWidget {
+class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  ConsumerState<TabsScreen> createState() => _TabsScreenState();
+  State<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends ConsumerState<TabsScreen> {
+class _TabsScreenState extends State<TabsScreen> {
   var _currentIndex = 0;
   Widget _currentScreen = const DashboardScreen();
 
@@ -30,8 +28,6 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final data = ref.watch(timetableProvider);
-    print(data);
     return Scaffold(
       body: Column(
         children: [
