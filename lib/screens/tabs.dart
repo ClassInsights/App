@@ -1,17 +1,19 @@
+import 'package:classinsights/providers/screen_provider.dart';
 import 'package:classinsights/screens/classes_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
 import 'package:classinsights/screens/profile_screen.dart';
 import 'package:classinsights/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() => _TabsScreenState();
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   var _currentIndex = 0;
   Widget _currentScreen = const DashboardScreen();
 
@@ -21,13 +23,18 @@ class _TabsScreenState extends State<TabsScreen> {
     ProfileScreen(),
   ];
 
-  void _selectTab(int index) => setState(() {
-        _currentIndex = index;
-        _currentScreen = _screens[_currentIndex];
-      });
-
   @override
   Widget build(BuildContext context) {
+    setScreen(int index) => setState(() {
+          _currentIndex = index;
+          ref.read(screenProvider.notifier).setScreen(Screen.values[index]);
+        });
+
+    ref.listen(screenProvider, (_, newScreen) {
+      setScreen(Screen.values.indexOf(newScreen));
+      setState(() => _currentScreen = _screens[_currentIndex]);
+    });
+
     return Scaffold(
       body: Column(
         children: [
@@ -47,7 +54,7 @@ class _TabsScreenState extends State<TabsScreen> {
           backgroundColor: Theme.of(context).colorScheme.background,
           elevation: 0,
           iconSize: 30.0,
-          onTap: _selectTab,
+          onTap: setScreen,
           currentIndex: _currentIndex,
           showSelectedLabels: false,
           showUnselectedLabels: false,
