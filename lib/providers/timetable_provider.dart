@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:classinsights/models/lesson.dart';
 
+final timetableProvider = StateNotifierProvider<TimetableNotifier, List<Lesson>>(
+  (_) => TimetableNotifier(),
+);
+
 class TimetableNotifier extends StateNotifier<List<Lesson>> {
   TimetableNotifier() : super([]);
 
@@ -8,8 +12,3 @@ class TimetableNotifier extends StateNotifier<List<Lesson>> {
 
   void setLessons(List<Lesson> lessons) => state = lessons;
 }
-
-final timetableProvider =
-    StateNotifierProvider<TimetableNotifier, List<Lesson>>(
-  (_) => TimetableNotifier(),
-);
