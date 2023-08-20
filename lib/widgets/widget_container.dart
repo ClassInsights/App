@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class WidgetContainer extends StatelessWidget {
   final bool primary;
   final double width;
-  final String? label;
+  final String label;
   final String title;
   final Widget? child;
   final Function? onTab;
@@ -48,25 +48,18 @@ class WidgetContainer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  label == null
-                      ? const SizedBox()
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              label.toString(),
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
-                                  ),
-                            ),
-                            const SizedBox(
-                              height: 6.0,
-                            ),
-                          ],
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6.0),
+                    child: Text(
+                      label.toString(),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
+                          ),
+                    ),
+                  ),
                   Text(title,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
+                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.onBackground,
                           )),
                   child == null
                       ? const SizedBox()
