@@ -13,7 +13,7 @@ class WidgetContainer extends StatelessWidget {
     super.key,
     this.primary = false,
     this.width = double.infinity,
-    this.label,
+    required this.label,
     required this.title,
     this.child,
     this.onTab,
@@ -22,9 +22,7 @@ class WidgetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = primary
-        ? Theme.of(context).colorScheme.primaryContainer
-        : Theme.of(context).colorScheme.secondaryContainer;
+    final backgroundColor = primary ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.secondaryContainer;
     return GestureDetector(
       onTap: onTab == null ? null : onTab as void Function()?,
       child: Container(
@@ -57,17 +55,8 @@ class WidgetContainer extends StatelessWidget {
                           children: [
                             Text(
                               label.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    color: primary
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .background
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
                                   ),
                             ),
                             const SizedBox(
@@ -77,9 +66,7 @@ class WidgetContainer extends StatelessWidget {
                         ),
                   Text(title,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: primary
-                                ? Theme.of(context).colorScheme.background
-                                : Theme.of(context).colorScheme.secondary,
+                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
                           )),
                   child == null
                       ? const SizedBox()
@@ -97,9 +84,7 @@ class WidgetContainer extends StatelessWidget {
             showArrow
                 ? Icon(
                     Icons.arrow_forward_ios_rounded,
-                    color: primary
-                        ? Theme.of(context).colorScheme.background
-                        : Theme.of(context).colorScheme.secondary,
+                    color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
                     size: 20.0,
                   )
                 : const SizedBox(),
