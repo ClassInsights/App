@@ -19,6 +19,7 @@ class AppShortcut extends ConsumerWidget {
       width: width,
       showArrow: true,
       onTab: openRooms,
+      primary: true,
     );
   }
 }
