@@ -1,3 +1,6 @@
+import 'package:classinsights/models/room.dart';
+import 'package:classinsights/widgets/header.dart';
+import 'package:classinsights/widgets/room_display.dart';
 import 'package:flutter/material.dart';
 
 class ClassesScreen extends StatelessWidget {
@@ -5,8 +8,64 @@ class ClassesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Classes Screen'),
+    const currentRoomID = "2";
+    const List<Room> rooms = [
+      Room(
+        id: "1",
+        name: "OG3-DV6",
+        deviceCount: 28,
+      ),
+      Room(
+        id: "2",
+        name: "OG1-DV3",
+        deviceCount: 20,
+      ),
+      Room(
+        id: "3",
+        name: "OG1-DV3",
+        deviceCount: 16,
+      ),
+      Room(
+        id: "4",
+        name: "OG2-4",
+        deviceCount: 1,
+      ),
+      Room(
+        id: "5",
+        name: "UG-DV1",
+        deviceCount: 8,
+      ),
+      Room(
+        id: "6",
+        name: "UG-DV2",
+        deviceCount: 8,
+      ),
+      Room(
+        id: "7",
+        name: "OG3-DV5",
+        deviceCount: 18,
+      ),
+    ];
+
+    return Column(
+      children: [
+        const Header(
+          title: "Klassen",
+        ),
+        ListView.builder(
+          itemBuilder: (context, index) => Column(
+            children: [
+              RoomDisplay(
+                room: rooms[index],
+                current: rooms[index].id == currentRoomID,
+              ),
+              index == rooms.length - 1 ? const SizedBox.shrink() : const SizedBox(height: 15),
+            ],
+          ),
+          itemCount: rooms.length,
+          shrinkWrap: true,
+        ),
+      ],
     );
   }
 }
