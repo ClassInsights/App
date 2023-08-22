@@ -50,9 +50,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
               child: Column(
                 children: [
                   _currentScreen,
-                  const SizedBox(
-                    height: 50.0,
-                  ),
+                  const SizedBox(height: 20.0),
                 ],
               ),
             ),
