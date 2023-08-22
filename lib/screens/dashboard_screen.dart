@@ -24,7 +24,7 @@ class DashboardScreen extends StatelessWidget {
             children: [
               WidgetContainer(
                 label: "Aktuelle Stunde",
-                title: "NTMA", // TODO: Replace with actual class
+                title: "NTMA",
                 child: ProgressBar(
                   title: 'noch ${(baseMinutes - minutes).toStringAsFixed(0)} Minuten',
                   progress: minutes,
