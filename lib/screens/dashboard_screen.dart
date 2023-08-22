@@ -53,7 +53,17 @@ class DashboardScreen extends StatelessWidget {
               const WidgetContainer(
                 label: "Aktive Computer",
                 title: "121",
-              )
+              ),
+              const SizedBox(
+                height: defaultPadding,
+              ),
+              WidgetContainer(
+                label: "Graph",
+                title: "Stromverbrauch gesamt",
+                child: Container(
+                  height: 100,
+                ),
+              ),
             ],
           );
         }),
