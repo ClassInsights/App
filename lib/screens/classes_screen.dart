@@ -1,6 +1,6 @@
 import 'package:classinsights/models/room.dart';
 import 'package:classinsights/widgets/header.dart';
-import 'package:classinsights/widgets/room_display.dart';
+import 'package:classinsights/widgets/room.dart';
 import 'package:flutter/material.dart';
 
 class ClassesScreen extends StatelessWidget {
@@ -55,7 +55,7 @@ class ClassesScreen extends StatelessWidget {
         ListView.builder(
           itemBuilder: (context, index) => Column(
             children: [
-              RoomDisplay(
+              RoomWidget(
                 room: rooms[index],
                 current: rooms[index].id == currentRoomID,
               ),

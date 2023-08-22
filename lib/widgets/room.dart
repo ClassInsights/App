@@ -3,10 +3,10 @@ import 'package:classinsights/screens/room_details_screen.dart';
 import 'package:classinsights/widgets/widget_container.dart';
 import 'package:flutter/material.dart';
 
-class RoomDisplay extends StatelessWidget {
+class RoomWidget extends StatelessWidget {
   final Room room;
   final bool current;
-  const RoomDisplay({super.key, required this.room, this.current = false});
+  const RoomWidget({super.key, required this.room, this.current = false});
 
   @override
   Widget build(BuildContext context) {
