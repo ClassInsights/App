@@ -9,7 +9,7 @@ class DetailAppbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20.0, bottom: 40.0),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20.0, bottom: 30.0),
       padding: const EdgeInsets.only(top: 10),
       child: Row(
         children: [
