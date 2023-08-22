@@ -16,8 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top, bottom: 40.0),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       padding: const EdgeInsets.only(top: 10),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -43,11 +42,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ],
               ),
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Divider(
-                color: Theme.of(context).colorScheme.onSurface,
-                thickness: 2.0,
+            Container(
+              height: 1,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(500),
+                color: Theme.of(context).colorScheme.onBackground.withOpacity(.1),
               ),
             ),
           ],
