@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ProgressBar extends StatelessWidget {
+class ProgressBar extends StatefulWidget {
   final String title;
   final double progress;
   final double baseValue;
@@ -13,17 +13,22 @@ class ProgressBar extends StatelessWidget {
   });
 
   @override
+  State<ProgressBar> createState() => _ProgressBarState();
+}
+
+class _ProgressBarState extends State<ProgressBar> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        title.isEmpty
+        widget.title.isEmpty
             ? const SizedBox()
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    widget.title,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                         ),
@@ -47,7 +52,7 @@ class ProgressBar extends StatelessWidget {
             LayoutBuilder(
               builder: (context, constraints) => Container(
                 height: 3.0,
-                width: constraints.maxWidth * (progress / baseValue),
+                width: constraints.maxWidth * (widget.progress / widget.baseValue),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   color: Theme.of(context).colorScheme.primary,
