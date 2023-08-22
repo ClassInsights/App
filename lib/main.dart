@@ -1,3 +1,4 @@
+import 'package:classinsights/providers/theme_provider.dart';
 import 'package:classinsights/screens/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,16 +62,23 @@ TextTheme _textTheme = const TextTheme().copyWith(
   ),
 );
 
-class App extends StatelessWidget {
+class App extends ConsumerStatefulWidget {
   const App({super.key});
 
   @override
+  ConsumerState<App> createState() => _AppState();
+}
+
+class _AppState extends ConsumerState<App> {
+  @override
   Widget build(BuildContext context) {
+    var theme = ref.read(themeProvider.notifier).theme;
+    ref.listen(themeProvider, (_, newTheme) => setState(() => theme = newTheme));
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
+      SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: theme == ThemeMode.light ? Brightness.dark : Brightness.light,
       ),
     );
 
@@ -104,6 +112,7 @@ class App extends StatelessWidget {
           displayColor: _darkColorScheme.onBackground,
         ),
       ),
+      themeMode: theme,
       home: const TabsScreen(),
     );
   }
