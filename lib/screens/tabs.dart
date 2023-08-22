@@ -19,8 +19,8 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   final _screens = const [
     DashboardScreen(key: Key("DashboardScreen")),
-    ClassesScreen(),
-    ProfileScreen(),
+    ClassesScreen(key: Key("ClassesScreen")),
+    ProfileScreen(key: Key("ProfileScreen")),
   ];
 
   @override
@@ -50,7 +50,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
               child: Column(
                 children: [
                   _currentScreen,
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
