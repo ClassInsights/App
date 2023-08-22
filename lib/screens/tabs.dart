@@ -36,19 +36,28 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     });
 
     return Scaffold(
-      body: Column(
-        children: [
-          CustomAppBar(
-            height: 50,
-            title: "HAK/HAS/HLW Landeck",
-            index: _currentIndex,
-          ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: SingleChildScrollView(child: _currentScreen),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            CustomAppBar(
+              height: 50,
+              title: "HAK/HAS/HLW Landeck",
+              index: _currentIndex,
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Column(
+                children: [
+                  _currentScreen,
+                  const SizedBox(
+                    height: 50.0,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Theme.of(context).colorScheme.background,
