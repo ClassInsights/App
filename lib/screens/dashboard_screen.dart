@@ -1,5 +1,5 @@
 import 'package:classinsights/widgets/header.dart';
-import 'package:classinsights/widgets/progress_bar.dart';
+import 'package:classinsights/widgets/lesson.dart';
 import 'package:classinsights/widgets/shortcuts/app_shortcut.dart';
 import 'package:classinsights/widgets/widget_container.dart';
 import 'package:flutter/material.dart';
@@ -16,20 +16,14 @@ class DashboardScreen extends StatelessWidget {
 
     return Column(
       children: [
-        const Header(
-          title: "Willkommen, Jakob.",
-        ),
+        const Header("Willkommen, Jakob."),
         LayoutBuilder(builder: (context, constraints) {
           return Column(
             children: [
-              WidgetContainer(
-                label: "Aktuelle Stunde",
-                title: "NTMA",
-                child: ProgressBar(
-                  title: 'noch ${(baseMinutes - minutes).toStringAsFixed(0)} Minuten',
-                  progress: minutes,
-                  baseValue: baseMinutes,
-                ),
+              const LessonWidget(
+                subject: "MAM",
+                startTime: "2023-06-22T09:30:00.000Z",
+                endTime: "2023-06-22T10:20:00.000Z",
               ),
               const SizedBox(
                 height: defaultPadding,
