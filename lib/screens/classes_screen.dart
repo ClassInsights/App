@@ -1,6 +1,6 @@
 import 'package:classinsights/models/room.dart';
 import 'package:classinsights/widgets/header.dart';
-import 'package:classinsights/widgets/room.dart';
+import 'package:classinsights/widgets/room_widget.dart';
 import 'package:flutter/material.dart';
 
 class ClassesScreen extends StatelessWidget {
@@ -48,22 +48,37 @@ class ClassesScreen extends StatelessWidget {
     ];
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Header(
-          title: "Klassen",
-        ),
+        const Header("Klassen", showBottomMargin: currentRoomID != null),
+        currentRoomID == null
+            ? const SizedBox.shrink()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Aktueller Raum"),
+                  const SizedBox(height: 4.0),
+                  RoomWidget(
+                    room: rooms.firstWhere((room) => room.id == currentRoomID),
+                    current: true,
+                  ),
+                  const SizedBox(height: 40.0),
+                  Text(
+                    "Sonstige Räume",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              ),
         ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: rooms.length,
           itemBuilder: (context, index) => Column(
             children: [
-              RoomWidget(
-                room: rooms[index],
-                current: rooms[index].id == currentRoomID,
-              ),
-              index == rooms.length - 1 ? const SizedBox.shrink() : const SizedBox(height: 15),
+              RoomWidget(room: rooms[index]),
+              const SizedBox(height: 10.0),
             ],
           ),
-          itemCount: rooms.length,
-          shrinkWrap: true,
         ),
       ],
     );
