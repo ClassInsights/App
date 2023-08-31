@@ -1,5 +1,5 @@
+import 'package:classinsights/widgets/container_content.dart';
 import 'package:classinsights/widgets/progress_bar.dart';
-import 'package:classinsights/widgets/widget_container.dart';
 import 'package:flutter/material.dart';
 
 class LessonWidget extends StatelessWidget {
@@ -15,7 +15,7 @@ class LessonWidget extends StatelessWidget {
     // final minutes = DateTime.now().difference(DateTime.parse(startTime)).inMinutes.toDouble();
     final minutes = DateTime.parse("2023-06-22T10:06:00.000Z").difference(DateTime.parse(startTime)).inMinutes.toDouble();
 
-    return WidgetContainer(
+    return ContainerWithContent(
       label: "Aktuelle Stunde",
       title: subject,
       child: ProgressBar(

@@ -1,5 +1,5 @@
 import 'package:classinsights/providers/screen_provider.dart';
-import 'package:classinsights/widgets/widget_container.dart';
+import 'package:classinsights/widgets/container_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,7 +13,7 @@ class AppShortcut extends ConsumerWidget {
       ref.read(screenProvider.notifier).setScreen(Screen.rooms);
     }
 
-    return WidgetContainer(
+    return ContainerWithContent(
       title: "16",
       label: "Räume",
       width: width,
