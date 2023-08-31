@@ -36,49 +36,54 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     });
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CustomAppBar(
-              height: 50,
-              title: "HAK/HAS/HLW Landeck",
-              index: _currentIndex,
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Column(
-                children: [
-                  _currentScreen,
-                  const SizedBox(height: 20),
-                ],
+      body: Column(
+        children: [
+          CustomAppBar(
+            height: 50,
+            title: "HAK/HAS/HLW Landeck",
+            index: _currentIndex,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 30.0),
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: Column(
+                  children: [
+                    _currentScreen,
+                    const SizedBox(height: 50.0),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          elevation: 0,
-          iconSize: 30.0,
-          onTap: setScreen,
-          currentIndex: _currentIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.class_outlined),
-              label: "Classes",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline_outlined),
-              label: "Profile",
-            ),
-          ]),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        elevation: 0,
+        iconSize: 30.0,
+        onTap: setScreen,
+        currentIndex: _currentIndex,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.class_outlined),
+            label: "Classes",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline_outlined),
+            label: "Profile",
+          ),
+        ],
+      ),
     );
   }
 }
