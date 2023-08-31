@@ -1,6 +1,8 @@
+import "package:classinsights/providers/auth_provider.dart";
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final double height;
   final String title;
   final int index;
@@ -13,7 +15,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    void logout() => ref.read(authProvider.notifier).logout();
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -29,16 +33,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Text(title),
                   index == 2
-                      ? Text(
-                          "Abmelden",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
+                      ? GestureDetector(
+                          onTap: logout,
+                          child: Text(
+                            "Abmelden",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
                           ),
                         )
-                      : Icon(
-                          Icons.add,
-                          color: Theme.of(context).colorScheme.primary,
-                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),
