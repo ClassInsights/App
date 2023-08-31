@@ -72,13 +72,17 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
-    var theme = ref.read(themeProvider.notifier).theme;
-    ref.listen(themeProvider, (_, newTheme) => setState(() => theme = newTheme));
+    var brightness = MediaQuery.of(context).platformBrightness;
+    ref.read(themeProvider.notifier).refreshTheme(brightness);
+    var themeMode = ref.read(themeProvider.notifier).theme;
+
+    ref.listen(themeProvider, (_, newTheme) => setState(() => themeMode = newTheme));
+
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-        statusBarIconBrightness: theme == ThemeMode.light ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: themeMode == ThemeMode.light ? Brightness.dark : Brightness.light,
       ),
     );
 
@@ -112,7 +116,7 @@ class _AppState extends ConsumerState<App> {
           displayColor: _darkColorScheme.onBackground,
         ),
       ),
-      themeMode: theme,
+      themeMode: themeMode,
       home: const TabsScreen(),
     );
   }
