@@ -5,32 +5,13 @@ import 'package:classinsights/widgets/header.dart';
 import 'package:classinsights/widgets/widget_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProfileScreen extends ConsumerStatefulWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  var version = "Unknown";
-
-  Future<String> initVersion() async {
-    var info = await PackageInfo.fromPlatform();
-    return info.version;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initVersion().then((data) => setState(() => version = data));
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     var darkMode = Theme.of(context).brightness == Brightness.dark;
 
     void switchTheme() => ref.read(themeProvider.notifier).switchTheme();
@@ -41,7 +22,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       }
     }
 
-    void resetData() => {
+    void resetTheme() => {
           ref.read(localstoreProvider.notifier).clear(),
           ref.read(themeProvider.notifier).refreshTheme(MediaQuery.of(context).platformBrightness),
         };
@@ -99,9 +80,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 10.0),
               const Text("HAK/HAS/HLW Landeck"),
               const SizedBox(height: 10.0),
-              Text("App Version: $version"),
+              const Text("App Version: 1.0.3"),
               const SizedBox(height: 10.0),
-              Text("© ${DateTime.now().year} HAK/HAS/HLW Landeck"),
+              const Text("© 2023 HAK/HAS/HLW Landeck"),
               const SizedBox(height: 10.0),
               GestureDetector(
                 onTap: openGithub,
@@ -119,7 +100,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ContainerWithContent(
           label: "Zurücksetzen",
           title: "Lokale Daten löschen",
-          onTab: resetData,
+          onTab: resetTheme,
           primary: true,
         ),
       ],
