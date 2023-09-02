@@ -7,7 +7,6 @@ environment:
   sdk: ">=3.0.5 <4.0.0"
 
 dependencies:
-  dart_jsonwebtoken: ^2.11.0
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.3.6
