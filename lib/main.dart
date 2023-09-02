@@ -4,33 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() => runApp(
-      const ProviderScope(
-        child: App(),
-      ),
-    );
+void main() {
+  runApp(
+    const ProviderScope(
+      child: App(),
+    ),
+  );
+}
 
-const _lightColorScheme = ColorScheme.dark(
+const _lightColorScheme = ColorScheme.light(
   primary: Color.fromRGBO(44, 99, 241, 1),
   primaryContainer: Color.fromRGBO(44, 99, 241, 1),
-  secondary: Color.fromRGBO(100, 121, 175, 1),
-  secondaryContainer: Color.fromRGBO(197, 210, 244, 1),
+  secondary: Color.fromRGBO(197, 210, 244, 1),
+  secondaryContainer: Color.fromRGBO(100, 121, 175, 1),
+  tertiary: Color.fromRGBO(161, 177, 219, 1),
   background: Color.fromRGBO(245, 245, 245, 1),
-  surface: Color.fromRGBO(245, 245, 245, 1),
   onBackground: Color.fromRGBO(10, 10, 10, 1),
   error: Color.fromRGBO(195, 0, 0, 1),
-  onSurface: Color.fromRGBO(235, 235, 235, 1),
 );
 
-const _darkColorScheme = ColorScheme.light(
+const _darkColorScheme = ColorScheme.dark(
   primary: Color.fromRGBO(72, 123, 255, 1),
-  primaryContainer: Color.fromRGBO(72, 123, 255, 1),
-  secondary: Color.fromRGBO(65, 111, 229, 1),
-  secondaryContainer: Color.fromRGBO(5, 11, 26, 1),
-  background: Color.fromRGBO(2, 5, 13, 1),
+  primaryContainer: Color.fromRGBO(44, 99, 241, 1),
+  secondary: Color.fromRGBO(5, 12, 31, 1),
+  secondaryContainer: Color.fromRGBO(53, 88, 179, 1),
+  tertiary: Color.fromRGBO(12, 22, 49, 1),
+  background: Color.fromRGBO(2, 5, 15, 1),
   onBackground: Color.fromRGBO(245, 245, 245, 1),
-  error: Color.fromRGBO(185, 35, 36, 1),
-  onSurface: Color.fromRGBO(10, 31, 89, 1),
+  error: Color.fromRGBO(216, 35, 37, 1),
 );
 
 TextTheme _textTheme = const TextTheme().copyWith(
@@ -93,6 +94,7 @@ class _AppState extends ConsumerState<App> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
+        useMaterial3: false,
         brightness: Brightness.light,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
