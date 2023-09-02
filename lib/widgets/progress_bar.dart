@@ -46,7 +46,7 @@ class _ProgressBarState extends State<ProgressBar> {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.tertiary,
               ),
             ),
             LayoutBuilder(

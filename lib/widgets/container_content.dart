@@ -37,16 +37,18 @@ class ContainerWithContent extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 6.0),
                     child: Text(
-                      label.toString(),
+                      label,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
+                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondaryContainer,
                           ),
                     ),
                   ),
-                  Text(title,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.onBackground,
-                          )),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.onBackground,
+                        ),
+                  ),
                   child == null
                       ? const SizedBox()
                       : Column(
