@@ -1,5 +1,5 @@
 import 'package:classinsights/providers/screen_provider.dart';
-import 'package:classinsights/screens/classes_screen.dart';
+import 'package:classinsights/screens/room_overview_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
 import 'package:classinsights/screens/profile_screen.dart';
 import 'package:classinsights/widgets/custom_appbar.dart';
