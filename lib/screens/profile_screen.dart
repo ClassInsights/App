@@ -87,7 +87,7 @@ class ProfileScreen extends ConsumerWidget {
               GestureDetector(
                 onTap: openGithub,
                 child: Text(
-                  "Source Code",
+                  "Quellcode",
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                       ),
