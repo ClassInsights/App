@@ -17,7 +17,7 @@ class ClassesScreen extends StatelessWidget {
       ),
       Room(
         id: "2",
-        name: "OG1-DV3",
+        name: "OG2-DV3",
         deviceCount: 20,
       ),
       Room(
@@ -74,7 +74,9 @@ class ClassesScreen extends StatelessWidget {
           shrinkWrap: true,
           itemCount: rooms.length,
           separatorBuilder: (context, index) => const SizedBox(height: 10.0),
-          itemBuilder: (context, index) => RoomWidget(room: rooms[index]),
+          itemBuilder: (context, index) => RoomWidget(
+            room: rooms[index],
+          ),
         ),
       ],
     );
