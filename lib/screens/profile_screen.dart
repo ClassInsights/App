@@ -5,13 +5,32 @@ import 'package:classinsights/widgets/header.dart';
 import 'package:classinsights/widgets/widget_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  var version = "Unknown";
+
+  Future<String> initVersion() async {
+    var info = await PackageInfo.fromPlatform();
+    return info.version;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initVersion().then((data) => setState(() => version = data));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var darkMode = Theme.of(context).brightness == Brightness.dark;
 
     void switchTheme() => ref.read(themeProvider.notifier).switchTheme();
@@ -22,7 +41,7 @@ class ProfileScreen extends ConsumerWidget {
       }
     }
 
-    void resetTheme() => {
+    void resetData() => {
           ref.read(localstoreProvider.notifier).clear(),
           ref.read(themeProvider.notifier).refreshTheme(MediaQuery.of(context).platformBrightness),
         };
@@ -80,9 +99,9 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: 10.0),
               const Text("HAK/HAS/HLW Landeck"),
               const SizedBox(height: 10.0),
-              const Text("App Version: 1.0.3"),
+              Text("App Version: $version"),
               const SizedBox(height: 10.0),
-              const Text("© 2023 HAK/HAS/HLW Landeck"),
+              Text("© ${DateTime.now().year} HAK/HAS/HLW Landeck"),
               const SizedBox(height: 10.0),
               GestureDetector(
                 onTap: openGithub,
@@ -100,7 +119,7 @@ class ProfileScreen extends ConsumerWidget {
         ContainerWithContent(
           label: "Zurücksetzen",
           title: "Lokale Daten löschen",
-          onTab: resetTheme,
+          onTab: resetData,
           primary: true,
         ),
       ],
