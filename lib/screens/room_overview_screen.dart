@@ -69,16 +69,12 @@ class ClassesScreen extends StatelessWidget {
                   ),
                 ],
               ),
-        ListView.builder(
+        ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: rooms.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              RoomWidget(room: rooms[index]),
-              const SizedBox(height: 10.0),
-            ],
-          ),
+          separatorBuilder: (context, index) => const SizedBox(height: 10.0),
+          itemBuilder: (context, index) => RoomWidget(room: rooms[index]),
         ),
       ],
     );
