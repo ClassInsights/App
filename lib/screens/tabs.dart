@@ -35,6 +35,32 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       setState(() => _currentScreen = _screens[_currentIndex]);
     });
 
+    var bottomNavigationBar = BottomNavigationBar(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      elevation: 0,
+      iconSize: 30.0,
+      onTap: setScreen,
+      currentIndex: _currentIndex,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      unselectedItemColor: Theme.of(context).colorScheme.secondary,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home_rounded),
+          label: "Home",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.class_outlined),
+          label: "Classes",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person_outline_outlined),
+          label: "Profile",
+        ),
+      ],
+    );
+
     return Scaffold(
       body: Column(
         children: [
@@ -61,29 +87,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        elevation: 0,
-        iconSize: 30.0,
-        onTap: setScreen,
-        currentIndex: _currentIndex,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.class_outlined),
-            label: "Classes",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_outlined),
-            label: "Profile",
-          ),
-        ],
-      ),
+      bottomNavigationBar: bottomNavigationBar,
     );
   }
 }
