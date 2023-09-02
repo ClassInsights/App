@@ -12,6 +12,7 @@ dependencies:
   flutter_riverpod: ^2.3.6
   shared_preferences: ^2.1.2
   url_launcher: ^6.1.13
+  package_info_plus: ^4.1.0
 
 dev_dependencies:
   flutter_test:
