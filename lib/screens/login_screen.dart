@@ -1,5 +1,5 @@
 import 'package:classinsights/providers/auth_provider.dart';
-import 'package:classinsights/screens/tabs.dart';
+import 'package:classinsights/screens/splash_screen.dart';
 import 'package:classinsights/widgets/container_content.dart';
 import 'package:classinsights/widgets/header.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class LoginScreen extends ConsumerWidget {
                     (success) => success
                         ? Navigator.of(context).pushReplacement(
                             PageRouteBuilder(
-                              pageBuilder: (context, firstAnimation, secondAnimation) => const TabsScreen(),
+                              pageBuilder: (context, firstAnimation, secondAnimation) => const SplashScreen(),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero,
                             ),
