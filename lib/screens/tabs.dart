@@ -25,12 +25,14 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final scrollController = ScrollController();
     setScreen(int index) => setState(() {
           _currentIndex = index;
           ref.read(screenProvider.notifier).setScreen(Screen.values[index]);
         });
 
     ref.listen(screenProvider, (_, newScreen) {
+      scrollController.jumpTo(0.0);
       setScreen(Screen.values.indexOf(newScreen));
       setState(() => _currentScreen = _screens[_currentIndex]);
     });
@@ -71,6 +73,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           ),
           Expanded(
             child: SingleChildScrollView(
+              controller: scrollController,
               physics: const BouncingScrollPhysics(),
               child: Container(
                 width: double.infinity,
