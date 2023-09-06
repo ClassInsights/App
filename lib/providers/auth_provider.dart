@@ -84,7 +84,7 @@ class AuthNotifier extends StateNotifier<Auth> {
     debugPrint("DATA: $data");
 
     final response = await client.post(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/user"),
+      Uri.parse("${dotenv.env['API_URL'] ?? ""}/token"),
       headers: {"Content-Type": "application/json"},
       body: data,
     );
@@ -156,7 +156,7 @@ class AuthNotifier extends StateNotifier<Auth> {
       if (code == null) return false;
 
       final client = http.Client();
-      final uri = "${dotenv.env['API_URL'] ?? ""}/user/login/$code";
+      final uri = "${dotenv.env['API_URL'] ?? ""}/login/$code";
       final response = await client.get(Uri.parse(uri));
       client.close();
       if (response.statusCode != 200) {
