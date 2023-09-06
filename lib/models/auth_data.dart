@@ -4,9 +4,9 @@ class AuthData {
   final String name;
   final String id;
   final String email;
-  final Role role;
-  final String schoolClass;
-  final String headTeacher;
+  final Role? role;
+  final String? schoolClass;
+  final String? headTeacher;
   final DateTime expirationDate;
 
   const AuthData({
