@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:classinsights/models/auth_credentials.dart';
+import 'package:classinsights/models/auth_data.dart';
+import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/localstore_provider.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
@@ -23,58 +26,6 @@ class Auth {
       );
 }
 
-class AuthCredentials {
-  final String accessToken;
-  final String refreshToken;
-
-  const AuthCredentials({
-    required this.accessToken,
-    required this.refreshToken,
-  });
-
-  static AuthCredentials blank() {
-    return const AuthCredentials(accessToken: "", refreshToken: "");
-  }
-}
-
-enum Role {
-  student,
-  teacher,
-  admin,
-}
-
-class AuthData {
-  final String name;
-  final String id;
-  final String email;
-  final Role role;
-  final String schoolClass;
-  final String headTeacher;
-  final DateTime expirationDate;
-
-  const AuthData({
-    required this.name,
-    required this.id,
-    required this.email,
-    required this.role,
-    required this.schoolClass,
-    required this.headTeacher,
-    required this.expirationDate,
-  });
-
-  static AuthData blank() {
-    return AuthData(
-      name: "",
-      id: "",
-      email: "",
-      role: Role.student,
-      schoolClass: "",
-      headTeacher: "",
-      expirationDate: DateTime.now(),
-    );
-  }
-}
-
 final authProvider = StateNotifierProvider<AuthNotifier, Auth>((ref) => AuthNotifier(ref));
 
 class AuthNotifier extends StateNotifier<Auth> {
@@ -93,7 +44,7 @@ class AuthNotifier extends StateNotifier<Auth> {
       name: payload["name"],
       id: payload["sub"],
       email: payload["email"],
-      role: Role.teacher,
+      role: Role.values.firstWhere((data) => data.name.toLowerCase() == payload["role"].toString().toLowerCase()),
       schoolClass: payload["class"],
       headTeacher: payload["head"],
       expirationDate: DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
