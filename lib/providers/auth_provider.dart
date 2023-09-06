@@ -54,8 +54,7 @@ class AuthNotifier extends StateNotifier<Auth> {
   void logout() {
     ref.read(localstoreProvider.notifier).removeItem("accessToken");
     ref.read(localstoreProvider.notifier).removeItem("refreshToken");
-    state = Auth.blank();
-    debugPrint("Logged out!");
+    reload();
   }
 
   void reload() async {
