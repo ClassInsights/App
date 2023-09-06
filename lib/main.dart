@@ -1,10 +1,12 @@
 import 'package:classinsights/providers/theme_provider.dart';
-import 'package:classinsights/screens/tabs.dart';
+import 'package:classinsights/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(
     const ProviderScope(
       child: App(),
@@ -119,7 +121,7 @@ class _AppState extends ConsumerState<App> {
         ),
       ),
       themeMode: themeMode,
-      home: const TabsScreen(),
+      home: const SplashScreen(),
     );
   }
 }
