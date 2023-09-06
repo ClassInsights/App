@@ -1,4 +1,5 @@
 import "package:classinsights/providers/auth_provider.dart";
+import "package:classinsights/screens/login_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
@@ -16,7 +17,15 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    void logout() => ref.read(authProvider.notifier).logout();
+    void logout() {
+      ref.read(authProvider.notifier).logout();
+      Navigator.of(context).push(
+        PageRouteBuilder(
+            pageBuilder: (context, firstAnimation, secondAnimation) => const LoginScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero),
+      );
+    }
 
     return Container(
       width: double.infinity,
