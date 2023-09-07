@@ -74,12 +74,15 @@ class App extends ConsumerStatefulWidget {
 
 class _AppState extends ConsumerState<App> {
   @override
-  Widget build(BuildContext context) {
-    var brightness = MediaQuery.of(context).platformBrightness;
-    ref.read(themeProvider.notifier).refreshTheme(brightness);
-    var themeMode = ref.read(themeProvider.notifier).theme;
+  void didChangeDependencies() {
+    ref.read(themeProvider.notifier).refreshTheme(brightness: MediaQuery.of(context).platformBrightness);
+    super.didChangeDependencies();
+  }
 
-    ref.listen(themeProvider, (_, newTheme) => setState(() => themeMode = newTheme));
+  @override
+  Widget build(BuildContext context) {
+    var themeMode = ref.read(themeProvider.notifier).theme;
+    // ref.listen(themeProvider, (_, newTheme) => setState(() => themeMode = newTheme));
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -92,7 +95,6 @@ class _AppState extends ConsumerState<App> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(

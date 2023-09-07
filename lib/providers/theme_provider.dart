@@ -10,7 +10,7 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
 
   ThemeMode get theme => state;
 
-  void refreshTheme(Brightness brightness) async {
+  void refreshTheme({Brightness? brightness}) async {
     final themeData = await ref.read(localstoreProvider.notifier).item("theme");
     if (themeData != null) {
       state = themeData.value == "light" ? ThemeMode.light : ThemeMode.dark;
@@ -21,6 +21,6 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
 
   void switchTheme() {
     ref.read(localstoreProvider.notifier).setItem("theme", state == ThemeMode.light ? "dark" : "light");
-    state = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    refreshTheme();
   }
 }

@@ -57,7 +57,7 @@ class AuthNotifier extends StateNotifier<Auth> {
     reload();
   }
 
-  void reload() async {
+  Future<void> reload() async {
     final accessToken = (await ref.read(localstoreProvider.notifier).item("accessToken"))?.value;
     final refreshToken = (await ref.read(localstoreProvider.notifier).item("refreshToken"))?.value;
 
@@ -76,19 +76,14 @@ class AuthNotifier extends StateNotifier<Auth> {
     if (accessToken == null || refreshToken == null) return false;
 
     final client = http.Client();
-    var data = json.encode({
-      "userId": getAuthData(accessToken: accessToken.value)?.id ?? "Unknown",
-      "refreshToken": refreshToken.value,
-    });
-
-    debugPrint("DATA: $data");
-
     final response = await client.post(
       Uri.parse("${dotenv.env['API_URL'] ?? ""}/token"),
       headers: {"Content-Type": "application/json"},
-      body: data,
+      body: json.encode({
+        "userId": getAuthData(accessToken: accessToken.value)?.id ?? "Unknown",
+        "refreshToken": refreshToken.value,
+      }),
     );
-
     client.close();
 
     if (response.statusCode != 200) {
