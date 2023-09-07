@@ -10,7 +10,7 @@ class DetailAppbar extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20.0, bottom: 30.0),
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 10.0),
       child: Row(
         children: [
           IconButton(
@@ -21,7 +21,7 @@ class DetailAppbar extends StatelessWidget {
           ),
           const SizedBox(width: 20.0),
           Text(
-            "OG2-DV3",
+            title,
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ],
