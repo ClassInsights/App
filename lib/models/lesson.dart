@@ -1,19 +1,17 @@
 class Lesson {
-  final String id;
-  final String title;
-  final String teacher;
-  final String room;
-  final String startTime;
-  final String endTime;
-  final String day;
+  final int id;
+  final int roomId;
+  final int subjectId;
+  final int classId;
+  final DateTime startTime;
+  final DateTime endTime;
 
   const Lesson({
     required this.id,
-    required this.title,
-    required this.teacher,
-    required this.room,
+    required this.roomId,
+    required this.subjectId,
+    required this.classId,
     required this.startTime,
     required this.endTime,
-    required this.day,
   });
 }
