@@ -37,4 +37,10 @@ class RoomNotifier extends StateNotifier<List<Room>> {
     if (rooms.isNotEmpty) state = rooms;
     return rooms;
   }
+
+  Room? getRoomById(int id) {
+    if (state.isEmpty) return null;
+    if (!state.any((room) => room.id == id)) return null;
+    return state.firstWhere((room) => room.id == id);
+  }
 }
