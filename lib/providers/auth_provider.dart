@@ -103,15 +103,14 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> verifyLogin() async {
-    final accessToken = await ref.read(localstoreProvider.notifier).item("accessToken");
-    final refreshToken = await ref.read(localstoreProvider.notifier).item("refreshToken");
+    final accessToken = state.creds.accessToken;
+    final refreshToken = state.creds.refreshToken;
+    if (accessToken.isEmpty || refreshToken.isEmpty) return false;
 
-    if (accessToken == null || refreshToken == null) return false;
-
-    final data = getAuthData(accessToken: accessToken.value);
+    final data = getAuthData(accessToken: accessToken);
     if (data == null) return false;
 
-    final expirationDate = getAuthData(accessToken: accessToken.value)?.expirationDate;
+    final expirationDate = getAuthData(accessToken: accessToken)?.expirationDate;
     debugPrint("Expiration Date: ${expirationDate.toString()}");
 
     if (expirationDate?.isBefore(DateTime.now()) == true) {
