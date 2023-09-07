@@ -1,22 +1,26 @@
+import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/room_provider.dart';
+import 'package:classinsights/providers/screen_provider.dart';
 import 'package:classinsights/widgets/container_content.dart';
 import 'package:classinsights/widgets/header.dart';
 import 'package:classinsights/widgets/lesson.dart';
-import 'package:classinsights/widgets/shortcuts/app_shortcut.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   final double minutes = 30.0;
   final double baseMinutes = 50.0;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     const defaultPadding = 15.0;
+    final roomCount = ref.watch(roomProvider).length;
 
     return Column(
       children: [
-        const Header("Willkommen, Jakob."),
+        Header("Willkommen, ${ref.read(authProvider).data.name.split(" ")[0]}."),
         LayoutBuilder(
           builder: (context, constraints) {
             return Column(
@@ -39,7 +43,14 @@ class DashboardScreen extends StatelessWidget {
                     const SizedBox(
                       width: defaultPadding,
                     ),
-                    AppShortcut(constraints.maxWidth / 2 - defaultPadding / 2),
+                    ContainerWithContent(
+                      label: "Räume",
+                      title: roomCount.toString(),
+                      width: constraints.maxWidth / 2 - defaultPadding / 2,
+                      showArrow: true,
+                      onTab: () => ref.read(screenProvider.notifier).setScreen(Screen.rooms),
+                      primary: true,
+                    ),
                   ],
                 ),
                 const SizedBox(
