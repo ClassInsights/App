@@ -1,4 +1,5 @@
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/version_provider.dart';
 import 'package:classinsights/screens/login_screen.dart';
@@ -18,10 +19,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> initProviders() async {
     await ref.read(authProvider.notifier).reload();
-    await ref.read(versionProvider.notifier).fetchVersion();
     var validLogin = ref.read(authProvider).creds.accessToken.isNotEmpty;
     if (validLogin) {
+      await ref.read(versionProvider.notifier).fetchVersion();
       await ref.read(roomProvider.notifier).fetchRooms();
+      await ref.read(lessonProvider.notifier).fetchLessons();
     }
   }
 
