@@ -1,3 +1,4 @@
+import 'package:classinsights/models/schoolclass.dart';
 import 'package:classinsights/models/user_role.dart';
 
 class AuthData {
@@ -5,7 +6,7 @@ class AuthData {
   final String id;
   final String email;
   final Role? role;
-  final String? schoolClass;
+  final SchoolClass? schoolClass;
   final String? headTeacher;
   final DateTime expirationDate;
 
@@ -25,7 +26,7 @@ class AuthData {
       id: "",
       email: "",
       role: Role.student,
-      schoolClass: "",
+      schoolClass: SchoolClass.blank(),
       headTeacher: "",
       expirationDate: DateTime.now(),
     );
