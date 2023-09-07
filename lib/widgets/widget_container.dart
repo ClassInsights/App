@@ -30,7 +30,7 @@ class WidgetContainer extends ConsumerWidget {
         boxShadow: [
           BoxShadow(
             color: (primary ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.secondaryContainer)
-                .withOpacity(darkMode ? .1 : .1),
+                .withOpacity(darkMode ? .01 : .1),
             blurRadius: 5.0,
             offset: const Offset(2.0, 4.0),
           ),
