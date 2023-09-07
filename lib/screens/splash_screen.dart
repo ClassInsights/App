@@ -40,10 +40,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (alreadyInitialized) {
       ref.read(authProvider.notifier).verifyLogin().then(
             (valid) => valid
-                ? Navigator.of(context).push(
+                ? Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => const TabsScreen()),
                   )
-                : Navigator.of(context).push(
+                : Navigator.of(context).pushReplacement(
                     PageRouteBuilder(
                       pageBuilder: (context, firstAnimation, secondAnimation) => const LoginScreen(),
                       transitionDuration: Duration.zero,
