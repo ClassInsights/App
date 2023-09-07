@@ -28,6 +28,7 @@ class LoginScreen extends ConsumerWidget {
             const SizedBox(
               height: 30.0,
             ),
+            const Spacer(),
             ContainerWithContent(
               label: "Mit Microsoft",
               title: "Anmelden",
@@ -50,7 +51,9 @@ class LoginScreen extends ConsumerWidget {
                           ),
                   ),
             ),
-            const Spacer(),
+            const SizedBox(
+              height: 50.0,
+            ),
           ],
         ),
       ),
