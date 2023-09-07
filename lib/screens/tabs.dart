@@ -1,4 +1,5 @@
 import 'package:classinsights/providers/screen_provider.dart';
+import 'package:classinsights/providers/theme_provider.dart';
 import 'package:classinsights/screens/room_overview_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
 import 'package:classinsights/screens/profile_screen.dart';
@@ -46,7 +47,8 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       selectedItemColor: Theme.of(context).colorScheme.primary,
-      unselectedItemColor: Theme.of(context).colorScheme.secondary,
+      unselectedItemColor:
+          ref.read(themeProvider) == ThemeMode.dark ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home_rounded),
