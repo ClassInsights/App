@@ -11,8 +11,7 @@ class LessonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final baseMinutes = lesson.endTime.difference(lesson.startTime).inMinutes.toDouble();
-    // final minutes = DateTime.now().difference(DateTime.parse(startTime)).inMinutes.toDouble();
-    final minutes = DateTime.parse("2023-06-28T05:45:00").difference(lesson.startTime).inMinutes.toDouble();
+    final minutes = DateTime.now().difference(lesson.startTime).inMinutes.toDouble();
 
     return ContainerWithContent(
       label: "Aktuelle Stunde",
