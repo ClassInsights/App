@@ -100,6 +100,19 @@ class AuthNotifier extends StateNotifier<Auth> {
     );
   }
 
+  String translateRole(Role role) {
+    switch (role) {
+      case Role.admin:
+        return "Administrator";
+      case Role.teacher:
+        return "Lehrer";
+      case Role.student:
+        return "Schüler";
+      default:
+        return "Unbekannte Role";
+    }
+  }
+
   Future<bool> _refreshToken() async {
     final accessToken = await ref.read(localstoreProvider.notifier).item("accessToken");
     final refreshToken = await ref.read(localstoreProvider.notifier).item("refreshToken");
