@@ -9,14 +9,16 @@ class ClassesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const int? currentRoomID = 63;
+    // TODO replace with actual current room
+    const int currentRoomID = 70;
     final rooms = ref.read(roomProvider);
+    final currentRoom = ref.read(roomProvider.notifier).getRoomById(currentRoomID);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Header("Klassen", showBottomMargin: currentRoomID != null),
-        currentRoomID == null
+        const Header("Klassen"),
+        currentRoom == null
             ? const SizedBox.shrink()
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,26 +26,35 @@ class ClassesScreen extends ConsumerWidget {
                   const Text("Aktueller Raum"),
                   const SizedBox(height: 4.0),
                   RoomWidget(
-                    room: rooms.firstWhere((room) => room.id == currentRoomID),
+                    room: currentRoom,
                     current: true,
                   ),
                   const SizedBox(height: 40.0),
                   Text(
-                    "Sonstige Räume",
+                    "Alle Räume",
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
+                  const SizedBox(height: 15.0)
                 ],
               ),
         ListView.separated(
-          padding: const EdgeInsets.all(0.0),
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: rooms.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12.0),
-          itemBuilder: (context, index) => RoomWidget(
-            room: rooms[index],
-          ),
-        ),
+            padding: const EdgeInsets.all(0.0),
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: rooms.length,
+            separatorBuilder: (context, index) {
+              final room = rooms[index];
+              if (room.id == currentRoomID) return const SizedBox.shrink();
+              return const SizedBox(height: 15.0);
+            },
+            itemBuilder: (context, index) {
+              final room = rooms[index];
+              if (room.id == currentRoomID) return const SizedBox.shrink();
+              return RoomWidget(
+                key: ValueKey(room.id),
+                room: room,
+              );
+            }),
       ],
     );
   }
