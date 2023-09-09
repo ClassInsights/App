@@ -157,7 +157,7 @@ class AuthNotifier extends StateNotifier<Auth> {
     if (expirationDate?.isBefore(DateTime.now()) == true) {
       if (await _refreshToken()) {
         debugPrint("Token refreshed!");
-        return true;
+        return false;
       }
       debugPrint("Token refresh failed!");
       return false;
