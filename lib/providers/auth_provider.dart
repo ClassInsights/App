@@ -65,9 +65,25 @@ class AuthNotifier extends StateNotifier<Auth> {
     );
   }
 
-  void logout() {
+  void logout() async {
     ref.read(localstoreProvider.notifier).removeItem("accessToken");
     ref.read(localstoreProvider.notifier).removeItem("refreshToken");
+
+    final client = http.Client();
+    await client.delete(
+      Uri.parse("${dotenv.env['API_URL'] ?? ""}/token"),
+      headers: {
+        "Authorization": "Bearer ${auth.creds.accessToken}",
+        "Content-Type": "application/json",
+      },
+      body: json.encode(
+        {
+          "userId": auth.data.id,
+          "refreshToken": auth.creds.refreshToken,
+        },
+      ),
+    );
+
     reload();
   }
 
