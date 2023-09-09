@@ -1,23 +1,22 @@
+import 'package:classinsights/models/lesson.dart';
 import 'package:classinsights/widgets/container_content.dart';
 import 'package:classinsights/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
 
 class LessonWidget extends StatelessWidget {
-  final String subject;
-  final String startTime;
-  final String endTime;
+  final Lesson lesson;
 
-  const LessonWidget({required this.subject, required this.startTime, required this.endTime, super.key});
+  const LessonWidget({required this.lesson, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final baseMinutes = DateTime.parse(endTime).difference(DateTime.parse(startTime)).inMinutes.toDouble();
+    final baseMinutes = lesson.endTime.difference(lesson.startTime).inMinutes.toDouble();
     // final minutes = DateTime.now().difference(DateTime.parse(startTime)).inMinutes.toDouble();
-    final minutes = DateTime.parse("2023-06-22T10:06:00.000Z").difference(DateTime.parse(startTime)).inMinutes.toDouble();
+    final minutes = DateTime.parse("2023-06-28T05:45:00").difference(lesson.startTime).inMinutes.toDouble();
 
     return ContainerWithContent(
       label: "Aktuelle Stunde",
-      title: subject,
+      title: "FACH",
       child: ProgressBar(
         title: 'noch ${(baseMinutes - minutes).toStringAsFixed(0)} Minuten',
         progress: minutes,

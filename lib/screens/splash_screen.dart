@@ -1,6 +1,7 @@
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
+import 'package:classinsights/providers/subject_provider.dart';
 import 'package:classinsights/providers/version_provider.dart';
 import 'package:classinsights/screens/login_screen.dart';
 import 'package:classinsights/screens/tabs.dart';
@@ -21,6 +22,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     await ref.read(authProvider.notifier).reload();
     await ref.read(versionProvider.notifier).fetchVersion();
     await ref.read(roomProvider.notifier).fetchRooms();
+    await ref.read(subjectProvider.notifier).fetchSubjects();
     await ref.read(lessonProvider.notifier).fetchLessons();
   }
 
