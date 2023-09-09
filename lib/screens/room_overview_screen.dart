@@ -1,3 +1,4 @@
+import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/header.dart';
 import 'package:classinsights/widgets/room_widget.dart';
@@ -9,8 +10,7 @@ class ClassesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO replace with actual current room
-    const int currentRoomID = 70;
+    final int currentRoomID = ref.read(lessonProvider.notifier).getLessonByDate(DateTime.now())?.roomId ?? 0;
     final rooms = ref.read(roomProvider);
     final currentRoom = ref.read(roomProvider.notifier).getRoomById(currentRoomID);
 
@@ -38,23 +38,24 @@ class ClassesScreen extends ConsumerWidget {
                 ],
               ),
         ListView.separated(
-            padding: const EdgeInsets.all(0.0),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: rooms.length,
-            separatorBuilder: (context, index) {
-              final room = rooms[index];
-              if (room.id == currentRoomID) return const SizedBox.shrink();
-              return const SizedBox(height: 15.0);
-            },
-            itemBuilder: (context, index) {
-              final room = rooms[index];
-              if (room.id == currentRoomID) return const SizedBox.shrink();
-              return RoomWidget(
-                key: ValueKey(room.id),
-                room: room,
-              );
-            }),
+          padding: const EdgeInsets.all(0.0),
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: rooms.length,
+          separatorBuilder: (context, index) {
+            final room = rooms[index];
+            if (room.id == currentRoomID) return const SizedBox.shrink();
+            return const SizedBox(height: 15.0);
+          },
+          itemBuilder: (context, index) {
+            final room = rooms[index];
+            if (room.id == currentRoomID) return const SizedBox.shrink();
+            return RoomWidget(
+              key: ValueKey(room.id),
+              room: room,
+            );
+          },
+        ),
       ],
     );
   }
