@@ -1,10 +1,11 @@
 import 'package:classinsights/models/room.dart';
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/screen_provider.dart';
 import 'package:classinsights/widgets/container_content.dart';
 import 'package:classinsights/widgets/header.dart';
-import 'package:classinsights/widgets/lesson.dart';
+import 'package:classinsights/widgets/lesson_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,8 +18,8 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const defaultPadding = 15.0;
+    final currentLesson = ref.read(lessonProvider.notifier).getLessonByDate(DateTime.now());
     final roomCount = ref.watch(roomProvider).length;
-
     return Column(
       children: [
         Header("Willkommen, ${ref.read(authProvider).data.name.split(" ")[0]}."),
@@ -26,14 +27,10 @@ class DashboardScreen extends ConsumerWidget {
           builder: (context, constraints) {
             return Column(
               children: [
-                const LessonWidget(
-                  subject: "MAM",
-                  startTime: "2023-06-22T09:30:00.000Z",
-                  endTime: "2023-06-22T10:20:00.000Z",
-                ),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
+                currentLesson != null
+                    ? LessonWidget(lesson: currentLesson)
+                    : const ContainerWithContent(label: "Aktuelle Stunde", title: "Keine Stunde gerade"),
+                const SizedBox(height: defaultPadding),
                 Row(
                   children: [
                     ContainerWithContent(
