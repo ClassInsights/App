@@ -16,7 +16,7 @@ class LessonWidget extends StatelessWidget {
 
     return ContainerWithContent(
       label: "Aktuelle Stunde",
-      title: "FACH",
+      title: lesson.subject.name,
       child: ProgressBar(
         title: 'noch ${(baseMinutes - minutes).toStringAsFixed(0)} Minuten',
         progress: minutes,
