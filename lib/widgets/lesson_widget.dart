@@ -10,8 +10,9 @@ class LessonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseMinutes = lesson.endTime.difference(lesson.startTime).inMinutes.toDouble();
-    final minutes = DateTime.now().difference(lesson.startTime).inMinutes.toDouble();
+    if (lesson.endTime == null || lesson.startTime == null) return const SizedBox.shrink();
+    final baseMinutes = lesson.endTime!.difference(lesson.startTime!).inMinutes.toDouble();
+    final minutes = DateTime.now().difference(lesson.startTime!).inMinutes.toDouble();
 
     return ContainerWithContent(
       label: "Aktuelle Stunde",

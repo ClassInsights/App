@@ -5,8 +5,8 @@ class Lesson {
   final int roomId;
   final SubjectData subject;
   final int classId;
-  final DateTime startTime;
-  final DateTime endTime;
+  final DateTime? startTime;
+  final DateTime? endTime;
 
   const Lesson({
     required this.id,

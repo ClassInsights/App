@@ -21,7 +21,10 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
     if (classId == null) return null;
     final userLessons = lessons.where((lesson) => lesson.classId == ref.read(authProvider).data.schoolClass?.id).toList();
     try {
-      return userLessons.firstWhere((lesson) => lesson.startTime.isBefore(date) && lesson.endTime.isAfter(date));
+      return userLessons.firstWhere((lesson) {
+        if (lesson.startTime == null || lesson.endTime == null) return false;
+        return lesson.startTime!.isBefore(date) && lesson.endTime!.isAfter(date);
+      });
     } catch (_) {
       return null;
     }
@@ -33,8 +36,8 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
     final userLessons = lessons.where((lesson) => lesson.classId == classId);
 
     return userLessons
-        .where(
-            (lesson) => lesson.startTime.day == targetDay.day && lesson.startTime.month == targetDay.month && lesson.startTime.year == targetDay.year)
+        .where((lesson) =>
+            lesson.startTime?.day == targetDay.day && lesson.startTime?.month == targetDay.month && lesson.startTime?.year == targetDay.year)
         .toList();
   }
 
