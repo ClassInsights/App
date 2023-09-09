@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:classinsights/models/auth_credentials.dart';
 import 'package:classinsights/models/auth_data.dart';
+import 'package:classinsights/models/schoolclass.dart';
 import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/localstore_provider.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -34,19 +35,32 @@ class AuthNotifier extends StateNotifier<Auth> {
 
   Auth get auth => state;
 
-  AuthData? getAuthData({String accessToken = ""}) {
+  Future<AuthData?> getAuthData({String accessToken = ""}) async {
     final token = accessToken.isNotEmpty ? accessToken : auth.creds.accessToken;
     final tokenData = JWT.tryDecode(token);
     if (tokenData == null) return null;
 
     final payload = tokenData.payload;
+
+    final classId = payload["class"];
+    final client = http.Client();
+    final response = await client.get(
+      Uri.parse("${dotenv.env['API_URL'] ?? ""}/classes/$classId"),
+      headers: {
+        "Authorization": "Bearer $token",
+      },
+    );
+    client.close();
+
+    if (response.statusCode != 200) return null;
+
+    final body = jsonDecode(response.body);
     return AuthData(
       name: payload["name"],
       id: payload["sub"],
       email: payload["email"],
       role: Role.values.firstWhere((data) => data.name.toLowerCase() == payload["role"].toString().toLowerCase()),
-      schoolClass: payload["class"],
-      headTeacher: payload["head"],
+      schoolClass: SchoolClass(id: int.tryParse(classId) ?? 0, name: body["name"], headTeacher: body["head"]),
       expirationDate: DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
     );
   }
@@ -66,7 +80,7 @@ class AuthNotifier extends StateNotifier<Auth> {
         accessToken: accessToken ?? "",
         refreshToken: refreshToken ?? "",
       ),
-      data: getAuthData() ?? AuthData.blank(),
+      data: (accessToken != null ? await getAuthData(accessToken: accessToken) : await getAuthData()) ?? AuthData.blank(),
     );
   }
 
@@ -80,16 +94,13 @@ class AuthNotifier extends StateNotifier<Auth> {
       Uri.parse("${dotenv.env['API_URL'] ?? ""}/token"),
       headers: {"Content-Type": "application/json"},
       body: json.encode({
-        "userId": getAuthData(accessToken: accessToken.value)?.id ?? "Unknown",
+        "userId": (await getAuthData(accessToken: accessToken.value))?.id ?? "Unknown",
         "refreshToken": refreshToken.value,
       }),
     );
     client.close();
 
-    if (response.statusCode != 200) {
-      debugPrint("Error: ${response.statusCode}");
-      return false;
-    }
+    if (response.statusCode != 200) return false;
 
     final body = jsonDecode(response.body);
     final newAccessToken = body["access_token"];
@@ -106,11 +117,12 @@ class AuthNotifier extends StateNotifier<Auth> {
     final accessToken = state.creds.accessToken;
     final refreshToken = state.creds.refreshToken;
     if (accessToken.isEmpty || refreshToken.isEmpty) return false;
+    if (state.data.schoolClass != null) return true;
 
-    final data = getAuthData(accessToken: accessToken);
+    final data = await getAuthData(accessToken: accessToken);
     if (data == null) return false;
 
-    final expirationDate = getAuthData(accessToken: accessToken)?.expirationDate;
+    final expirationDate = (await getAuthData(accessToken: accessToken))?.expirationDate;
     debugPrint("Expiration Date: ${expirationDate.toString()}");
 
     if (expirationDate?.isBefore(DateTime.now()) == true) {
@@ -132,7 +144,7 @@ class AuthNotifier extends StateNotifier<Auth> {
         accessToken: actualAccessToken,
         refreshToken: actualRefreshToken,
       ),
-      data: getAuthData(accessToken: actualAccessToken) ?? AuthData.blank(),
+      data: (await getAuthData(accessToken: actualAccessToken)) ?? AuthData.blank(),
     );
 
     return true;
@@ -150,13 +162,11 @@ class AuthNotifier extends StateNotifier<Auth> {
       if (code == null) return false;
 
       final client = http.Client();
-      final uri = "${dotenv.env['API_URL'] ?? ""}/login/$code";
-      final response = await client.get(Uri.parse(uri));
+      final response = await client.get(Uri.parse("${dotenv.env['API_URL'] ?? ""}/login/$code"));
       client.close();
-      if (response.statusCode != 200) {
-        debugPrint("Error: ${response.statusCode}");
-        return false;
-      }
+
+      if (response.statusCode != 200) return false;
+
       final body = jsonDecode(response.body);
       final accessToken = body["access_token"];
       final refreshToken = body["refresh_token"];
@@ -169,7 +179,7 @@ class AuthNotifier extends StateNotifier<Auth> {
           accessToken: accessToken,
           refreshToken: refreshToken,
         ),
-        data: getAuthData(accessToken: accessToken) ?? AuthData.blank(),
+        data: await getAuthData(accessToken: accessToken) ?? AuthData.blank(),
       );
     } catch (e) {
       return false;

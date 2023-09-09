@@ -7,7 +7,6 @@ class AuthData {
   final String email;
   final Role? role;
   final SchoolClass? schoolClass;
-  final String? headTeacher;
   final DateTime expirationDate;
 
   const AuthData({
@@ -16,7 +15,6 @@ class AuthData {
     required this.email,
     required this.role,
     required this.schoolClass,
-    required this.headTeacher,
     required this.expirationDate,
   });
 
@@ -27,7 +25,6 @@ class AuthData {
       email: "",
       role: Role.student,
       schoolClass: SchoolClass.blank(),
-      headTeacher: "",
       expirationDate: DateTime.now(),
     );
   }
