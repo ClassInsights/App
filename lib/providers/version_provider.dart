@@ -4,7 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 final versionProvider = StateNotifierProvider<VersionNotifier, String>((_) => VersionNotifier());
 
 class VersionNotifier extends StateNotifier<String> {
-  VersionNotifier() : super("");
+  VersionNotifier() : super("Unbekannt");
 
   String get version => state;
 

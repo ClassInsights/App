@@ -15,18 +15,20 @@ class RoomNotifier extends StateNotifier<List<Room>> {
   List<Room> get rooms => state;
 
   Future<List<Room>> fetchRooms() async {
+    final token = ref.read(authProvider).creds.accessToken;
+    if (token.isEmpty) return [];
     if (state.isNotEmpty) return state;
     final client = http.Client();
     final response = await client.get(
       Uri.parse("${dotenv.env['API_URL'] ?? ""}/rooms"),
       headers: {
-        "Authorization": "Bearer ${ref.read(authProvider).creds.accessToken}",
+        "Authorization": "Bearer $token",
       },
     );
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);
-    final rooms = data.map<Room>((room) {
+    final List<Room> rooms = data.map<Room>((room) {
       return Room(
         id: room["roomId"],
         name: room["longName"].toString().length >= 30 ? room["name"] : room["longName"],

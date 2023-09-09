@@ -19,12 +19,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> initProviders() async {
     await ref.read(authProvider.notifier).reload();
-    var validLogin = ref.read(authProvider).creds.accessToken.isNotEmpty;
-    if (validLogin) {
-      await ref.read(versionProvider.notifier).fetchVersion();
-      await ref.read(roomProvider.notifier).fetchRooms();
-      await ref.read(lessonProvider.notifier).fetchLessons();
-    }
+    await ref.read(versionProvider.notifier).fetchVersion();
+    await ref.read(roomProvider.notifier).fetchRooms();
+    await ref.read(lessonProvider.notifier).fetchLessons();
   }
 
   @override

@@ -22,6 +22,8 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
   // }
 
   Future<List<Lesson>> fetchLessons() async {
+    final token = ref.read(authProvider).creds.accessToken;
+    if (token.isEmpty) return [];
     if (state.isNotEmpty) return state;
     final client = http.Client();
     final response = await client.get(
