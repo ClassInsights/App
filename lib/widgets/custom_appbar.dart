@@ -19,7 +19,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     void logout() {
       ref.read(authProvider.notifier).logout();
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         PageRouteBuilder(
             pageBuilder: (context, firstAnimation, secondAnimation) => const LoginScreen(),
             transitionDuration: Duration.zero,
