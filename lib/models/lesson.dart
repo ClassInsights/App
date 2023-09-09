@@ -1,7 +1,9 @@
+import 'package:classinsights/models/subject_data.dart';
+
 class Lesson {
   final int id;
   final int roomId;
-  final int subjectId;
+  final SubjectData subject;
   final int classId;
   final DateTime startTime;
   final DateTime endTime;
@@ -9,7 +11,7 @@ class Lesson {
   const Lesson({
     required this.id,
     required this.roomId,
-    required this.subjectId,
+    required this.subject,
     required this.classId,
     required this.startTime,
     required this.endTime,

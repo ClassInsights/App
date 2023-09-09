@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:classinsights/models/lesson.dart';
+import 'package:classinsights/models/subject_data.dart';
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/subject_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:http/http.dart" as http;
@@ -14,12 +16,27 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
 
   List<Lesson> get lessons => state;
 
-  // Lesson? getCurrentLesson() {
-  //   final now = DateTime.now();
-  //   final userLessons = lessons.where((lesson) => lesson.classId == ref.read(authProvider).data.schoolClass);
-  //   if (lessons.any((lesson) => lesson.startTime.isBefore(now) && lesson.endTime.isAfter(now)))
-  //     return lessons.firstWhere((lesson) => lesson.startTime.isBefore(now) && lesson.endTime.isAfter(now), orElse: () => null);
-  // }
+  Lesson? getLessonByDate(DateTime date) {
+    final classId = ref.read(authProvider).data.schoolClass?.id;
+    if (classId == null) return null;
+    final userLessons = lessons.where((lesson) => lesson.classId == ref.read(authProvider).data.schoolClass?.id).toList();
+    try {
+      return userLessons.firstWhere((lesson) => lesson.startTime.isBefore(date) && lesson.endTime.isAfter(date));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  List<Lesson> getLessonsForDay(DateTime targetDay) {
+    final classId = ref.read(authProvider).data.schoolClass?.id;
+    if (classId == null) return [];
+    final userLessons = lessons.where((lesson) => lesson.classId == classId);
+
+    return userLessons
+        .where(
+            (lesson) => lesson.startTime.day == targetDay.day && lesson.startTime.month == targetDay.month && lesson.startTime.year == targetDay.year)
+        .toList();
+  }
 
   Future<List<Lesson>> fetchLessons() async {
     final token = ref.read(authProvider).creds.accessToken;
@@ -35,11 +52,17 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);
-    final lessons = data.map<Lesson>((lesson) {
+    final List<Lesson> lessons = data.map<Lesson>((lesson) {
+      final subjectId = lesson["subjectId"];
+      // final subjectName = ref.read(subjectProvider.notifier).getSubjectById(int.tryParse(subjectId) ?? 0);
+      final subjectName = ref.read(subjectProvider.notifier).getSubjectById(subjectId ?? 0);
       return Lesson(
         id: lesson["lessonId"],
         roomId: lesson["roomId"],
-        subjectId: lesson["subjectId"],
+        subject: SubjectData(
+          id: subjectId,
+          name: subjectName != null ? subjectName.name : "Unbekanntes Fach",
+        ),
         classId: lesson["classId"],
         startTime: DateTime.parse(lesson["startTime"].toString()),
         endTime: DateTime.parse(lesson["endTime"].toString()),
