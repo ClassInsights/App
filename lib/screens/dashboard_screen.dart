@@ -1,3 +1,4 @@
+import 'package:classinsights/models/room.dart';
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/screen_provider.dart';
@@ -56,9 +57,9 @@ class DashboardScreen extends ConsumerWidget {
                 const SizedBox(
                   height: defaultPadding,
                 ),
-                const ContainerWithContent(
-                  label: "Aktive Computer",
-                  title: "121",
+                ContainerWithContent(
+                  label: "Aktive Geräte",
+                  title: ref.read(roomProvider).fold(0, (int previousElement, Room room) => previousElement + room.deviceCount).toString(),
                 ),
                 const SizedBox(
                   height: defaultPadding,
