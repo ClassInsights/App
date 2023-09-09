@@ -54,7 +54,6 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
     final data = jsonDecode(response.body);
     final List<Lesson> lessons = data.map<Lesson>((lesson) {
       final subjectId = lesson["subjectId"];
-      // final subjectName = ref.read(subjectProvider.notifier).getSubjectById(int.tryParse(subjectId) ?? 0);
       final subjectName = ref.read(subjectProvider.notifier).getSubjectById(subjectId ?? 0);
       return Lesson(
         id: lesson["lessonId"],
