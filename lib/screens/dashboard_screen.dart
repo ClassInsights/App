@@ -1,3 +1,4 @@
+import 'package:classinsights/main.dart';
 import 'package:classinsights/models/room.dart';
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
@@ -17,7 +18,6 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const defaultPadding = 15.0;
     final currentLesson = ref.read(lessonProvider.notifier).getLessonByDate(DateTime.now());
     final roomCount = ref.watch(roomProvider).length;
     return Column(
@@ -30,21 +30,21 @@ class DashboardScreen extends ConsumerWidget {
                 currentLesson != null
                     ? LessonWidget(lesson: currentLesson)
                     : const ContainerWithContent(label: "Aktuelle Stunde", title: "Keine Stunde gerade"),
-                const SizedBox(height: defaultPadding),
+                const SizedBox(height: App.defaultPadding),
                 Row(
                   children: [
                     ContainerWithContent(
                       label: "Top",
                       title: "Hop",
-                      width: constraints.maxWidth / 2 - defaultPadding / 2,
+                      width: constraints.maxWidth / 2 - App.defaultPadding / 2,
                     ),
                     const SizedBox(
-                      width: defaultPadding,
+                      width: App.defaultPadding,
                     ),
                     ContainerWithContent(
                       label: "Räume",
                       title: roomCount.toString(),
-                      width: constraints.maxWidth / 2 - defaultPadding / 2,
+                      width: constraints.maxWidth / 2 - App.defaultPadding / 2,
                       showArrow: true,
                       onTab: () => ref.read(screenProvider.notifier).setScreen(Screen.rooms),
                       primary: true,
@@ -52,14 +52,14 @@ class DashboardScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(
-                  height: defaultPadding,
+                  height: App.defaultPadding,
                 ),
                 ContainerWithContent(
                   label: "Aktive Geräte",
                   title: ref.read(roomProvider).fold(0, (int previousElement, Room room) => previousElement + room.deviceCount).toString(),
                 ),
                 const SizedBox(
-                  height: defaultPadding,
+                  height: App.defaultPadding,
                 ),
                 ContainerWithContent(
                   label: "Graph",

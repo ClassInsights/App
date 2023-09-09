@@ -68,6 +68,9 @@ TextTheme _textTheme = const TextTheme().copyWith(
 class App extends ConsumerStatefulWidget {
   const App({super.key});
 
+  static const defaultPadding = 12.0;
+  static const smallPadding = 8.0;
+
   @override
   ConsumerState<App> createState() => _AppState();
 }

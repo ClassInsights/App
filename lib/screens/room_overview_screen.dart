@@ -1,3 +1,4 @@
+import 'package:classinsights/main.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/header.dart';
@@ -34,7 +35,7 @@ class ClassesScreen extends ConsumerWidget {
                     "Alle Räume",
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 15.0)
+                  const SizedBox(height: App.defaultPadding)
                 ],
               ),
         ListView.separated(
@@ -45,7 +46,7 @@ class ClassesScreen extends ConsumerWidget {
           separatorBuilder: (context, index) {
             final room = rooms[index];
             if (room.id == currentRoomID) return const SizedBox.shrink();
-            return const SizedBox(height: 15.0);
+            return const SizedBox(height: App.defaultPadding);
           },
           itemBuilder: (context, index) {
             final room = rooms[index];
