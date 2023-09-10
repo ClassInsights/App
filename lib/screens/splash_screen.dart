@@ -17,22 +17,29 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool alreadyInitialized = false;
+  var hintText = "";
 
   Future<void> initProviders() async {
+    setState(() => hintText = "Lese Account Daten...");
     await ref.read(authProvider.notifier).reload();
+    setState(() => hintText = "Lade App Meta Daten...");
     await ref.read(versionProvider.notifier).fetchVersion();
+    setState(() => hintText = "Lade Schulräume...");
     await ref.read(roomProvider.notifier).fetchRooms();
+    setState(() => hintText = "Lade Unterrichtsfächer...");
     await ref.read(subjectProvider.notifier).fetchSubjects();
+    setState(() => hintText = "Lade Stundenplan...");
     await ref.read(lessonProvider.notifier).fetchLessons();
+    setState(() => hintText = "Fertig!");
   }
 
   @override
   void initState() {
     if (ref.read(authProvider).creds.accessToken.isNotEmpty) {
-      alreadyInitialized = true;
+      setState(() => alreadyInitialized = true);
       return;
     }
-    initProviders().then((_) => alreadyInitialized = true);
+    initProviders().then((_) => setState(() => alreadyInitialized = true));
     super.initState();
   }
 
@@ -60,6 +67,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Spacer(),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
               height: MediaQuery.of(context).size.width * 0.6,
@@ -71,6 +79,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             Text(
               "Class Insights",
               style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const Spacer(),
+            Text(
+              hintText,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize,
+              ),
+            ),
+            const SizedBox(
+              height: 50.0,
             ),
           ],
         ),
