@@ -1,5 +1,5 @@
 import 'package:classinsights/models/room.dart';
-import 'package:classinsights/screens/room_details_screen.dart';
+import 'package:classinsights/screens/room_detail_screen.dart';
 import 'package:classinsights/widgets/container_content.dart';
 import 'package:flutter/material.dart';
 
