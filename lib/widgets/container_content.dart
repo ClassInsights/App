@@ -65,7 +65,7 @@ class ContainerWithContent extends StatelessWidget {
             showArrow
                 ? Icon(
                     Icons.arrow_forward_ios_rounded,
-                    color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondary,
+                    color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.tertiary,
                     size: 20.0,
                   )
                 : const SizedBox(),
