@@ -17,7 +17,6 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
   Future<List<Computer>> fetchComputers(int roomId) async {
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
-    if (state.isNotEmpty) return state;
     final client = http.Client();
     final response = await client.get(
       Uri.parse("${dotenv.env['API_URL'] ?? ""}/rooms/$roomId/computers"),
