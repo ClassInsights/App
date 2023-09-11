@@ -1,8 +1,7 @@
 import 'package:classinsights/main.dart';
 import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/providers/computer_provider.dart';
-import 'package:classinsights/screens/computer_detail_screen.dart';
-import 'package:classinsights/widgets/container_content.dart';
+import 'package:classinsights/widgets/computer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,18 +42,7 @@ class _ComputerListState extends ConsumerState<ComputerList> {
             ),
             itemBuilder: (context, index) {
               final computer = computers[index];
-              return ContainerWithContent(
-                label: "Computer",
-                title: computer.name,
-                showArrow: true,
-                onTab: () => Navigator.of(context).push(
-                  PageRouteBuilder(
-                    pageBuilder: (context, firstAnimation, secondAnimation) => ComputerDetailScreen(computer),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                ),
-              );
+              return ComputerWidget(computer);
             },
           )
         : const Text("Keine Computer registriert");
