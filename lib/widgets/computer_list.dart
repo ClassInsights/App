@@ -1,4 +1,5 @@
 import 'package:classinsights/main.dart';
+import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/providers/computer_provider.dart';
 import 'package:classinsights/screens/computer_detail_screen.dart';
 import 'package:classinsights/widgets/container_content.dart';
@@ -15,17 +16,22 @@ class ComputerList extends ConsumerStatefulWidget {
 
 class _ComputerListState extends ConsumerState<ComputerList> {
   var loading = true;
+  List<Computer> computers = [];
 
   @override
   void initState() {
-    ref.read(computerProvider.notifier).fetchComputers(widget.classId).then((_) => setState(() => loading = false));
+    ref.read(computerProvider.notifier).fetchComputers(widget.classId).then(
+          (response) => setState(() {
+            loading = false;
+            computers = response;
+          }),
+        );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     if (loading) return const Center(child: CircularProgressIndicator());
-    var computers = ref.read(computerProvider);
     return computers.isNotEmpty
         ? ListView.separated(
             padding: const EdgeInsets.all(0.0),

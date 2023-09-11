@@ -15,6 +15,8 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
   List<Computer> get computers => state;
 
   Future<List<Computer>> fetchComputers(int roomId) async {
+    final computersForRoom = state.where((computer) => computer.roomId == roomId).toList();
+    if (computersForRoom.isNotEmpty) return computersForRoom;
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
     final client = http.Client();
@@ -28,8 +30,7 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);
-
-    final List<Computer> computers = data.map<Computer>((computer) {
+    final List<Computer> newComputers = data.map<Computer>((computer) {
       return Computer(
         id: computer["computerId"],
         roomId: computer["roomId"],
@@ -40,9 +41,8 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
         lastSeen: DateTime.parse(computer["lastSeen"]),
       );
     }).toList();
-
-    if (computers.isNotEmpty) state = computers;
-    return computers;
+    if (newComputers.isNotEmpty) state = [...state, ...newComputers];
+    return newComputers;
   }
 
   Computer? getComputerById(int id) {
