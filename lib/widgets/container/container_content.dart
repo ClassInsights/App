@@ -1,4 +1,4 @@
-import 'package:classinsights/widgets/widget_container.dart';
+import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:flutter/material.dart';
 
 class ContainerWithContent extends StatelessWidget {

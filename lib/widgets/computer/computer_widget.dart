@@ -1,8 +1,8 @@
 import 'package:classinsights/main.dart';
 import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/screens/computer_detail_screen.dart';
-import 'package:classinsights/widgets/computer_detail_item.dart';
-import 'package:classinsights/widgets/container_content.dart';
+import 'package:classinsights/widgets/computer/computer_detail_item.dart';
+import 'package:classinsights/widgets/container/container_content.dart';
 import 'package:flutter/material.dart';
 
 class ComputerWidget extends StatelessWidget {

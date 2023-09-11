@@ -1,7 +1,7 @@
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/screens/splash_screen.dart';
-import 'package:classinsights/widgets/container_content.dart';
-import 'package:classinsights/widgets/header.dart';
+import 'package:classinsights/widgets/container/container_content.dart';
+import 'package:classinsights/widgets/others/header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

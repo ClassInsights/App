@@ -3,7 +3,7 @@ import 'package:classinsights/providers/theme_provider.dart';
 import 'package:classinsights/screens/room_overview_screen.dart';
 import 'package:classinsights/screens/dashboard_screen.dart';
 import 'package:classinsights/screens/profile_screen.dart';
-import 'package:classinsights/widgets/custom_appbar.dart';
+import 'package:classinsights/widgets/appbars/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

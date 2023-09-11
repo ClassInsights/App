@@ -1,7 +1,7 @@
 import 'package:classinsights/main.dart';
 import 'package:classinsights/models/computer.dart';
-import 'package:classinsights/widgets/detail_appbar.dart';
-import 'package:classinsights/widgets/widget_container.dart';
+import 'package:classinsights/widgets/appbars/detail_appbar.dart';
+import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:flutter/material.dart';
 
 class ComputerDetailScreen extends StatefulWidget {

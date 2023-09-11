@@ -1,11 +1,11 @@
 import 'package:classinsights/main.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
-import 'package:classinsights/widgets/computer_list.dart';
-import 'package:classinsights/widgets/container_content.dart';
-import 'package:classinsights/widgets/detail_appbar.dart';
-import 'package:classinsights/widgets/lesson_widget.dart';
-import 'package:classinsights/widgets/widget_container.dart';
+import 'package:classinsights/widgets/computer/computer_list.dart';
+import 'package:classinsights/widgets/container/container_content.dart';
+import 'package:classinsights/widgets/appbars/detail_appbar.dart';
+import 'package:classinsights/widgets/others/lesson_widget.dart';
+import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,6 +1,6 @@
 import 'package:classinsights/models/lesson.dart';
-import 'package:classinsights/widgets/container_content.dart';
-import 'package:classinsights/widgets/progress_bar.dart';
+import 'package:classinsights/widgets/container/container_content.dart';
+import 'package:classinsights/widgets/others/progress_bar.dart';
 import 'package:flutter/material.dart';
 
 class LessonWidget extends StatelessWidget {

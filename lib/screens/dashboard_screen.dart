@@ -4,9 +4,9 @@ import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/screen_provider.dart';
-import 'package:classinsights/widgets/container_content.dart';
-import 'package:classinsights/widgets/header.dart';
-import 'package:classinsights/widgets/lesson_widget.dart';
+import 'package:classinsights/widgets/container/container_content.dart';
+import 'package:classinsights/widgets/others/header.dart';
+import 'package:classinsights/widgets/others/lesson_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
