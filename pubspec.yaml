@@ -1,6 +1,9 @@
 name: classinsights
-description: A new Flutter project.
+description: Multiplatform Application for School Data Visualization
 publish_to: "none"
+repository: "https://github.com/ClassInsights/App"
+issue_tracker: "https://github.com/ClassInsights/App/issues"
+documentation: "https://github.com/ClassInsights/App/blob/main/README.md"
 version: 0.1.0
 
 environment:
