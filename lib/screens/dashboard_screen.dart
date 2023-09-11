@@ -13,9 +13,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
-  final double minutes = 30.0;
-  final double baseMinutes = 50.0;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentLesson = ref.read(lessonProvider.notifier).getLessonByDate(DateTime.now());
@@ -67,6 +64,9 @@ class DashboardScreen extends ConsumerWidget {
                   child: Container(
                     height: 100,
                   ),
+                ),
+                const SizedBox(
+                  height: App.defaultPadding,
                 ),
               ],
             );
