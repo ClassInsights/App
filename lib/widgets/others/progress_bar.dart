@@ -50,14 +50,20 @@ class _ProgressBarState extends State<ProgressBar> {
               ),
             ),
             LayoutBuilder(
-              builder: (context, constraints) => Container(
-                height: 3.0,
-                width: constraints.maxWidth * (widget.progress / widget.baseValue),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
+              builder: (context, constraints) => TweenAnimationBuilder(
+                  tween: Tween<double>(begin: 0.0, end: constraints.maxWidth * (widget.progress / widget.baseValue)),
+                  duration: const Duration(milliseconds: 2000),
+                  curve: Curves.easeInOut,
+                  builder: (context, value, _) {
+                    return Container(
+                      width: value,
+                      height: 3.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    );
+                  }),
             ),
           ],
         ),
