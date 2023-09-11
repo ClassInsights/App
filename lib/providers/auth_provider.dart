@@ -186,6 +186,7 @@ class AuthNotifier extends StateNotifier<Auth> {
         url: loginUrl,
         callbackUrlScheme: "classinsights",
       );
+
       final code = Uri.parse(result).queryParameters["code"];
 
       if (code == null) return false;
@@ -211,6 +212,7 @@ class AuthNotifier extends StateNotifier<Auth> {
         data: await getAuthData(accessToken: accessToken) ?? AuthData.blank(),
       );
     } catch (e) {
+      debugPrint(e.toString());
       return false;
     }
     return true;
