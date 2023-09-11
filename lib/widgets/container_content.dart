@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class ContainerWithContent extends StatelessWidget {
   final bool primary;
   final double width;
-  final String label;
-  final String title;
+  final String? label;
+  final String? title;
   final Widget? child;
   final Function? onTab;
   final bool showArrow;
@@ -14,8 +14,8 @@ class ContainerWithContent extends StatelessWidget {
     super.key,
     this.primary = false,
     this.width = double.infinity,
-    required this.label,
-    required this.title,
+    this.label,
+    this.title,
     this.child,
     this.onTab,
     this.showArrow = false,
@@ -34,28 +34,31 @@ class ContainerWithContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0),
-                    child: Text(
-                      label,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondaryContainer,
+                  if (label != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: Text(
+                        label!,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondaryContainer,
+                            ),
+                      ),
+                    ),
+                  if (title != null)
+                    Text(
+                      title!,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.onBackground,
                           ),
                     ),
-                  ),
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.onBackground,
-                        ),
-                  ),
                   child == null
                       ? const SizedBox()
                       : Column(
                           children: [
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            if (label != null && title != null)
+                              const SizedBox(
+                                height: 20.0,
+                              ),
                             child!,
                           ],
                         ),
