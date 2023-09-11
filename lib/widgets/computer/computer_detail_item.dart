@@ -1,3 +1,4 @@
+import 'package:classinsights/main.dart';
 import 'package:flutter/material.dart';
 
 class ComputerDetailItem extends StatelessWidget {
@@ -10,7 +11,7 @@ class ComputerDetailItem extends StatelessWidget {
     return Row(
       children: [
         Icon(icon),
-        const SizedBox(width: 10),
+        const SizedBox(width: App.defaultPadding),
         Text(data),
       ],
     );
