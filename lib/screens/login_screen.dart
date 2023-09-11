@@ -21,13 +21,8 @@ class LoginScreen extends ConsumerWidget {
             const Spacer(),
             const Header("Herzlich Willkommen!"),
             const Text("Class Insights ist eine App, die dir einen Überblick über die EDV Infrasturktur an der HAK/HAS/HLW Landeck gibt."),
-            const SizedBox(
-              height: 20.0,
-            ),
+            const SizedBox(height: 20.0),
             const Text("Um die App nutzen zu können, musst du dich mit deinem Microsoft Schulaccount anmelden."),
-            const SizedBox(
-              height: 30.0,
-            ),
             const Spacer(),
             ContainerWithContent(
               label: "Mit Microsoft",

@@ -35,10 +35,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   void initState() {
-    if (ref.read(authProvider).creds.accessToken.isNotEmpty) {
-      setState(() => alreadyInitialized = true);
-      return;
-    }
     initProviders().then((_) => setState(() => alreadyInitialized = true));
     super.initState();
   }
