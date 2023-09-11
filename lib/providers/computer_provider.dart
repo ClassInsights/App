@@ -35,7 +35,7 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
         id: computer["computerId"],
         roomId: computer["roomId"],
         name: computer["name"],
-        macAddress: computer["macAddress"],
+        macAddress: computer["macAddress"]?.replaceAllMapped(RegExp(r".{2}"), (match) => "${match.group(0)}:").substring(0, 17),
         ipAddress: computer["ipAddress"],
         lastUser: computer["lastUser"],
         lastSeen: DateTime.parse(computer["lastSeen"]),
