@@ -118,6 +118,10 @@ class ProfileScreen extends ConsumerWidget {
           },
           primary: true,
         ),
+        ElevatedButton(
+          onPressed: () => debugPrint(ref.read(authProvider).creds.accessToken),
+          child: const Text("Print Token"),
+        ),
       ],
     );
   }

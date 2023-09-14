@@ -5,50 +5,82 @@ import 'package:classinsights/widgets/others/header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  var alreadySubmited = false;
+
+  @override
+  Widget build(BuildContext context) {
+    void login() {
+      setState(() => alreadySubmited = true);
+      ref.read(authProvider.notifier).initialLogin().then(
+            (success) => success
+                ? Navigator.of(context).pushReplacement(
+                    PageRouteBuilder(
+                      pageBuilder: (context, firstAnimation, secondAnimation) => const SplashScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  )
+                : ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      content: const Text("Login fehlgeschlagen! Bitte versuchen Sie es später erneut."),
+                    ),
+                  ),
+          );
+    }
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         margin: const EdgeInsets.only(top: 30.0),
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            const Spacer(),
-            const Header("Herzlich Willkommen!"),
-            const Text("Class Insights ist eine App, die dir einen Überblick über die EDV Infrasturktur an der HAK/HAS/HLW Landeck gibt."),
-            const SizedBox(height: 20.0),
-            const Text("Um die App nutzen zu können, musst du dich mit deinem Microsoft Schulaccount anmelden."),
-            const Spacer(),
-            ContainerWithContent(
-              label: "Mit Microsoft",
-              title: "Anmelden",
-              primary: true,
-              showArrow: true,
-              onTab: () => ref.read(authProvider.notifier).initialLogin().then(
-                    (success) => success
-                        ? Navigator.of(context).pushReplacement(
-                            PageRouteBuilder(
-                              pageBuilder: (context, firstAnimation, secondAnimation) => const SplashScreen(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          )
-                        : ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              content: const Text("Login fehlgeschlagen! Bitte versuchen Sie es später erneut."),
-                            ),
-                          ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(),
+                const Header("Herzlich Willkommen!"),
+                const Text("Class Insights ist eine App, die dir einen Überblick über die EDV Infrasturktur an der HAK/HAS/HLW Landeck gibt."),
+                const SizedBox(height: 20.0),
+                const Text("Um die App nutzen zu können, musst du dich mit deinem Microsoft Schulaccount anmelden."),
+                const Spacer(),
+                ContainerWithContent(
+                  label: "Mit Microsoft",
+                  title: "Anmelden",
+                  primary: true,
+                  showArrow: true,
+                  onTab: login,
+                ),
+                const SizedBox(
+                  height: 50.0,
+                ),
+              ],
+            ),
+            if (alreadySubmited) ...[
+              const Positioned.fill(
+                child: Opacity(
+                  opacity: 0.5,
+                  child: ModalBarrier(
+                    dismissible: false,
+                    color: Colors.black,
                   ),
-            ),
-            const SizedBox(
-              height: 50.0,
-            ),
+                ),
+              ),
+              const Positioned.fill(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ],
           ],
         ),
       ),

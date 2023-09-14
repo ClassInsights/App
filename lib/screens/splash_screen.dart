@@ -64,10 +64,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.6,
-              height: MediaQuery.of(context).size.width * 0.6,
-              child: const Placeholder(),
+            Image.asset(
+              "assets/images/icon.png",
+              width: 200.0,
+              height: 200.0,
             ),
             const SizedBox(
               height: 30.0,

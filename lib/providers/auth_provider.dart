@@ -38,10 +38,10 @@ class AuthNotifier extends StateNotifier<Auth> {
   Future<AuthData?> getAuthData({String accessToken = ""}) async {
     final token = accessToken.isNotEmpty ? accessToken : auth.creds.accessToken;
     final tokenData = JWT.tryDecode(token);
+
     if (tokenData == null) return null;
 
     final payload = tokenData.payload;
-
     final classId = payload["class"];
     final client = http.Client();
     final response = await client.get(
@@ -91,12 +91,25 @@ class AuthNotifier extends StateNotifier<Auth> {
     final accessToken = (await ref.read(localstoreProvider.notifier).item("accessToken"))?.value;
     final refreshToken = (await ref.read(localstoreProvider.notifier).item("refreshToken"))?.value;
 
+    if (accessToken == null || refreshToken == null) {
+      state = Auth.blank();
+      return;
+    }
+
+    final tokenData = JWT.tryDecode(accessToken);
+    if (tokenData == null) {
+      state = Auth.blank();
+      return;
+    }
+
+    if (DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000).isBefore(DateTime.now()) && await _refreshToken() == false) return;
+
     state = Auth(
       creds: AuthCredentials(
-        accessToken: accessToken ?? "",
-        refreshToken: refreshToken ?? "",
+        accessToken: accessToken,
+        refreshToken: refreshToken,
       ),
-      data: (accessToken != null ? await getAuthData(accessToken: accessToken) : await getAuthData()) ?? AuthData.blank(),
+      data: await getAuthData(accessToken: accessToken) ?? AuthData.blank(),
     );
   }
 
@@ -118,12 +131,15 @@ class AuthNotifier extends StateNotifier<Auth> {
     final refreshToken = await ref.read(localstoreProvider.notifier).item("refreshToken");
     if (accessToken == null || refreshToken == null) return false;
 
+    final userId = JWT.tryDecode(accessToken.value)?.payload["sub"];
+    if (userId == null) return false;
+
     final client = http.Client();
     final response = await client.post(
       Uri.parse("${dotenv.env['API_URL'] ?? ""}/token"),
       headers: {"Content-Type": "application/json"},
       body: json.encode({
-        "userId": (await getAuthData(accessToken: accessToken.value))?.id ?? "Unknown",
+        "userId": userId,
         "refreshToken": refreshToken.value,
       }),
     );
@@ -146,24 +162,6 @@ class AuthNotifier extends StateNotifier<Auth> {
     final accessToken = state.creds.accessToken;
     final refreshToken = state.creds.refreshToken;
     if (accessToken.isEmpty || refreshToken.isEmpty) return false;
-    if (state.data.schoolClass != null) return true;
-
-    final data = await getAuthData(accessToken: accessToken);
-    if (data == null) return false;
-
-    final expirationDate = (await getAuthData(accessToken: accessToken))?.expirationDate;
-    debugPrint("Expiration Date: ${expirationDate.toString()}");
-
-    if (expirationDate?.isBefore(DateTime.now()) == true) {
-      if (await _refreshToken()) {
-        debugPrint("Token refreshed!");
-        return false;
-      }
-      debugPrint("Token refresh failed!");
-      return false;
-    }
-
-    debugPrint("Token was still valid!");
 
     final actualAccessToken = (await ref.read(localstoreProvider.notifier).item("accessToken"))?.value ?? "Unknown";
     final actualRefreshToken = (await ref.read(localstoreProvider.notifier).item("refreshToken"))?.value ?? "Unknown";
@@ -180,10 +178,9 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> initialLogin() async {
-    final loginUrl = dotenv.env["AUTH_URL"] ?? "";
     try {
       final result = await FlutterWebAuth2.authenticate(
-        url: loginUrl,
+        url: dotenv.env["AUTH_URL"] ?? "",
         callbackUrlScheme: "classinsights",
       );
 
