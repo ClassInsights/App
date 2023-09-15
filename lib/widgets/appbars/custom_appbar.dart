@@ -1,32 +1,18 @@
-import "package:classinsights/providers/auth_provider.dart";
-import "package:classinsights/screens/login_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  final double height;
   final String title;
-  final int index;
+  final Widget? action;
 
   const CustomAppBar({
     super.key,
-    required this.height,
     required this.title,
-    required this.index,
+    this.action,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    void logout() {
-      ref.read(authProvider.notifier).logout();
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-            pageBuilder: (context, firstAnimation, secondAnimation) => const LoginScreen(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero),
-      );
-    }
-
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -36,22 +22,12 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
         child: Column(
           children: [
             SizedBox(
-              height: height,
+              height: 50.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(title),
-                  index == 2
-                      ? GestureDetector(
-                          onTap: logout,
-                          child: Text(
-                            "Abmelden",
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                  if (action != null) action!,
                 ],
               ),
             ),
@@ -69,5 +45,5 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(height);
+  Size get preferredSize => const Size.fromHeight(50.0);
 }
