@@ -14,6 +14,8 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
 
   List<Computer> get computers => state;
 
+  void clear() => state = [];
+
   Future<List<Computer>> fetchComputers(int roomId) async {
     final computersForRoom = state.where((computer) => computer.roomId == roomId).toList();
     if (computersForRoom.isNotEmpty) return computersForRoom;

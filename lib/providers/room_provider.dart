@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:classinsights/models/room.dart';
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/computer_provider.dart';
 import 'package:classinsights/providers/ratelimit_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +20,7 @@ class RoomNotifier extends StateNotifier<List<Room>> {
     final ratelimit = ref.read(ratelimitProvider.notifier);
     if (ratelimit.isRateLimited("rooms")) return;
     ratelimit.addRateLimit("rooms");
+    ref.read(computerProvider.notifier).clear();
     state = await fetchRooms(skipStateCheck: true);
   }
 
