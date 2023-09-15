@@ -115,15 +115,11 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     const appBarHeight = 61.0;
 
     refreshDashboard() async {
-      debugPrint("Refreshing dashboard");
       await ref.read(lessonProvider.notifier).refreshLessons();
       await ref.read(roomProvider.notifier).refreshRooms();
     }
 
-    refreshRooms() async {
-      debugPrint("Refreshing rooms");
-      await ref.read(roomProvider.notifier).refreshRooms();
-    }
+    refreshRooms() async => await ref.read(roomProvider.notifier).refreshRooms();
 
     return Scaffold(
       body: LayoutBuilder(builder: (context, constraints) {

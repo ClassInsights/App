@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:classinsights/models/lesson.dart';
 import 'package:classinsights/models/subject_data.dart';
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/ratelimit_provider.dart';
 import 'package:classinsights/providers/subject_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,6 +43,9 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
   }
 
   Future<void> refreshLessons() async {
+    final ratelimit = ref.read(ratelimitProvider.notifier);
+    if (ratelimit.isRateLimited("lessons")) return;
+    ratelimit.addRateLimit("lessons");
     state = await fetchLessons(skipStateCheck: true);
   }
 
