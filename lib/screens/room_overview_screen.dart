@@ -16,7 +16,6 @@ class RoomOverviewScreen extends ConsumerWidget {
     final currentRoom = ref.read(roomProvider.notifier).getRoomById(currentRoomID);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Header("Klassen"),
         currentRoom == null

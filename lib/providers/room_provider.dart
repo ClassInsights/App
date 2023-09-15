@@ -14,10 +14,14 @@ class RoomNotifier extends StateNotifier<List<Room>> {
 
   List<Room> get rooms => state;
 
-  Future<List<Room>> fetchRooms() async {
+  Future<void> refreshRooms() async {
+    state = await fetchRooms(skipStateCheck: true);
+  }
+
+  Future<List<Room>> fetchRooms({bool skipStateCheck = false}) async {
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
-    if (state.isNotEmpty) return state;
+    if (!skipStateCheck && state.isNotEmpty) return state;
     final client = http.Client();
     final response = await client.get(
       Uri.parse("${dotenv.env['API_URL'] ?? ""}/rooms"),

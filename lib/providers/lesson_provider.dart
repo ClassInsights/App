@@ -41,10 +41,14 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
         .toList();
   }
 
-  Future<List<Lesson>> fetchLessons() async {
+  Future<void> refreshLessons() async {
+    state = await fetchLessons(skipStateCheck: true);
+  }
+
+  Future<List<Lesson>> fetchLessons({bool skipStateCheck = false}) async {
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
-    if (state.isNotEmpty) return state;
+    if (!skipStateCheck && state.isNotEmpty) return state;
     final client = http.Client();
     final response = await client.get(
       Uri.parse("${dotenv.env['API_URL'] ?? ""}/lessons"),

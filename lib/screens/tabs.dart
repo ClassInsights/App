@@ -1,4 +1,6 @@
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/lesson_provider.dart';
+import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/screen_provider.dart';
 import 'package:classinsights/providers/theme_provider.dart';
 import 'package:classinsights/screens/login_screen.dart';
@@ -112,6 +114,17 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     const defaultPadding = 30.0;
     const appBarHeight = 61.0;
 
+    refreshDashboard() async {
+      debugPrint("Refreshing dashboard");
+      await ref.read(lessonProvider.notifier).refreshLessons();
+      await ref.read(roomProvider.notifier).refreshRooms();
+    }
+
+    refreshRooms() async {
+      debugPrint("Refreshing rooms");
+      await ref.read(roomProvider.notifier).refreshRooms();
+    }
+
     return Scaffold(
       body: LayoutBuilder(builder: (context, constraints) {
         return Stack(
@@ -121,26 +134,35 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                 physics: const BouncingScrollPhysics(),
                 onPageChanged: onChangedScreen,
                 controller: pageController,
-                children: _screens
-                    .map(
-                      (screen) => Container(
-                        margin: const EdgeInsets.only(top: defaultPadding + appBarHeight),
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          physics: const BouncingScrollPhysics(),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: constraints.maxHeight - (defaultPadding + appBarHeight) + 0.1,
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.all(defaultPadding),
-                              child: screen,
-                            ),
-                          ),
+                children: _screens.map(
+                  (screen) {
+                    var content = SingleChildScrollView(
+                      controller: scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight - (defaultPadding + appBarHeight + 20) + 0.1,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: screen,
                         ),
                       ),
-                    )
-                    .toList(),
+                    );
+
+                    return Container(
+                      margin: const EdgeInsets.only(top: defaultPadding + appBarHeight + 20),
+                      child: _currentIndex == Screen.dashboard.index || _currentIndex == Screen.rooms.index
+                          ? RefreshIndicator(
+                              onRefresh: _currentIndex == Screen.dashboard.index ? refreshDashboard : refreshRooms,
+                              color: Theme.of(context).colorScheme.background,
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              child: content,
+                            )
+                          : content,
+                    );
+                  },
+                ).toList(),
               ),
             ),
             CustomAppBar(
