@@ -92,19 +92,17 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
         );
 
     onChangedScreen(int index) => setState(() => _currentIndex = index);
-    onTabNavigation(int index, {bool setScreen = true}) async {
-      debugPrint("Navigating to $index");
+    onTabNavigation(int index) async {
       await pageController.animateToPage(
         index,
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
       );
       setState(() => _currentIndex = index);
-      if (setScreen) ref.read(screenProvider.notifier).setScreen(Screen.values[index]);
     }
 
     ref.listen(screenProvider, (_, newScreen) {
-      onTabNavigation(Screen.values.indexOf(newScreen), setScreen: false);
+      onTabNavigation(Screen.values.indexOf(newScreen));
     });
 
     return Scaffold(
