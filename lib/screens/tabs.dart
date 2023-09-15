@@ -137,7 +137,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                       physics: const BouncingScrollPhysics(),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight - (defaultPadding + appBarHeight + 20) + 0.1,
+                          minHeight: constraints.maxHeight - (defaultPadding + appBarHeight + 10) + 0.1,
                         ),
                         child: Container(
                           padding: const EdgeInsets.all(defaultPadding),
@@ -147,7 +147,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     );
 
                     return Container(
-                      margin: const EdgeInsets.only(top: defaultPadding + appBarHeight + 20),
+                      margin: const EdgeInsets.only(top: defaultPadding + appBarHeight + 10),
                       child: _currentIndex == Screen.dashboard.index || _currentIndex == Screen.rooms.index
                           ? RefreshIndicator(
                               onRefresh: _currentIndex == Screen.dashboard.index ? refreshDashboard : refreshRooms,
