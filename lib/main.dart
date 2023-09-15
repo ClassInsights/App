@@ -30,7 +30,7 @@ const _darkColorScheme = ColorScheme.dark(
   primaryContainer: Color.fromRGBO(44, 99, 241, 1),
   secondary: Color.fromRGBO(5, 12, 31, 1),
   secondaryContainer: Color.fromRGBO(53, 88, 179, 1),
-  tertiary: Color.fromRGBO(12, 22, 49, 1),
+  tertiary: Color.fromRGBO(41, 71, 146, 1),
   background: Color.fromRGBO(2, 5, 15, 1),
   onBackground: Color.fromRGBO(245, 245, 245, 1),
   error: Color.fromRGBO(216, 35, 37, 1),
