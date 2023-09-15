@@ -91,7 +91,11 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           },
         );
 
-    onChangedScreen(int index) => setState(() => _currentIndex = index);
+    onChangedScreen(int index) {
+      setState(() => _currentIndex = index);
+      scrollController.jumpTo(0.0);
+    }
+
     onTabNavigation(int index) async {
       await pageController.animateToPage(
         index,
@@ -105,42 +109,53 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       onTabNavigation(Screen.values.indexOf(newScreen));
     });
 
+    const defaultPadding = 30.0;
+    const appBarHeight = 61.0;
+
     return Scaffold(
-      body: Column(
-        children: [
-          CustomAppBar(
-            title: "HAK/HAS/HLW Landeck",
-            action: _currentIndex == 2
-                ? IconButton(
-                    icon: const Icon(Icons.logout),
-                    color: Theme.of(context).colorScheme.error,
-                    onPressed: onLogout,
-                  )
-                : null,
-          ),
-          Expanded(
-            child: PageView(
-              physics: const BouncingScrollPhysics(),
-              onPageChanged: onChangedScreen,
-              controller: pageController,
-              children: _screens
-                  .map(
-                    (screen) => SingleChildScrollView(
-                      controller: scrollController,
-                      physics: const BouncingScrollPhysics(),
-                      child: Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(top: 30.0),
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: screen,
+      body: LayoutBuilder(builder: (context, constraints) {
+        return Stack(
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) => PageView(
+                physics: const BouncingScrollPhysics(),
+                onPageChanged: onChangedScreen,
+                controller: pageController,
+                children: _screens
+                    .map(
+                      (screen) => Container(
+                        margin: const EdgeInsets.only(top: defaultPadding + appBarHeight),
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          physics: const BouncingScrollPhysics(),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: constraints.maxHeight - (defaultPadding + appBarHeight) + 0.1,
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(defaultPadding),
+                              child: screen,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
-          ),
-        ],
-      ),
+            CustomAppBar(
+              title: "HAK/HAS/HLW Landeck",
+              action: _currentIndex == 2
+                  ? IconButton(
+                      icon: const Icon(Icons.logout),
+                      color: Theme.of(context).colorScheme.error,
+                      onPressed: onLogout,
+                    )
+                  : null,
+            ),
+          ],
+        );
+      }),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0,
