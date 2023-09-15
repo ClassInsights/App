@@ -65,9 +65,6 @@ class DashboardScreen extends ConsumerWidget {
                     height: 100,
                   ),
                 ),
-                const SizedBox(
-                  height: App.defaultPadding,
-                ),
               ],
             );
           },
