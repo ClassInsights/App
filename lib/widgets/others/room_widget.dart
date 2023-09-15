@@ -16,10 +16,8 @@ class RoomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void openClass() => Navigator.of(context).push(
-          PageRouteBuilder(
-            pageBuilder: (context, firstAnimation, secondAnimation) => RoomDetailScreen(room.id),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
+          MaterialPageRoute(
+            builder: (context) => RoomDetailScreen(room.id),
           ),
         );
 

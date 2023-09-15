@@ -30,10 +30,8 @@ class ComputerWidget extends StatelessWidget {
     ];
     return ContainerWithContent(
       onTab: () => Navigator.of(context).push(
-        PageRouteBuilder(
-          pageBuilder: (context, firstAnimation, secondAnimation) => ComputerDetailScreen(computer),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
+        MaterialPageRoute(
+          builder: (context) => ComputerDetailScreen(computer),
         ),
       ),
       showArrow: true,
