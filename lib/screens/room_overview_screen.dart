@@ -6,8 +6,8 @@ import 'package:classinsights/widgets/others/room_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ClassesScreen extends ConsumerWidget {
-  const ClassesScreen({super.key});
+class RoomOverviewScreen extends ConsumerWidget {
+  const RoomOverviewScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

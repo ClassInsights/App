@@ -21,7 +21,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   final _screens = [
     const DashboardScreen(key: Key("dashboard_screen")),
-    const ClassesScreen(key: Key("classes_screen")),
+    const RoomOverviewScreen(key: Key("classes_screen")),
     const ProfileScreen(key: Key("profile_screen")),
   ];
 
