@@ -91,29 +91,20 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           },
         );
 
-    onChangedScreen(int index) {
-      setState(() => _currentIndex = index);
-      ref.read(screenProvider.notifier).setScreen(Screen.values[index]);
-    }
-
-    onTabNavigation(int index) => setState(
-          () {
-            _currentIndex = index;
-            pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-            );
-          },
-        );
-
-    ref.listen(screenProvider, (_, newScreen) {
-      scrollController.jumpTo(0.0);
-      pageController.animateToPage(
-        Screen.values.indexOf(newScreen),
-        duration: const Duration(milliseconds: 150),
+    onChangedScreen(int index) => setState(() => _currentIndex = index);
+    onTabNavigation(int index, {bool setScreen = true}) async {
+      debugPrint("Navigating to $index");
+      await pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
       );
+      setState(() => _currentIndex = index);
+      if (setScreen) ref.read(screenProvider.notifier).setScreen(Screen.values[index]);
+    }
+
+    ref.listen(screenProvider, (_, newScreen) {
+      onTabNavigation(Screen.values.indexOf(newScreen), setScreen: false);
     });
 
     return Scaffold(
