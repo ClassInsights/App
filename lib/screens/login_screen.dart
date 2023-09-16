@@ -53,8 +53,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 const Spacer(),
                 const Header("Herzlich Willkommen!"),
-                const Text("Class Insights ist eine App, die dir einen Überblick über die EDV Infrasturktur an der HAK/HAS/HLW Landeck gibt."),
-                const SizedBox(height: 20.0),
+                const Text("ClassInsights ist eine App, die dir einen Überblick über die IT Infrasturktur an der HAK/HAS/HLW Landeck gibt."),
+                const SizedBox(height: 15.0),
                 const Text("Um die App nutzen zu können, musst du dich mit deinem Microsoft Schulaccount anmelden."),
                 const Spacer(),
                 ContainerWithContent(
