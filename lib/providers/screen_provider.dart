@@ -15,5 +15,8 @@ class ScreenNotifier extends StateNotifier<Screen> {
 
   Screen get screen => state;
 
-  void setScreen(Screen screen) => state = screen;
+  void setScreen(Screen previousScreen, Screen newScreen) {
+    state = previousScreen;
+    state = newScreen;
+  }
 }

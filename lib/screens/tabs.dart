@@ -107,9 +107,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       setState(() => _currentIndex = index);
     }
 
-    ref.listen(screenProvider, (_, newScreen) {
-      onTabNavigation(Screen.values.indexOf(newScreen));
-    });
+    ref.listen(screenProvider, (_, newScreen) => onTabNavigation(Screen.values.indexOf(newScreen)));
 
     const defaultPadding = 30.0;
     const appBarHeight = 61.0;
