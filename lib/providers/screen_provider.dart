@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum Screen {
   dashboard,
   rooms,
-  settings,
+  profile,
 }
 
 final screenProvider = StateNotifierProvider<ScreenNotifier, Screen>(
