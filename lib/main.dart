@@ -76,7 +76,7 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
-  var themeMode;
+  ThemeMode? themeMode;
 
   @override
   Widget build(BuildContext context) {
