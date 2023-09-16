@@ -36,6 +36,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           context: context,
           builder: (ctx) => Dialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
@@ -59,7 +60,8 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(false),
                           style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.secondary),
+                            elevation: const MaterialStatePropertyAll(0.0),
+                            backgroundColor: const MaterialStatePropertyAll(Colors.transparent),
                             foregroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onBackground),
                             textStyle: MaterialStatePropertyAll(Theme.of(context).textTheme.bodyLarge),
                           ),
@@ -68,6 +70,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(true),
                           style: ButtonStyle(
+                            elevation: const MaterialStatePropertyAll(0.0),
                             backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.error),
                             textStyle: MaterialStatePropertyAll(Theme.of(context).textTheme.bodyLarge),
                           ),
