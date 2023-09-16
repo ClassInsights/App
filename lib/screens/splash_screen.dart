@@ -21,7 +21,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> initProviders() async {
     setState(() => hintText = "Lese Account Daten...");
-    await ref.read(authProvider.notifier).reload();
+    final success = await ref.read(authProvider.notifier).reload();
+    if (!success) return;
     setState(() => hintText = "Lade App Meta Daten...");
     await ref.read(versionProvider.notifier).fetchVersion();
     setState(() => hintText = "Lade Schulräume...");
@@ -48,11 +49,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                     MaterialPageRoute(builder: (context) => const TabsScreen()),
                   )
                 : Navigator.of(context).pushReplacement(
-                    PageRouteBuilder(
-                      pageBuilder: (context, firstAnimation, secondAnimation) => const LoginScreen(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
                   ),
           );
     }

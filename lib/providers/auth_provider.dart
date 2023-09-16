@@ -87,22 +87,22 @@ class AuthNotifier extends StateNotifier<Auth> {
     reload();
   }
 
-  Future<void> reload() async {
+  Future<bool> reload() async {
     final accessToken = (await ref.read(localstoreProvider.notifier).item("accessToken"))?.value;
     final refreshToken = (await ref.read(localstoreProvider.notifier).item("refreshToken"))?.value;
 
     if (accessToken == null || refreshToken == null) {
       state = Auth.blank();
-      return;
+      return false;
     }
 
     final tokenData = JWT.tryDecode(accessToken);
     if (tokenData == null) {
       state = Auth.blank();
-      return;
+      return false;
     }
 
-    if (DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000).isBefore(DateTime.now()) && await _refreshToken() == false) return;
+    if (DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000).isBefore(DateTime.now()) && await _refreshToken() == false) return false;
 
     state = Auth(
       creds: AuthCredentials(
@@ -111,6 +111,7 @@ class AuthNotifier extends StateNotifier<Auth> {
       ),
       data: await getAuthData(accessToken: accessToken) ?? AuthData.blank(),
     );
+    return true;
   }
 
   String translateRole(Role role) {
