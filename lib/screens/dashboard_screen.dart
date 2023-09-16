@@ -43,7 +43,7 @@ class DashboardScreen extends ConsumerWidget {
                       title: roomCount.toString(),
                       width: constraints.maxWidth / 2 - App.defaultPadding / 2,
                       showArrow: true,
-                      onTab: () => ref.read(screenProvider.notifier).setScreen(Screen.rooms),
+                      onTab: () => ref.read(screenProvider.notifier).setScreen(Screen.dashboard, Screen.rooms),
                       primary: true,
                     ),
                   ],
