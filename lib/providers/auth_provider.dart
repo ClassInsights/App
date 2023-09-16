@@ -66,8 +66,8 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   void logout() async {
-    ref.read(localstoreProvider.notifier).removeItem("accessToken");
-    ref.read(localstoreProvider.notifier).removeItem("refreshToken");
+    ref.read(localstoreProvider.notifier).removeItem("ci_accessToken");
+    ref.read(localstoreProvider.notifier).removeItem("ci_refreshToken");
 
     final client = http.Client();
     await client.delete(
@@ -88,8 +88,8 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> reload() async {
-    final accessToken = (await ref.read(localstoreProvider.notifier).item("accessToken"))?.value;
-    final refreshToken = (await ref.read(localstoreProvider.notifier).item("refreshToken"))?.value;
+    final accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value;
+    final refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value;
 
     if (accessToken == null || refreshToken == null) {
       state = Auth.blank();
@@ -128,8 +128,8 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> _refreshToken() async {
-    final accessToken = await ref.read(localstoreProvider.notifier).item("accessToken");
-    final refreshToken = await ref.read(localstoreProvider.notifier).item("refreshToken");
+    final accessToken = await ref.read(localstoreProvider.notifier).item("ci_accessToken");
+    final refreshToken = await ref.read(localstoreProvider.notifier).item("ci_refreshToken");
     if (accessToken == null || refreshToken == null) return false;
 
     final userId = JWT.tryDecode(accessToken.value)?.payload["sub"];
@@ -152,8 +152,8 @@ class AuthNotifier extends StateNotifier<Auth> {
     final newAccessToken = body["access_token"];
     final newRefreshToken = body["refresh_token"];
 
-    ref.read(localstoreProvider.notifier).setItem("accessToken", newAccessToken);
-    ref.read(localstoreProvider.notifier).setItem("refreshToken", newRefreshToken);
+    ref.read(localstoreProvider.notifier).setItem("ci_accessToken", newAccessToken);
+    ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", newRefreshToken);
 
     reload();
     return true;
@@ -164,8 +164,8 @@ class AuthNotifier extends StateNotifier<Auth> {
     final refreshToken = state.creds.refreshToken;
     if (accessToken.isEmpty || refreshToken.isEmpty) return false;
 
-    final actualAccessToken = (await ref.read(localstoreProvider.notifier).item("accessToken"))?.value ?? "Unknown";
-    final actualRefreshToken = (await ref.read(localstoreProvider.notifier).item("refreshToken"))?.value ?? "Unknown";
+    final actualAccessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value ?? "Unknown";
+    final actualRefreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value ?? "Unknown";
 
     state = Auth(
       creds: AuthCredentials(
@@ -199,8 +199,8 @@ class AuthNotifier extends StateNotifier<Auth> {
       final accessToken = body["access_token"];
       final refreshToken = body["refresh_token"];
 
-      ref.read(localstoreProvider.notifier).setItem("accessToken", accessToken);
-      ref.read(localstoreProvider.notifier).setItem("refreshToken", refreshToken);
+      ref.read(localstoreProvider.notifier).setItem("ci_accessToken", accessToken);
+      ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", refreshToken);
 
       state = Auth(
         creds: AuthCredentials(
