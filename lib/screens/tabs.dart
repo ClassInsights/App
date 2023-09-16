@@ -20,7 +20,6 @@ class TabsScreen extends ConsumerStatefulWidget {
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _currentIndex = 0;
-
   final _screens = [
     const DashboardScreen(key: Key("dashboard_screen")),
     const RoomOverviewScreen(key: Key("classes_screen")),
@@ -122,84 +121,96 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
     refreshRooms() async => await ref.read(roomProvider.notifier).refreshRooms();
 
-    return Scaffold(
-      body: LayoutBuilder(builder: (context, constraints) {
-        return Stack(
-          children: [
-            LayoutBuilder(
-              builder: (context, constraints) => PageView(
-                physics: const BouncingScrollPhysics(),
-                onPageChanged: onChangedScreen,
-                controller: pageController,
-                children: _screens.map(
-                  (screen) {
-                    var content = SingleChildScrollView(
-                      controller: scrollController,
-                      physics: const BouncingScrollPhysics(),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight - (defaultPadding + appBarHeight) + 0.1,
+    return WillPopScope(
+      onWillPop: () async {
+        if (_currentIndex == 0) return true;
+        await pageController.animateToPage(
+          0,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+        );
+        setState(() => _currentIndex = 0);
+        return false;
+      },
+      child: Scaffold(
+        body: LayoutBuilder(builder: (context, constraints) {
+          return Stack(
+            children: [
+              LayoutBuilder(
+                builder: (context, constraints) => PageView(
+                  physics: const BouncingScrollPhysics(),
+                  onPageChanged: onChangedScreen,
+                  controller: pageController,
+                  children: _screens.map(
+                    (screen) {
+                      var content = SingleChildScrollView(
+                        controller: scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight - (defaultPadding + appBarHeight) + 0.1,
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(defaultPadding),
+                            child: screen,
+                          ),
                         ),
-                        child: Container(
-                          padding: const EdgeInsets.all(defaultPadding),
-                          child: screen,
-                        ),
-                      ),
-                    );
+                      );
 
-                    return Container(
-                      margin: const EdgeInsets.only(top: defaultPadding + appBarHeight),
-                      child: _currentIndex == Screen.dashboard.index || _currentIndex == Screen.rooms.index
-                          ? RefreshIndicator(
-                              onRefresh: _currentIndex == Screen.dashboard.index ? refreshDashboard : refreshRooms,
-                              color: Theme.of(context).colorScheme.background,
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              child: content,
-                            )
-                          : content,
-                    );
-                  },
-                ).toList(),
+                      return Container(
+                        margin: const EdgeInsets.only(top: defaultPadding + appBarHeight),
+                        child: _currentIndex == Screen.dashboard.index || _currentIndex == Screen.rooms.index
+                            ? RefreshIndicator(
+                                onRefresh: _currentIndex == Screen.dashboard.index ? refreshDashboard : refreshRooms,
+                                color: Theme.of(context).colorScheme.background,
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                child: content,
+                              )
+                            : content,
+                      );
+                    },
+                  ).toList(),
+                ),
               ),
+              CustomAppBar(
+                title: "HAK/HAS/HLW Landeck",
+                action: _currentIndex == 2
+                    ? IconButton(
+                        icon: const Icon(Icons.logout),
+                        color: Theme.of(context).colorScheme.error,
+                        onPressed: onLogout,
+                      )
+                    : null,
+              ),
+            ],
+          );
+        }),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          elevation: 0,
+          iconSize: 30.0,
+          onTap: onTabNavigation,
+          currentIndex: _currentIndex,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor:
+              ref.read(themeProvider) == ThemeMode.dark ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: "Home",
             ),
-            CustomAppBar(
-              title: "HAK/HAS/HLW Landeck",
-              action: _currentIndex == 2
-                  ? IconButton(
-                      icon: const Icon(Icons.logout),
-                      color: Theme.of(context).colorScheme.error,
-                      onPressed: onLogout,
-                    )
-                  : null,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.class_outlined),
+              label: "Classes",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline_outlined),
+              label: "Profile",
             ),
           ],
-        );
-      }),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        elevation: 0,
-        iconSize: 30.0,
-        onTap: onTabNavigation,
-        currentIndex: _currentIndex,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor:
-            ref.read(themeProvider) == ThemeMode.dark ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.class_outlined),
-            label: "Classes",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_outlined),
-            label: "Profile",
-          ),
-        ],
+        ),
       ),
     );
   }
