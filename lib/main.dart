@@ -81,6 +81,8 @@ class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
     ref.read(themeProvider.notifier).refreshTheme(brightness: MediaQuery.of(context).platformBrightness);
+    themeMode = ref.read(themeProvider);
+
     ref.listen(themeProvider, (_, newTheme) => setState(() => themeMode = newTheme));
 
     SystemChrome.setSystemUIOverlayStyle(

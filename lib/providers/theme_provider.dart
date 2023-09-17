@@ -25,6 +25,6 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
 
   void switchTheme() {
     ref.read(localstoreProvider.notifier).setItem("ci_theme", state == ThemeMode.light ? "dark" : "light");
-    refreshTheme();
+    state = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
   }
 }
