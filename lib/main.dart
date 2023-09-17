@@ -56,6 +56,9 @@ TextTheme _textTheme = const TextTheme().copyWith(
   bodyMedium: const TextStyle(
     fontSize: 14.0,
   ),
+  bodySmall: const TextStyle(
+    fontSize: 12.0,
+  ),
   labelLarge: const TextStyle(
     fontSize: 10.0,
     fontWeight: FontWeight.bold,
