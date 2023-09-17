@@ -43,7 +43,7 @@ class ElectricityChart extends StatelessWidget {
                       getTitlesWidget: (value, meta) => Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
-                          value.toInt().toString(),
+                          meta.max.toInt() == value.toInt() ? "Jetzt" : value.toInt().toString(),
                           style: TextStyle(
                             fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
                             color: Theme.of(context).colorScheme.tertiary,
@@ -61,6 +61,7 @@ class ElectricityChart extends StatelessWidget {
                         padding: const EdgeInsets.only(right: 10),
                         child: Text(
                           value.toInt().toString(),
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
                             color: Theme.of(context).colorScheme.tertiary,
@@ -72,6 +73,20 @@ class ElectricityChart extends StatelessWidget {
                 ),
                 borderData: FlBorderData(show: false),
                 minY: smallestValue - 1 < 0 ? 0 : smallestValue - 1,
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    tooltipBgColor: Theme.of(context).colorScheme.primary,
+                    tooltipRoundedRadius: 20,
+                    getTooltipItems: (touchedSpots) => touchedSpots
+                        .map((spot) => LineTooltipItem(
+                              "${spot.y} kWh",
+                              TextStyle(
+                                color: Theme.of(context).colorScheme.background,
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ),
                 lineBarsData: [
                   LineChartBarData(
                     spots: data,
