@@ -160,19 +160,19 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> verifyLogin() async {
-    final accessToken = state.creds.accessToken;
-    final refreshToken = state.creds.refreshToken;
-    if (accessToken.isEmpty || refreshToken.isEmpty) return false;
-
+    if (state.creds.accessToken.isEmpty || state.creds.refreshToken.isEmpty) return false;
     final actualAccessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value ?? "Unknown";
     final actualRefreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value ?? "Unknown";
+
+    final authData = await getAuthData(accessToken: actualAccessToken);
+    if (authData == null) return false;
 
     state = Auth(
       creds: AuthCredentials(
         accessToken: actualAccessToken,
         refreshToken: actualRefreshToken,
       ),
-      data: (await getAuthData(accessToken: actualAccessToken)) ?? AuthData.blank(),
+      data: authData,
     );
 
     return true;
@@ -202,12 +202,15 @@ class AuthNotifier extends StateNotifier<Auth> {
       ref.read(localstoreProvider.notifier).setItem("ci_accessToken", accessToken);
       ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", refreshToken);
 
+      final authData = await getAuthData(accessToken: accessToken);
+      if (authData == null) return false;
+
       state = Auth(
         creds: AuthCredentials(
           accessToken: accessToken,
           refreshToken: refreshToken,
         ),
-        data: await getAuthData(accessToken: accessToken) ?? AuthData.blank(),
+        data: authData,
       );
     } catch (e) {
       debugPrint(e.toString());
