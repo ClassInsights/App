@@ -6,6 +6,23 @@ class ElectricityChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const data = [
+      FlSpot(1, 12),
+      FlSpot(2, 12),
+      FlSpot(3, 15),
+      FlSpot(4, 14),
+      FlSpot(5, 14),
+      FlSpot(6, 13.5),
+      FlSpot(7, 12),
+      FlSpot(8, 14),
+      FlSpot(9, 13.5),
+      FlSpot(10, 9),
+      FlSpot(11, 8),
+      FlSpot(12, 6),
+    ];
+
+    final smallestValue = data.reduce((value, element) => value.y < element.y ? value : element).y;
+
     return LayoutBuilder(
       builder: (context, widgetConstraints) {
         return SizedBox(
@@ -54,21 +71,10 @@ class ElectricityChart extends StatelessWidget {
                   ),
                 ),
                 borderData: FlBorderData(show: false),
+                minY: smallestValue - 1 < 0 ? 0 : smallestValue - 1,
                 lineBarsData: [
                   LineChartBarData(
-                    spots: const [
-                      FlSpot(1, 12),
-                      FlSpot(2, 12),
-                      FlSpot(3, 15),
-                      FlSpot(5, 14),
-                      FlSpot(6, 13.5),
-                      FlSpot(7, 12),
-                      FlSpot(8, 14),
-                      FlSpot(9, 13.5),
-                      FlSpot(10, 9),
-                      FlSpot(11, 8),
-                      FlSpot(12, 6),
-                    ],
+                    spots: data,
                     isCurved: true,
                     color: Theme.of(context).colorScheme.primary,
                     barWidth: 2,
