@@ -133,58 +133,56 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
         return false;
       },
       child: Scaffold(
-        body: LayoutBuilder(builder: (context, constraints) {
-          return Stack(
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) => PageView(
-                  physics: const BouncingScrollPhysics(),
-                  onPageChanged: onChangedScreen,
-                  controller: pageController,
-                  children: _screens.map(
-                    (screen) {
-                      var content = SingleChildScrollView(
-                        controller: scrollController,
-                        physics: const BouncingScrollPhysics(),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: constraints.maxHeight - (defaultPadding + appBarHeight) + 0.1,
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(defaultPadding),
-                            child: screen,
-                          ),
+        body: Stack(
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) => PageView(
+                physics: const BouncingScrollPhysics(),
+                onPageChanged: onChangedScreen,
+                controller: pageController,
+                children: _screens.map(
+                  (screen) {
+                    var content = SingleChildScrollView(
+                      controller: scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight - (defaultPadding + appBarHeight) + 0.1,
                         ),
-                      );
+                        child: Container(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: screen,
+                        ),
+                      ),
+                    );
 
-                      return Container(
-                        margin: const EdgeInsets.only(top: defaultPadding + appBarHeight),
-                        child: _currentIndex == Screen.dashboard.index || _currentIndex == Screen.rooms.index
-                            ? RefreshIndicator(
-                                onRefresh: _currentIndex == Screen.dashboard.index ? refreshDashboard : refreshRooms,
-                                color: Theme.of(context).colorScheme.background,
-                                backgroundColor: Theme.of(context).colorScheme.primary,
-                                child: content,
-                              )
-                            : content,
-                      );
-                    },
-                  ).toList(),
-                ),
+                    return Container(
+                      margin: const EdgeInsets.only(top: defaultPadding + appBarHeight),
+                      child: _currentIndex == Screen.dashboard.index || _currentIndex == Screen.rooms.index
+                          ? RefreshIndicator(
+                              onRefresh: _currentIndex == Screen.dashboard.index ? refreshDashboard : refreshRooms,
+                              color: Theme.of(context).colorScheme.background,
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              child: content,
+                            )
+                          : content,
+                    );
+                  },
+                ).toList(),
               ),
-              CustomAppBar(
-                title: "HAK/HAS/HLW Landeck",
-                action: _currentIndex == 2
-                    ? IconButton(
-                        icon: const Icon(Icons.logout),
-                        color: Theme.of(context).colorScheme.error,
-                        onPressed: onLogout,
-                      )
-                    : null,
-              ),
-            ],
-          );
-        }),
+            ),
+            CustomAppBar(
+              title: "HAK/HAS/HLW Landeck",
+              action: _currentIndex == 2
+                  ? IconButton(
+                      icon: const Icon(Icons.logout),
+                      color: Theme.of(context).colorScheme.error,
+                      onPressed: onLogout,
+                    )
+                  : null,
+            ),
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Theme.of(context).colorScheme.background,
           elevation: 0,
