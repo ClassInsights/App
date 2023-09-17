@@ -27,6 +27,12 @@ class _LessonWidgetState extends State<LessonWidget> {
   }
 
   @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.lesson.endTime == null || widget.lesson.startTime == null) return const SizedBox.shrink();
     final baseMinutes = widget.lesson.endTime!.difference(widget.lesson.startTime!).inMinutes.toDouble();
