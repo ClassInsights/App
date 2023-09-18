@@ -1,11 +1,11 @@
 import 'package:classinsights/main.dart';
-import 'package:classinsights/models/computer_heartbeat.dart';
+import 'package:classinsights/models/computer_data.dart';
 import 'package:classinsights/widgets/charts/cpu_chart.dart';
 import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:flutter/material.dart';
 
 class CPUWidget extends StatelessWidget {
-  final ComputerHeartbeat data;
+  final ComputerData data;
   const CPUWidget(this.data, {super.key});
 
   @override
@@ -14,7 +14,10 @@ class CPUWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("CPU Auslastung", style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            "Prozessor Auslastung",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           const SizedBox(height: App.defaultPadding),
           GridView.count(
             crossAxisCount: 2,
