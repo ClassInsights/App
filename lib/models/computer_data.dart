@@ -1,11 +1,9 @@
-import 'package:classinsights/models/ethernet_data.dart';
-
 class ComputerData {
-  final double powerConsumption;
-  final double ramUsage;
-  final List<double> cpuUsage;
+  final List<double> powerConsumption;
+  final List<double> ramUsage;
+  final List<List<double>> cpuUsage;
   final double diskUsage;
-  final List<EthernetData> ethernetData;
+  final List<List<double>> ethernetData;
 
   const ComputerData({
     required this.powerConsumption,
