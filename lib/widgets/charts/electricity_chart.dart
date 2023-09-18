@@ -92,7 +92,6 @@ class ElectricityChart extends StatelessWidget {
                     spots: data,
                     isCurved: true,
                     color: Theme.of(context).colorScheme.primary,
-                    barWidth: 2,
                     isStrokeCapRound: true,
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
