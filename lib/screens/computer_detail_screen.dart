@@ -2,10 +2,11 @@ import 'package:classinsights/main.dart';
 import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/models/computer_data.dart';
 import 'package:classinsights/models/ethernet_data.dart';
+import 'package:classinsights/widgets/computer/cpu_widget.dart';
+import 'package:classinsights/widgets/computer/pichart_widgets.dart';
 import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:classinsights/widgets/others/sub_screen_container.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ComputerDetailScreen extends StatefulWidget {
   final Computer computer;
@@ -16,30 +17,26 @@ class ComputerDetailScreen extends StatefulWidget {
 }
 
 class ComputerDetailScreenState extends State<ComputerDetailScreen> {
-  final computerData = const ComputerData(
-    powerConsumption: 54.0,
-    ramUsage: 2564,
+  final ComputerData computerData = const ComputerData(
+    powerConsumption: [],
+    ramUsage: 65,
     cpuUsage: [
-      23.0,
-      16.4,
-      14.3,
-      11.8,
+      [60, 57, 48, 40, 73, 70, 54, 32, 25, 40, 57, 79, 91, 84, 78, 85, 75, 45, 37, 39],
+      [30, 50, 54, 56, 50, 20, 22, 21, 21, 33, 33, 43, 45, 47, 45, 48, 47, 58, 74, 52],
+      [58, 44, 34, 45, 53, 59, 66, 58, 61, 48, 57, 62, 62, 54, 62, 60, 74, 64, 49, 45],
+      [42, 46, 49, 49, 51, 49, 46, 55, 61, 65, 72, 69, 64, 52, 54, 54, 61, 64, 66, 57]
     ],
-    diskUsage: 65.0,
+    diskUsage: 35,
     ethernetData: [
-      EthernetData(uploadSpeed: "1.2", downloadSpeed: "2.3"),
-      EthernetData(uploadSpeed: "1.2", downloadSpeed: "2.3"),
-      EthernetData(uploadSpeed: "1.2", downloadSpeed: "2.3"),
-      EthernetData(uploadSpeed: "1.2", downloadSpeed: "2.3"),
+      EthernetData(uploadSpeed: "123.2", downloadSpeed: "6.8"),
+      EthernetData(uploadSpeed: "98.3", downloadSpeed: "7.2"),
+      EthernetData(uploadSpeed: "102.4", downloadSpeed: "6.9"),
+      EthernetData(uploadSpeed: "99.2", downloadSpeed: "7.1"),
+      EthernetData(uploadSpeed: "36.2", downloadSpeed: "5.1"),
+      EthernetData(uploadSpeed: "12.4", downloadSpeed: "3.1"),
+      EthernetData(uploadSpeed: "5.6", downloadSpeed: "2.3"),
     ],
   );
-
-  final List<ChartData> chartData = const [
-    ChartData('David', 25),
-    ChartData('Steve', 38),
-    ChartData('Jack', 34),
-    ChartData('Others', 52),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -68,64 +65,10 @@ class ComputerDetailScreenState extends State<ComputerDetailScreen> {
                 ],
               ),
             ),
-            Container(
-              width: constraints.maxWidth / 2,
-              color: Theme.of(context).colorScheme.onBackground,
-              child: SfCircularChart(
-                margin: const EdgeInsets.all(0),
-                // legend: Legend(
-                //   isVisible: true,
-                //   overflowMode: LegendItemOverflowMode.wrap,
-                //   position: LegendPosition.top,
-                //   itemPadding: 0,
-                //   toggleSeriesVisibility: false,
-                //   isResponsive: false,
-                //   legendItemBuilder: (legendText, series, point, seriesIndex) => Container(
-                //     padding: const EdgeInsets.symmetric(vertical: 5),
-                //     child: Row(
-                //       children: [
-                //         Container(
-                //           width: 10,
-                //           height: 10,
-                //           decoration: BoxDecoration(
-                //             color: seriesIndex == 0 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary,
-                //             shape: BoxShape.circle,
-                //           ),
-                //         ),
-                //         const SizedBox(width: App.smallPadding),
-                //         Text(
-                //           legendText,
-                //           style: Theme.of(context).textTheme.bodyMedium,
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                palette: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.secondary,
-                ],
-                series: <CircularSeries>[
-                  PieSeries<ChartData, String>(
-                    dataSource: [
-                      ChartData('Verwendet', computerData.diskUsage),
-                      ChartData('Frei', 100 - computerData.diskUsage),
-                    ],
-                    xValueMapper: (ChartData data, _) => data.label,
-                    yValueMapper: (ChartData data, _) => data.value,
-                    dataLabelSettings: DataLabelSettings(
-                      isVisible: true,
-                      // labelPosition: ChartDataLabelPosition.outside,
-                      textStyle: TextStyle(
-                        // color: Theme.of(context).colorScheme.primary,
-                        fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
-                      ),
-                    ),
-                    dataLabelMapper: (ChartData data, _) => "${data.value.toStringAsFixed(0)}%",
-                  )
-                ],
-              ),
-            ),
+            const SizedBox(height: App.defaultPadding),
+            CPUWidget(computerData),
+            const SizedBox(height: App.defaultPadding),
+            PiChartWidget(computerData),
           ],
         ),
       ),
