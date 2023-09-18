@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:classinsights/main.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
@@ -6,12 +8,34 @@ import 'package:classinsights/widgets/others/room_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RoomOverviewScreen extends ConsumerWidget {
+class RoomOverviewScreen extends ConsumerStatefulWidget {
   const RoomOverviewScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final int currentRoomID = ref.read(lessonProvider.notifier).getLessonByDate(DateTime.now())?.roomId ?? 0;
+  ConsumerState<RoomOverviewScreen> createState() => _RoomOverviewScreenState();
+}
+
+class _RoomOverviewScreenState extends ConsumerState<RoomOverviewScreen> {
+  late Timer timer;
+  var now = DateTime.now();
+
+  @override
+  void initState() {
+    timer = Timer.periodic(const Duration(seconds: 30), (_) {
+      setState(() => now = DateTime.now());
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final int currentRoomID = ref.read(lessonProvider.notifier).getLessonByDate(now)?.roomId ?? 0;
     final rooms = ref.read(roomProvider);
     final currentRoom = ref.read(roomProvider.notifier).getRoomById(currentRoomID);
 

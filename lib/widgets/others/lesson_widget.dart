@@ -18,12 +18,10 @@ class _LessonWidgetState extends State<LessonWidget> {
   late Timer timer;
   var now = DateTime.now();
 
-  void update() => setState(() => now = DateTime.now());
-
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(milliseconds: 500), (_) => update());
+    timer = Timer.periodic(const Duration(milliseconds: 500), (_) => setState(() => now = DateTime.now()));
   }
 
   @override
