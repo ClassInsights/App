@@ -74,6 +74,20 @@ class ElectricityChart extends StatelessWidget {
                 borderData: FlBorderData(show: false),
                 minY: smallestValue - 1 < 0 ? 0 : smallestValue - 1,
                 lineTouchData: LineTouchData(
+                  longPressDuration: const Duration(milliseconds: 0),
+                  getTouchedSpotIndicator: (barData, spotIndexes) => spotIndexes
+                      .map((spotindex) => TouchedSpotIndicatorData(
+                            FlLine(color: Theme.of(context).colorScheme.primary, strokeWidth: 2, dashArray: [5]),
+                            FlDotData(
+                              show: true,
+                              getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
+                                radius: 6,
+                                color: Theme.of(context).colorScheme.primary,
+                                strokeWidth: 0,
+                              ),
+                            ),
+                          ))
+                      .toList(),
                   touchTooltipData: LineTouchTooltipData(
                     tooltipBgColor: Theme.of(context).colorScheme.primary,
                     tooltipRoundedRadius: 20,
