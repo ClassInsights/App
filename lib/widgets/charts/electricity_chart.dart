@@ -55,7 +55,7 @@ class ElectricityChart extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 1,
+                      interval: 5,
                       reservedSize: 25,
                       getTitlesWidget: (value, meta) => Padding(
                         padding: const EdgeInsets.only(right: 10),
