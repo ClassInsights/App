@@ -18,7 +18,6 @@ dependencies:
   package_info_plus: ^4.1.0
   flutter_web_auth_2: ^2.2.1
   web_socket_channel: ^2.4.0
-  syncfusion_flutter_charts: ^22.2.12
   http: ^1.1.0
   flutter_dotenv: ^5.1.0
   dart_jsonwebtoken: ^2.11.0
