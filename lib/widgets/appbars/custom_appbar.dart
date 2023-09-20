@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
-class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget {
   final String title;
   final Widget? action;
 
@@ -16,7 +16,6 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      padding: const EdgeInsets.only(top: 10),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
@@ -43,7 +42,4 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(50.0);
 }

@@ -112,7 +112,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     ref.listen(screenProvider, (_, newScreen) => onTabNavigation(Screen.values.indexOf(newScreen)));
 
     const defaultPadding = 30.0;
-    const appBarHeight = 61.0;
+    const appBarHeight = 50.0;
 
     refreshDashboard() async {
       await ref.read(lessonProvider.notifier).refreshLessons();
@@ -147,17 +147,18 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                       physics: const BouncingScrollPhysics(),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight - (defaultPadding + appBarHeight) + 0.1,
+                          minHeight: constraints.maxHeight - (MediaQuery.of(context).padding.top + appBarHeight) + .1,
                         ),
                         child: Container(
-                          padding: const EdgeInsets.all(defaultPadding),
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).padding.top, bottom: defaultPadding, left: defaultPadding, right: defaultPadding),
                           child: screen,
                         ),
                       ),
                     );
 
                     return Container(
-                      margin: const EdgeInsets.only(top: defaultPadding + appBarHeight),
+                      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + appBarHeight),
                       child: _currentIndex == Screen.dashboard.index || _currentIndex == Screen.rooms.index
                           ? RefreshIndicator(
                               onRefresh: _currentIndex == Screen.dashboard.index ? refreshDashboard : refreshRooms,

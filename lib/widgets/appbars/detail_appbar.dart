@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 class DetailAppbar extends StatelessWidget {
   final String title;
   final Function onBack;
-  const DetailAppbar({required this.title, required this.onBack, super.key});
+
+  const DetailAppbar({
+    required this.title,
+    required this.onBack,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20.0, bottom: 30.0),
-      padding: const EdgeInsets.only(top: 10.0),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20.0),
       child: Row(
         children: [
           IconButton(

@@ -12,6 +12,7 @@ class SubScreenContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const defaultPadding = 30.0;
     return Scaffold(
       body: Stack(
         children: [
@@ -21,17 +22,17 @@ class SubScreenContainer extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight - (30.0 + 70.0) + 0.1,
+                    minHeight: constraints.maxHeight - (30.0 + 80.0) + .1,
                   ),
                   child: Container(
-                    padding: const EdgeInsets.all(30.0),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, bottom: 30.0, left: 30.0, right: 30.0),
                     child: body,
                   ),
                 ),
               );
 
               return Container(
-                margin: const EdgeInsets.only(top: 30.0 + 70.0),
+                margin: const EdgeInsets.only(top: defaultPadding + 80.0),
                 child: refreshAction != null
                     ? RefreshIndicator(
                         onRefresh: refreshAction!,
