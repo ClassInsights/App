@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 
 class ComputerChart extends StatelessWidget {
   final String graphTitle;
+  final String alternativeTitle;
   final String primaryTitle;
   final String secondaryTitle;
   final double progress;
 
   const ComputerChart({
     required this.graphTitle,
+    required this.alternativeTitle,
     required this.primaryTitle,
     required this.secondaryTitle,
     required this.progress,
@@ -23,10 +25,18 @@ class ComputerChart extends StatelessWidget {
     return WidgetContainer(
       child: Column(
         children: [
-          Text(graphTitle, style: Theme.of(context).textTheme.titleSmall),
+          LayoutBuilder(
+            builder: (context, constraints) => Text(
+              constraints.maxWidth > 125 ? graphTitle : alternativeTitle,
+              style: Theme.of(context).textTheme.titleSmall,
+              softWrap: false,
+            ),
+          ),
+          const SizedBox(height: App.smallPadding),
           Expanded(
             child: PieChart(
               PieChartData(
+                centerSpaceRadius: 0,
                 startDegreeOffset: 90,
                 sectionsSpace: 5,
                 sections: [

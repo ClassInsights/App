@@ -15,16 +15,18 @@ class PiChartWidget extends StatelessWidget {
       padding: const EdgeInsets.all(0),
       crossAxisSpacing: App.defaultPadding,
       crossAxisCount: 2,
-      childAspectRatio: 7 / 10,
+      childAspectRatio: 6 / 10,
       children: [
         ComputerChart(
           graphTitle: "Arbeitspeicher",
+          alternativeTitle: "RAM",
           primaryTitle: "Verwendet",
           secondaryTitle: "Frei",
           progress: data.ramUsage,
         ),
         ComputerChart(
           graphTitle: "Festplatte",
+          alternativeTitle: "SSD",
           primaryTitle: "Besetzt",
           secondaryTitle: "Frei",
           progress: data.diskUsage,
