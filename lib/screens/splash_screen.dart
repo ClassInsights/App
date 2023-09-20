@@ -70,7 +70,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               height: 30.0,
             ),
             Text(
-              "Class Insights",
+              "ClassInsights",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Spacer(),
