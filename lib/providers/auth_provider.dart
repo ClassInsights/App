@@ -88,21 +88,20 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> reload() async {
-    final accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value;
-    final refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value;
+    var accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value;
+    var refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value;
 
-    if (accessToken == null || refreshToken == null) {
-      state = Auth.blank();
-      return false;
-    }
-
+    if (accessToken == null || refreshToken == null) return false;
     final tokenData = JWT.tryDecode(accessToken);
-    if (tokenData == null) {
-      state = Auth.blank();
-      return false;
-    }
+    if (tokenData == null) return false;
+    final expired = DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000).isBefore(DateTime.now());
+    if (expired && await _refreshToken(accessToken, refreshToken) == false) return false;
 
-    if (DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000).isBefore(DateTime.now()) && await _refreshToken() == false) return false;
+    if (expired) {
+      accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value;
+      refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value;
+      if (accessToken == null || refreshToken == null) return false;
+    }
 
     state = Auth(
       creds: AuthCredentials(
@@ -127,12 +126,8 @@ class AuthNotifier extends StateNotifier<Auth> {
     }
   }
 
-  Future<bool> _refreshToken() async {
-    final accessToken = await ref.read(localstoreProvider.notifier).item("ci_accessToken");
-    final refreshToken = await ref.read(localstoreProvider.notifier).item("ci_refreshToken");
-    if (accessToken == null || refreshToken == null) return false;
-
-    final userId = JWT.tryDecode(accessToken.value)?.payload["sub"];
+  Future<bool> _refreshToken(String accessToken, String refreshToken) async {
+    final userId = JWT.tryDecode(accessToken)?.payload["sub"];
     if (userId == null) return false;
 
     final client = http.Client();
@@ -141,7 +136,7 @@ class AuthNotifier extends StateNotifier<Auth> {
       headers: {"Content-Type": "application/json"},
       body: json.encode({
         "userId": userId,
-        "refreshToken": refreshToken.value,
+        "refreshToken": refreshToken,
       }),
     );
     client.close();
@@ -149,13 +144,8 @@ class AuthNotifier extends StateNotifier<Auth> {
     if (response.statusCode != 200) return false;
 
     final body = jsonDecode(response.body);
-    final newAccessToken = body["access_token"];
-    final newRefreshToken = body["refresh_token"];
-
-    ref.read(localstoreProvider.notifier).setItem("ci_accessToken", newAccessToken);
-    ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", newRefreshToken);
-
-    reload();
+    ref.read(localstoreProvider.notifier).setItem("ci_accessToken", body["access_token"]);
+    ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", body["refresh_token"]);
     return true;
   }
 
