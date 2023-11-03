@@ -165,10 +165,16 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> initialLogin() async {
-    final result = await FlutterWebAuth2.authenticate(
-      url: dotenv.env["AUTH_URL"] ?? "",
-      callbackUrlScheme: "classinsights",
-    );
+    String result;
+    try {
+      result = await FlutterWebAuth2.authenticate(
+        url: dotenv.env["AUTH_URL"] ?? "",
+        callbackUrlScheme: "classinsights",
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
 
     final code = Uri.parse(result).queryParameters["code"];
     if (code == null) return false;
@@ -201,11 +207,3 @@ class AuthNotifier extends StateNotifier<Auth> {
     return true;
   }
 }
-
-
-
-/*
-
-  implement PEM FILE in SECURITY CONTEXT (projekt-DC01PROJEKT-CA.pem)
-
-*/
