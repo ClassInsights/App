@@ -1,11 +1,14 @@
+import 'package:classinsights/helpers/host_checker.dart';
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/subject_provider.dart';
 import 'package:classinsights/providers/version_provider.dart';
+import 'package:classinsights/screens/connection_failed_screen.dart';
 import 'package:classinsights/screens/login_screen.dart';
 import 'package:classinsights/screens/tabs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -21,7 +24,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   void updateHint(String hint) => setState(() => hintText = hint);
 
+  showErrorPage() => Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (context, firstAnimation, secondAnimation) => const ConnectionFailedScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+
   Future<void> initProviders() async {
+    final apiAvailable = await checkHost(dotenv.env["API_HOST"]);
+    if (!apiAvailable) {
+      debugPrint("Failed to connect to ${dotenv.env["API_HOST"]}!");
+      showErrorPage();
+      return;
+    }
+
     updateHint("Lese Account Daten...");
 
     final success = await ref.read(authProvider.notifier).reload();
