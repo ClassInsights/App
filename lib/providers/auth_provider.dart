@@ -132,12 +132,11 @@ class AuthNotifier extends StateNotifier<Auth> {
     final client = await CustomHttpClient.create();
     final response = await client.post(
       "/token",
-      body: json.encode({
+      body: {
         "userId": userId,
         "refreshToken": refreshToken,
-      }),
+      },
     );
-    debugPrint("Refresh Token request sent!");
     if (response.statusCode != 200) return false;
 
     final body = jsonDecode(response.body);
