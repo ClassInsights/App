@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,79 +16,86 @@ class Response {
 }
 
 class CustomHttpClient {
-  late String _baseUrl;
-  late HttpClient _httpClient;
-  late String? _accessToken;
-  final bool _withCredentials;
-  bool isClosed = false;
+  late HttpClient _client;
+  late String? accessToken;
+  late String? _baseUrl;
+  late bool _keepAlive;
+  var alreadyClosed = false;
 
-  CustomHttpClient({bool withCredentials = true}) : _withCredentials = withCredentials {
-    _httpClient = HttpClient()..badCertificateCallback = ((X509Certificate cert, String host, int port) => host == dotenv.env['CA_HOST']);
-    final baseUrl = dotenv.env['API_URL'];
-    if (baseUrl == null) exit(1);
-    _baseUrl = baseUrl;
-    initializeToken().then((token) => _accessToken = token);
+  CustomHttpClient({String? baseUrl}) {
+    final ctx = SecurityContext.defaultContext;
+    _baseUrl = baseUrl ?? dotenv.env["API_URL"];
+    rootBundle.loadString("assets/certificates/projekt-DC01PROJEKT-CA.pem").then((content) {
+      ctx.setTrustedCertificatesBytes(content.codeUnits);
+      ctx.allowLegacyUnsafeRenegotiation = true;
+      _client = HttpClient(context: ctx);
+    });
+    SharedPreferences.getInstance().then((prefs) {
+      accessToken = prefs.getString("access_token");
+    });
   }
 
-  Future<String?> initializeToken() async {
+  CustomHttpClient._create({required String cert, required String token, required bool keepAlive, String? baseUrl}) {
+    _baseUrl = baseUrl ?? dotenv.env["API_URL"];
+    _keepAlive = keepAlive;
+    final ctx = SecurityContext.defaultContext;
+    ctx.setTrustedCertificatesBytes(cert.codeUnits);
+    ctx.allowLegacyUnsafeRenegotiation = true;
+    accessToken = token;
+    _client = HttpClient(context: ctx);
+  }
+
+  static Future<CustomHttpClient> create({String? baseUrl, bool keepAlive = false}) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("ci_accessToken");
+    final accessToken = prefs.getString("ci_accessToken");
+    final content = await rootBundle.loadString("assets/certificates/projekt-DC01PROJEKT-CA.pem");
+    final client = CustomHttpClient._create(
+      cert: content,
+      token: accessToken ?? "",
+      keepAlive: keepAlive,
+      baseUrl: baseUrl,
+    );
+    return client;
   }
 
   void _closeClient() {
-    if (isClosed) return;
-    _httpClient.close(force: true);
-    isClosed = true;
+    _client.close();
+    alreadyClosed = true;
   }
 
-  Future<Response> get(String path, {Map<String, String>? headers, bool keepAlive = false}) async {
-    if (isClosed) return Response(statusCode: -1, body: "Client Already Closed");
-    final uri = Uri.parse("$_baseUrl$path");
-    final request = await _httpClient.getUrl(uri);
-    if (_withCredentials && _accessToken == null) return Response(statusCode: -1, body: "No Access Token");
-    if (_withCredentials) request.headers.add("Authorization", "Bearer $_accessToken");
-    if (headers != null) headers.forEach((key, value) => request.headers.add(key, value));
+  Future<Response> get(String path, {bool withCredentials = true}) async {
+    if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
+    debugPrint("GET $_baseUrl$path");
+    final request = await _client.getUrl(Uri.parse("$_baseUrl$path"));
+    if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
     final response = await request.close();
     final body = await response.transform(utf8.decoder).join();
-    if (!keepAlive) _closeClient();
+    if (!_keepAlive) _closeClient();
     return Response(
       statusCode: response.statusCode,
       body: body,
     );
   }
 
-  Future<Response> post(String path, {Map<String, String>? headers, dynamic body, bool keepAlive = false}) async {
-    if (isClosed) return Response(statusCode: -1, body: "Client Already Closed");
-    final uri = Uri.parse("$_baseUrl$path");
-    final request = await _httpClient.postUrl(uri);
-    if (_withCredentials && _accessToken == null) return Response(statusCode: -1, body: "No Access Token");
-    if (_withCredentials) request.headers.add("Authorization", "Bearer $_accessToken");
-    if (body != null) request.headers.add("Content-Type", "application/json");
-    if (headers != null) headers.forEach((key, value) => request.headers.add(key, value));
-    if (body != null) request.write(jsonEncode(body));
-    final response = await request.close();
-    final responseBody = await response.transform(utf8.decoder).join();
-    if (!keepAlive) _closeClient();
+  Future<Response> post(String path, {bool withCredentials = true, dynamic body}) async {
+    Map<String, String> headers = {};
+    if (withCredentials) headers["Authorization"] = "Bearer $accessToken";
+    if (body != null) headers["Content-Type"] = "application/json";
+    if (!_keepAlive) _closeClient();
     return Response(
-      statusCode: response.statusCode,
-      body: responseBody,
+      statusCode: -1,
+      body: "POST Response",
     );
   }
 
-  Future<Response> delete(String path, {Map<String, String>? headers, dynamic body, bool keepAlive = false}) async {
-    if (isClosed) return Response(statusCode: -1, body: "Client Already Closed");
-    final request = await _httpClient.deleteUrl(Uri.parse("$_baseUrl$path"));
-    if (_withCredentials && _accessToken == null) return Response(statusCode: -1, body: "No Access Token");
-    if (_withCredentials) request.headers.add("Authorization", "Bearer $_accessToken");
-    if (body != null) request.headers.add("Content-Type", "application/json");
-    if (headers != null) headers.forEach((key, value) => request.headers.add(key, value));
-    if (body != null) request.write(jsonEncode(body));
-    final response = await request.close();
-    final responseBody = await response.transform(utf8.decoder).join();
-    if (!keepAlive) _closeClient();
+  Future<Response> delete(String path, {bool withCredentials = true, dynamic body}) async {
+    Map<String, String> headers = {};
+    if (withCredentials) headers["Authorization"] = "Bearer $accessToken";
+    if (body != null) headers["Content-Type"] = "application/json";
+    if (!_keepAlive) _closeClient();
     return Response(
-      statusCode: response.statusCode,
-      body: responseBody,
+      statusCode: -1,
+      body: "DELETE Response",
     );
   }
 }
