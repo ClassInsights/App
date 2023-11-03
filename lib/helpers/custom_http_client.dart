@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:classinsights/models/http_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -53,13 +54,11 @@ class CustomHttpClient {
     alreadyClosed = true;
   }
 
-  // DEBUG MESSAGES FOR RESPONSE (MAYBE IN CONSTRUCTOR => debugPrint(PATH + STATUSCODE))
-
   Future<Response> get(String path, {bool withCredentials = true}) async {
     final uri = "$_baseUrl$path";
+    debugPrint("GET $uri");
     try {
       if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
-      debugPrint("GET $uri");
       final request = await _client.getUrl(Uri.parse(uri));
       if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
       final response = await request.close();
@@ -70,44 +69,53 @@ class CustomHttpClient {
         body: body,
       );
     } catch (e) {
-      debugPrint("Failed GET Request to: $uri");
-      return Response(statusCode: -1, body: e.toString());
+      return Response(statusCode: -1, body: "Error while sending GET request: $uri");
     }
   }
 
   Future<Response> post(String path, {bool withCredentials = true, dynamic body}) async {
-    if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
-    debugPrint("POST $_baseUrl$path");
-    final request = await _client.postUrl(Uri.parse("$_baseUrl$path"));
-    if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
-    if (body != null) {
-      request.headers.add("Content-Type", "application/json");
-      request.write(json.encode(body));
+    final uri = "$_baseUrl$path";
+    debugPrint("POST $uri");
+    try {
+      if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
+      final request = await _client.postUrl(Uri.parse(uri));
+      if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
+      if (body != null) {
+        request.headers.add("Content-Type", "application/json");
+        request.write(json.encode(body));
+      }
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+      if (!_keepAlive) _closeClient();
+      return Response(
+        statusCode: response.statusCode,
+        body: responseBody,
+      );
+    } catch (e) {
+      return Response(statusCode: -1, body: "Error while sending GET request: $uri");
     }
-    final response = await request.close();
-    final responseBody = await response.transform(utf8.decoder).join();
-    if (!_keepAlive) _closeClient();
-    return Response(
-      statusCode: response.statusCode,
-      body: responseBody,
-    );
   }
 
   Future<Response> delete(String path, {bool withCredentials = true, dynamic body}) async {
-    if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
+    final uri = "$_baseUrl$path";
     debugPrint("DELETE $_baseUrl$path");
-    final request = await _client.postUrl(Uri.parse("$_baseUrl$path"));
-    if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
-    if (body != null) {
-      request.headers.add("Content-Type", "application/json");
-      request.write(json.encode(body));
+    try {
+      if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
+      final request = await _client.postUrl(Uri.parse("$_baseUrl$path"));
+      if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
+      if (body != null) {
+        request.headers.add("Content-Type", "application/json");
+        request.write(json.encode(body));
+      }
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+      if (!_keepAlive) _closeClient();
+      return Response(
+        statusCode: response.statusCode,
+        body: responseBody,
+      );
+    } catch (e) {
+      return Response(statusCode: -1, body: "Error while sending GET request: $uri");
     }
-    final response = await request.close();
-    final responseBody = await response.transform(utf8.decoder).join();
-    if (!_keepAlive) _closeClient();
-    return Response(
-      statusCode: response.statusCode,
-      body: responseBody,
-    );
   }
 }
