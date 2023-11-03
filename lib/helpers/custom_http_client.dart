@@ -69,6 +69,7 @@ class CustomHttpClient {
         body: body,
       );
     } catch (e) {
+      debugPrint(e.toString());
       return Response(statusCode: -1, body: "Error while sending GET request: $uri");
     }
   }
@@ -92,7 +93,8 @@ class CustomHttpClient {
         body: responseBody,
       );
     } catch (e) {
-      return Response(statusCode: -1, body: "Error while sending GET request: $uri");
+      debugPrint(e.toString());
+      return Response(statusCode: -1, body: "Error while sending POST request: $uri");
     }
   }
 
@@ -115,7 +117,8 @@ class CustomHttpClient {
         body: responseBody,
       );
     } catch (e) {
-      return Response(statusCode: -1, body: "Error while sending GET request: $uri");
+      debugPrint(e.toString());
+      return Response(statusCode: -1, body: "Error while sending DELETE request: $uri");
     }
   }
 }
