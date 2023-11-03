@@ -1,10 +1,9 @@
 import 'dart:convert';
 
+import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/subject.dart';
 import 'package:classinsights/providers/auth_provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import "package:http/http.dart" as http;
 
 final subjectProvider = StateNotifierProvider<SubjectNotifier, List<Subject>>((ref) => SubjectNotifier(ref));
 
@@ -24,13 +23,10 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
     if (state.isNotEmpty) return state;
-    final client = http.Client();
-    final response = await client.get(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/subjects"),
-      headers: {
-        "Authorization": "Bearer ${ref.read(authProvider).creds.accessToken}",
-      },
-    );
+
+    final client = await CustomHttpClient.create();
+    final response = await client.get("/subjects");
+
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);

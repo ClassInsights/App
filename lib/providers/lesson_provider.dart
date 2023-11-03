@@ -1,13 +1,12 @@
 import 'dart:convert';
 
+import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/lesson.dart';
 import 'package:classinsights/models/subject_data.dart';
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/ratelimit_provider.dart';
 import 'package:classinsights/providers/subject_provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import "package:http/http.dart" as http;
 
 final lessonProvider = StateNotifierProvider<LessonNotifier, List<Lesson>>((ref) => LessonNotifier(ref));
 
@@ -53,13 +52,10 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
     if (!skipStateCheck && state.isNotEmpty) return state;
-    final client = http.Client();
-    final response = await client.get(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/lessons"),
-      headers: {
-        "Authorization": "Bearer ${ref.read(authProvider).creds.accessToken}",
-      },
-    );
+
+    final client = await CustomHttpClient.create();
+    final response = await client.get("/lessons");
+
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);

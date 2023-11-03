@@ -1,12 +1,11 @@
 import 'dart:convert';
 
+import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/room.dart';
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/computer_provider.dart';
 import 'package:classinsights/providers/ratelimit_provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import "package:http/http.dart" as http;
 
 final roomProvider = StateNotifierProvider<RoomNotifier, List<Room>>((ref) => RoomNotifier(ref));
 
@@ -28,13 +27,10 @@ class RoomNotifier extends StateNotifier<List<Room>> {
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
     if (!skipStateCheck && state.isNotEmpty) return state;
-    final client = http.Client();
-    final response = await client.get(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/rooms"),
-      headers: {
-        "Authorization": "Bearer $token",
-      },
-    );
+
+    final client = await CustomHttpClient.create();
+    final response = await client.get("/rooms");
+
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);

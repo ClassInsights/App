@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/auth_credentials.dart';
 import 'package:classinsights/models/auth_data.dart';
 import 'package:classinsights/models/schoolclass.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
-import "package:http/http.dart" as http;
 
 class Auth {
   final AuthCredentials creds;
@@ -35,7 +35,7 @@ class AuthNotifier extends StateNotifier<Auth> {
 
   Auth get auth => state;
 
-  Future<AuthData?> getAuthData({String accessToken = ""}) async {
+  Future<AuthData?> getAuthData({required String accessToken}) async {
     final token = accessToken.isNotEmpty ? accessToken : auth.creds.accessToken;
     final tokenData = JWT.tryDecode(token);
 
@@ -43,18 +43,18 @@ class AuthNotifier extends StateNotifier<Auth> {
 
     final payload = tokenData.payload;
     final classId = payload["class"];
-    final client = http.Client();
-    final response = await client.get(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/classes/$classId"),
-      headers: {
-        "Authorization": "Bearer $token",
-      },
-    );
-    client.close();
+    final client = await CustomHttpClient.create();
 
-    if (response.statusCode != 200) return null;
+    dynamic body;
+    try {
+      final response = await client.get("/classes/$classId");
+      if (response.statusCode != 200) return null;
+      body = jsonDecode(response.body);
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
 
-    final body = jsonDecode(response.body);
     return AuthData(
       name: payload["name"],
       id: payload["sub"],
@@ -69,13 +69,9 @@ class AuthNotifier extends StateNotifier<Auth> {
     ref.read(localstoreProvider.notifier).removeItem("ci_accessToken");
     ref.read(localstoreProvider.notifier).removeItem("ci_refreshToken");
 
-    final client = http.Client();
+    final client = await CustomHttpClient.create();
     await client.delete(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/token"),
-      headers: {
-        "Authorization": "Bearer ${auth.creds.accessToken}",
-        "Content-Type": "application/json",
-      },
+      "/token",
       body: json.encode(
         {
           "userId": auth.data.id,
@@ -92,6 +88,7 @@ class AuthNotifier extends StateNotifier<Auth> {
     var refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value;
 
     if (accessToken == null || refreshToken == null) return false;
+
     final tokenData = JWT.tryDecode(accessToken);
     if (tokenData == null) return false;
     final expired = DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000).isBefore(DateTime.now());
@@ -103,12 +100,15 @@ class AuthNotifier extends StateNotifier<Auth> {
       if (accessToken == null || refreshToken == null) return false;
     }
 
+    final authData = await getAuthData(accessToken: accessToken);
+    if (authData == null) return false;
+
     state = Auth(
       creds: AuthCredentials(
         accessToken: accessToken,
         refreshToken: refreshToken,
       ),
-      data: await getAuthData(accessToken: accessToken) ?? AuthData.blank(),
+      data: authData,
     );
     return true;
   }
@@ -129,18 +129,15 @@ class AuthNotifier extends StateNotifier<Auth> {
   Future<bool> _refreshToken(String accessToken, String refreshToken) async {
     final userId = JWT.tryDecode(accessToken)?.payload["sub"];
     if (userId == null) return false;
-
-    final client = http.Client();
+    final client = await CustomHttpClient.create();
     final response = await client.post(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/token"),
-      headers: {"Content-Type": "application/json"},
+      "/token",
       body: json.encode({
         "userId": userId,
         "refreshToken": refreshToken,
       }),
     );
-    client.close();
-
+    debugPrint("Refresh Token request sent!");
     if (response.statusCode != 200) return false;
 
     final body = jsonDecode(response.body);
@@ -151,16 +148,16 @@ class AuthNotifier extends StateNotifier<Auth> {
 
   Future<bool> verifyLogin() async {
     if (state.creds.accessToken.isEmpty || state.creds.refreshToken.isEmpty) return false;
-    final actualAccessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value ?? "Unknown";
-    final actualRefreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value ?? "Unknown";
+    final accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value ?? "Unknown";
+    final refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value ?? "Unknown";
 
-    final authData = await getAuthData(accessToken: actualAccessToken);
+    final authData = await getAuthData(accessToken: accessToken);
     if (authData == null) return false;
 
     state = Auth(
       creds: AuthCredentials(
-        accessToken: actualAccessToken,
-        refreshToken: actualRefreshToken,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
       ),
       data: authData,
     );
@@ -169,43 +166,47 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> initialLogin() async {
-    try {
-      final result = await FlutterWebAuth2.authenticate(
-        url: dotenv.env["AUTH_URL"] ?? "",
-        callbackUrlScheme: "classinsights",
-      );
+    final result = await FlutterWebAuth2.authenticate(
+      url: dotenv.env["AUTH_URL"] ?? "",
+      callbackUrlScheme: "classinsights",
+    );
 
-      final code = Uri.parse(result).queryParameters["code"];
+    final code = Uri.parse(result).queryParameters["code"];
+    if (code == null) return false;
 
-      if (code == null) return false;
+    debugPrint("Send code to Server: $code");
+    final client = await CustomHttpClient.create();
+    final response = await client.get("/login/$code");
 
-      final client = http.Client();
-      final response = await client.get(Uri.parse("${dotenv.env['API_URL'] ?? ""}/login/$code"));
-      client.close();
+    debugPrint("Response: ${response.statusCode} | ${response.body}");
 
-      if (response.statusCode != 200) return false;
+    if (response.statusCode != 200) return false;
 
-      final body = jsonDecode(response.body);
-      final accessToken = body["access_token"];
-      final refreshToken = body["refresh_token"];
+    final body = json.decode(response.body);
+    final accessToken = body["access_token"];
+    final refreshToken = body["refresh_token"];
 
-      ref.read(localstoreProvider.notifier).setItem("ci_accessToken", accessToken);
-      ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", refreshToken);
+    ref.read(localstoreProvider.notifier).setItem("ci_accessToken", accessToken);
+    ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", refreshToken);
 
-      final authData = await getAuthData(accessToken: accessToken);
-      if (authData == null) return false;
+    final authData = await getAuthData(accessToken: accessToken);
+    if (authData == null) return false;
 
-      state = Auth(
-        creds: AuthCredentials(
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-        ),
-        data: authData,
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-      return false;
-    }
+    state = Auth(
+      creds: AuthCredentials(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      ),
+      data: authData,
+    );
     return true;
   }
 }
+
+
+
+/*
+
+  implement PEM FILE in SECURITY CONTEXT (projekt-DC01PROJEKT-CA.pem)
+
+*/

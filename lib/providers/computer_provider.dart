@@ -1,10 +1,9 @@
 import 'dart:convert';
 
+import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/providers/auth_provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import "package:http/http.dart" as http;
 
 final computerProvider = StateNotifierProvider<ComputerProvider, List<Computer>>((ref) => ComputerProvider(ref));
 
@@ -21,14 +20,10 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
     if (computersForRoom.isNotEmpty) return computersForRoom;
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return [];
-    final client = http.Client();
-    final response = await client.get(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/rooms/$roomId/computers"),
-      headers: {
-        "Authorization": "Bearer $token",
-      },
-    );
-    client.close();
+
+    final client = await CustomHttpClient.create();
+    final response = await client.get("/rooms/$roomId/computers");
+
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);
@@ -56,14 +51,10 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
   Future<bool> shutdown(int computerId) async {
     final token = ref.read(authProvider).creds.accessToken;
     if (token.isEmpty) return false;
-    final client = http.Client();
-    final response = await client.delete(
-      Uri.parse("${dotenv.env['API_URL'] ?? ""}/computers/$computerId"),
-      headers: {
-        "Authorization": "Bearer $token",
-      },
-    );
-    client.close();
+
+    final client = await CustomHttpClient.create();
+    final response = await client.delete("/computers/$computerId");
+
     return response.statusCode == 200;
   }
 }
