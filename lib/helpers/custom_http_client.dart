@@ -78,24 +78,38 @@ class CustomHttpClient {
   }
 
   Future<Response> post(String path, {bool withCredentials = true, dynamic body}) async {
-    Map<String, String> headers = {};
-    if (withCredentials) headers["Authorization"] = "Bearer $accessToken";
-    if (body != null) headers["Content-Type"] = "application/json";
+    if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
+    debugPrint("POST $_baseUrl$path");
+    final request = await _client.postUrl(Uri.parse("$_baseUrl$path"));
+    if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
+    if (body != null) {
+      request.headers.add("Content-Type", "application/json");
+      request.write(json.encode(body));
+    }
+    final response = await request.close();
+    final responseBody = await response.transform(utf8.decoder).join();
     if (!_keepAlive) _closeClient();
     return Response(
-      statusCode: -1,
-      body: "POST Response",
+      statusCode: response.statusCode,
+      body: responseBody,
     );
   }
 
   Future<Response> delete(String path, {bool withCredentials = true, dynamic body}) async {
-    Map<String, String> headers = {};
-    if (withCredentials) headers["Authorization"] = "Bearer $accessToken";
-    if (body != null) headers["Content-Type"] = "application/json";
+    if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
+    debugPrint("DELETE $_baseUrl$path");
+    final request = await _client.postUrl(Uri.parse("$_baseUrl$path"));
+    if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
+    if (body != null) {
+      request.headers.add("Content-Type", "application/json");
+      request.write(json.encode(body));
+    }
+    final response = await request.close();
+    final responseBody = await response.transform(utf8.decoder).join();
     if (!_keepAlive) _closeClient();
     return Response(
-      statusCode: -1,
-      body: "DELETE Response",
+      statusCode: response.statusCode,
+      body: responseBody,
     );
   }
 }
