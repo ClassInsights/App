@@ -19,19 +19,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool alreadyInitialized = false;
   var hintText = "";
 
+  void updateHint(String hint) => setState(() => hintText = hint);
+
   Future<void> initProviders() async {
-    setState(() => hintText = "Lese Account Daten...");
+    updateHint("Lese Account Daten...");
+
     final success = await ref.read(authProvider.notifier).reload();
-    if (!success) return;
-    setState(() => hintText = "Lade App Meta Daten...");
+    if (success != true) {
+      debugPrint("Failed to reload auth data!");
+      return;
+    }
+
+    updateHint("Lade App Meta Daten...");
     await ref.read(versionProvider.notifier).fetchVersion();
-    setState(() => hintText = "Lade Schulräume...");
+    updateHint("Lade Schulräume...");
     await ref.read(roomProvider.notifier).fetchRooms();
-    setState(() => hintText = "Lade Unterrichtsfächer...");
+    updateHint("Lade Unterrichtsfächer...");
     await ref.read(subjectProvider.notifier).fetchSubjects();
-    setState(() => hintText = "Lade Stundenplan...");
+    updateHint("Lade Stundenplan...");
     await ref.read(lessonProvider.notifier).fetchLessons();
-    setState(() => hintText = "Fertig!");
+    updateHint("Fertig!");
   }
 
   @override
