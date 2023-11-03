@@ -8,8 +8,6 @@ class Response {
     required this.statusCode,
     required this.body,
   }) {
-    if (statusCode == -1) {
-      debugPrint("Error while sending request: $body");
-    }
+    if (statusCode == -1) debugPrint(body);
   }
 }
