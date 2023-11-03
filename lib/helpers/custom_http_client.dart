@@ -5,16 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Response {
-  final int statusCode;
-  final String body;
-
-  Response({
-    required this.statusCode,
-    required this.body,
-  });
-}
-
 class CustomHttpClient {
   late HttpClient _client;
   late String? accessToken;
@@ -63,18 +53,26 @@ class CustomHttpClient {
     alreadyClosed = true;
   }
 
+  // DEBUG MESSAGES FOR RESPONSE (MAYBE IN CONSTRUCTOR => debugPrint(PATH + STATUSCODE))
+
   Future<Response> get(String path, {bool withCredentials = true}) async {
-    if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
-    debugPrint("GET $_baseUrl$path");
-    final request = await _client.getUrl(Uri.parse("$_baseUrl$path"));
-    if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
-    final response = await request.close();
-    final body = await response.transform(utf8.decoder).join();
-    if (!_keepAlive) _closeClient();
-    return Response(
-      statusCode: response.statusCode,
-      body: body,
-    );
+    final uri = "$_baseUrl$path";
+    try {
+      if (alreadyClosed) return Response(statusCode: -1, body: "Client already closed!");
+      debugPrint("GET $uri");
+      final request = await _client.getUrl(Uri.parse(uri));
+      if (withCredentials) request.headers.add("Authorization", "Bearer $accessToken");
+      final response = await request.close();
+      final body = await response.transform(utf8.decoder).join();
+      if (!_keepAlive) _closeClient();
+      return Response(
+        statusCode: response.statusCode,
+        body: body,
+      );
+    } catch (e) {
+      debugPrint("Failed GET Request to: $uri");
+      return Response(statusCode: -1, body: e.toString());
+    }
   }
 
   Future<Response> post(String path, {bool withCredentials = true, dynamic body}) async {
