@@ -43,6 +43,12 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> {
   }
 
   @override
+  void dispose() {
+    channel.sink.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // const ComputerData computerData = ComputerData(
     //   powerConsumption: [],
