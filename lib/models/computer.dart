@@ -6,6 +6,7 @@ class Computer {
   final String? ipAddress;
   final String? lastUser;
   final DateTime lastSeen;
+  final bool online;
 
   Computer({
     required this.id,
@@ -15,5 +16,6 @@ class Computer {
     required this.ipAddress,
     required this.lastUser,
     required this.lastSeen,
+    required this.online,
   });
 }

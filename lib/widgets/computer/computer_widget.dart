@@ -12,6 +12,11 @@ class ComputerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final computerData = [
+      if (computer.online)
+        ComputerDetailItem(
+          icon: Icons.online_prediction,
+          data: computer.online ? "Online" : "Offline",
+        ),
       if (computer.ipAddress != null)
         ComputerDetailItem(
           icon: Icons.network_check_rounded,
@@ -29,11 +34,13 @@ class ComputerWidget extends StatelessWidget {
         )
     ];
     return ContainerWithContent(
-      onTab: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ComputerDetailScreen(computer),
-        ),
-      ),
+      onTab: () => computer.online == true
+          ? Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ComputerDetailScreen(computer),
+              ),
+            )
+          : null,
       showArrow: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
