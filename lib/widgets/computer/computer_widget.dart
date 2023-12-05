@@ -12,11 +12,10 @@ class ComputerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final computerData = [
-      if (computer.online)
-        ComputerDetailItem(
-          icon: Icons.online_prediction,
-          data: computer.online ? "Online" : "Offline",
-        ),
+      ComputerDetailItem(
+        icon: Icons.online_prediction,
+        data: computer.online ? "Online" : "Offline",
+      ),
       if (computer.ipAddress != null)
         ComputerDetailItem(
           icon: Icons.network_check_rounded,
@@ -41,7 +40,7 @@ class ComputerWidget extends StatelessWidget {
               ),
             )
           : null,
-      showArrow: true,
+      showArrow: computer.online,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
