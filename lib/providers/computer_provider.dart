@@ -36,7 +36,7 @@ class ComputerProvider extends StateNotifier<List<Computer>> {
         ipAddress: computer["ipAddress"],
         lastUser: computer["lastUser"],
         lastSeen: DateTime.parse(computer["lastSeen"]),
-        online: bool.parse(computer["online"]),
+        online: computer["online"],
       );
     }).toList();
     if (newComputers.isNotEmpty) state = [...state, ...newComputers];
