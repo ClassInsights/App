@@ -39,4 +39,4 @@ flutter:
   assets:
     - .env
     - assets/images/icon.png
-    - assets/certificates/projekt-DC01PROJEKT-CA.pem
+    - assets/certificates/t-la-SRVCERT-CA.pem
