@@ -35,7 +35,7 @@ class _RoomOverviewScreenState extends ConsumerState<RoomOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int currentRoomID = ref.read(lessonProvider.notifier).getLessonByDate(now)?.roomId ?? 0;
+    final int currentRoomID = ref.read(lessonProvider.notifier).getCurrentLesson()?.roomId ?? 0;
     final rooms = ref.read(roomProvider);
     final currentRoom = ref.read(roomProvider.notifier).getRoomById(currentRoomID);
 

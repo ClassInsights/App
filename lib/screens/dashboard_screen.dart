@@ -1,7 +1,6 @@
 import 'package:classinsights/main.dart';
 import 'package:classinsights/models/room.dart';
 import 'package:classinsights/providers/auth_provider.dart';
-import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/screen_provider.dart';
 import 'package:classinsights/widgets/charts/electricity_chart.dart';
@@ -17,7 +16,6 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentLesson = ref.read(lessonProvider.notifier).getLessonByDate(DateTime.now());
     final roomCount = ref.watch(roomProvider).length;
     return Column(
       children: [
@@ -26,9 +24,7 @@ class DashboardScreen extends ConsumerWidget {
           builder: (context, constraints) {
             return Column(
               children: [
-                currentLesson != null
-                    ? LessonWidget(lesson: currentLesson)
-                    : const ContainerWithContent(label: "Aktuelle Stunde", title: "Keine Stunde gerade"),
+                const LessonWidget(),
                 const SizedBox(height: App.defaultPadding),
                 Row(
                   children: [

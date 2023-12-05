@@ -16,11 +16,12 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
 
   List<Lesson> get lessons => state;
 
-  Lesson? getLessonByDate(DateTime date) {
+  Lesson? getCurrentLesson() {
     final classId = ref.read(authProvider).data.schoolClass?.id;
     if (classId == null) return null;
     final userLessons = lessons.where((lesson) => lesson.classId == ref.read(authProvider).data.schoolClass?.id).toList();
     try {
+      final date = DateTime.now();
       return userLessons.firstWhere((lesson) {
         if (lesson.startTime == null || lesson.endTime == null) return false;
         return lesson.startTime!.isBefore(date) && lesson.endTime!.isAfter(date);

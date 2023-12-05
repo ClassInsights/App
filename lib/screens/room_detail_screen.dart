@@ -2,7 +2,6 @@ import 'package:classinsights/main.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/computer/computer_list.dart';
-import 'package:classinsights/widgets/container/container_content.dart';
 import 'package:classinsights/widgets/others/lesson_widget.dart';
 import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:classinsights/widgets/others/sub_screen_container.dart';
@@ -16,7 +15,6 @@ class RoomDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final room = ref.read(roomProvider.notifier).getRoomById(roomID);
-    final lesson = ref.read(lessonProvider.notifier).getLessonByDate(DateTime.now());
 
     if (room == null) {
       return Center(
@@ -54,12 +52,7 @@ class RoomDetailScreen extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          lesson != null
-              ? LessonWidget(lesson: lesson)
-              : const ContainerWithContent(
-                  label: "Aktuelle Stunde",
-                  title: "Hier ist gerade keine Stunde",
-                ),
+          const LessonWidget(),
           const SizedBox(height: App.defaultPadding),
           WidgetContainer(
             primary: true,
