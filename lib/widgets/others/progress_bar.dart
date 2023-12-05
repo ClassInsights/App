@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ProgressBar extends StatefulWidget {
   final String title;
-  final double progress;
-  final double baseValue;
+  final int progress;
+  final int baseValue;
 
   const ProgressBar({
     super.key,
@@ -51,19 +51,18 @@ class _ProgressBarState extends State<ProgressBar> {
             ),
             LayoutBuilder(
               builder: (context, constraints) => TweenAnimationBuilder(
-                  tween: Tween<double>(begin: 0.0, end: constraints.maxWidth * (widget.progress / widget.baseValue)),
-                  duration: const Duration(milliseconds: 2000),
-                  curve: Curves.easeInOut,
-                  builder: (context, value, _) {
-                    return Container(
-                      width: value,
-                      height: 3.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    );
-                  }),
+                tween: Tween<double>(begin: 0.0, end: constraints.maxWidth * (widget.progress / widget.baseValue)),
+                duration: const Duration(milliseconds: 2000),
+                curve: Curves.easeInOut,
+                builder: (context, value, _) => Container(
+                  width: value,
+                  height: 3.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
