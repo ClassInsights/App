@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ComputerList extends ConsumerStatefulWidget {
-  final int classId;
-  const ComputerList(this.classId, {super.key});
+  final int roomId;
+  const ComputerList(this.roomId, {super.key});
 
   @override
   ConsumerState<ComputerList> createState() => _ComputerListState();
@@ -19,17 +19,15 @@ class _ComputerListState extends ConsumerState<ComputerList> {
 
   @override
   void initState() {
-    ref.read(computerProvider.notifier).fetchComputers(widget.classId).then(
-          (response) => setState(() {
-            loading = false;
-            computers = response;
-          }),
+    ref.read(computerProvider.notifier).fetchComputers(widget.roomId).then(
+          (response) => setState(() => loading = false),
         );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    computers = ref.watch(computerProvider).where((computer) => computer.roomId == widget.roomId).toList();
     if (loading) return const Center(child: CircularProgressIndicator());
     return computers.isNotEmpty
         ? ListView.separated(
