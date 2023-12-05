@@ -39,7 +39,9 @@ class CustomHttpClient {
   static Future<CustomHttpClient> create({String? baseUrl, bool keepAlive = false}) async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString("ci_accessToken");
-    final content = await rootBundle.loadString("assets/certificates/projekt-DC01PROJEKT-CA.pem");
+    final certPath = dotenv.env['ROOT_CERT'];
+    if (certPath == null) throw Exception("No root certificate path specified in .env file!");
+    final content = await rootBundle.loadString(certPath);
     final client = CustomHttpClient._create(
       cert: content,
       token: accessToken ?? "",
