@@ -84,6 +84,11 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
       );
     }).toList();
 
+    lessons.sort((Lesson a, Lesson b) {
+      if (a.startTime == null || b.startTime == null) return 0;
+      return a.startTime!.compareTo(b.startTime!);
+    });
+
     if (lessons.isNotEmpty) state = lessons;
     return lessons;
   }
