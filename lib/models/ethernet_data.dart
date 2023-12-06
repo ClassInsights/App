@@ -1,6 +1,6 @@
 class EthernetData {
-  final String uploadSpeed;
-  final String downloadSpeed;
+  final double uploadSpeed;
+  final double downloadSpeed;
 
   const EthernetData({
     required this.uploadSpeed,
