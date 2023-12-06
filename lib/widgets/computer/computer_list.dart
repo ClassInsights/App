@@ -1,5 +1,4 @@
 import 'package:classinsights/main.dart';
-import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/providers/computer_provider.dart';
 import 'package:classinsights/widgets/computer/computer_widget.dart';
 import 'package:flutter/material.dart';
