@@ -1,4 +1,5 @@
 import 'package:classinsights/main.dart';
+import 'package:classinsights/providers/computer_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/computer/computer_list.dart';
@@ -48,11 +49,12 @@ class RoomDetailScreen extends ConsumerWidget {
       refreshAction: () async {
         await ref.read(roomProvider.notifier).refreshRooms();
         await ref.read(lessonProvider.notifier).refreshLessons();
+        await ref.read(computerProvider.notifier).fetchComputers(roomID);
       },
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const LessonWidget(),
+          LessonWidget(roomId: roomID),
           const SizedBox(height: App.defaultPadding),
           WidgetContainer(
             primary: true,

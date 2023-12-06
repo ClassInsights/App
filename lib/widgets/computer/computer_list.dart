@@ -15,7 +15,6 @@ class ComputerList extends ConsumerStatefulWidget {
 
 class _ComputerListState extends ConsumerState<ComputerList> {
   var loading = true;
-  List<Computer> computers = [];
 
   @override
   void initState() {
@@ -27,7 +26,7 @@ class _ComputerListState extends ConsumerState<ComputerList> {
 
   @override
   Widget build(BuildContext context) {
-    computers = ref.watch(computerProvider).where((computer) => computer.roomId == widget.roomId).toList();
+    final computers = ref.watch(computerProvider).where((computer) => computer.roomId == widget.roomId).toList();
     if (loading) return const Center(child: CircularProgressIndicator());
     return computers.isNotEmpty
         ? ListView.separated(
