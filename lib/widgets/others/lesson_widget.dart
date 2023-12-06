@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/lesson.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/widgets/container/container_content.dart';
@@ -15,40 +17,68 @@ class LessonWidget extends ConsumerStatefulWidget {
   ConsumerState<LessonWidget> createState() => _LessonWidgetState();
 }
 
-class _LessonWidgetState extends ConsumerState<LessonWidget> {
-  late Lesson? lesson;
+class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBindingObserver {
+  Lesson? lesson;
+  String? className;
+  DateTime now = DateTime.now();
   late Timer timer;
+
+  Future<String?> fetchClass(int classId) async {
+    final client = await CustomHttpClient.create();
+    final response = await client.get("/classes/$classId");
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data["name"];
+    }
+    return null;
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(const Duration(milliseconds: 1000), (_) {
+      setState(() => now = DateTime.now());
+      final currentLesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
+      if (currentLesson == null) {
+        if (lesson != null) setState(() => lesson = null);
+        return;
+      }
+      if (currentLesson.id == (lesson?.id ?? -1)) return;
+      setState(() => lesson = currentLesson);
+    });
+  }
 
   @override
   void initState() {
-    lesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
     super.initState();
-    timer = Timer.periodic(
-      const Duration(milliseconds: 1000),
-      (_) => setState(
-        () {
-          final currentLesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
-          if (currentLesson == null) {
-            lesson = null;
-            return;
-          }
-          if (currentLesson.id == (lesson?.id ?? -1)) return;
-          lesson = currentLesson;
-        },
-      ),
-    );
+    lesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
+    startTimer();
+    final classId = lesson?.classId;
+    if (widget.roomId != null && classId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final name = await fetchClass(classId);
+        if (name != null) setState(() => className = name);
+      });
+    }
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    timer.cancel();
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    if (timer.isActive) timer.cancel();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      startTimer();
+    } else if (state == AppLifecycleState.paused) {
+      timer.cancel();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-
     if (lesson != null) {
       final startTime = lesson?.startTime;
       final endTime = lesson?.endTime;
@@ -65,7 +95,7 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
 
       return ContainerWithContent(
         label: "Aktuelle Stunde",
-        title: lesson?.subject.name ?? "Fach nicht gefunden",
+        title: "${lesson?.subject.name ?? "Fach nicht gefunden"}${className != null ? " ($className)" : ""}",
         child: ProgressBar(
           title: 'noch ${((baseSeconds - seconds) / 60).ceil().toStringAsFixed(0)} Minuten',
           progress: seconds,
@@ -75,7 +105,6 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
     }
 
     final todaysLessons = ref.read(lessonProvider.notifier).getLessonsForDay(now, roomId: widget.roomId);
-
     if (todaysLessons.isEmpty) {
       return const ContainerWithContent(
         label: "Aktuelle Stunde",
@@ -83,7 +112,7 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
       );
     }
 
-    if (todaysLessons.first.startTime?.isBefore(now) == true) {
+    if (todaysLessons.first.startTime?.isAfter(now) == true) {
       return const ContainerWithContent(
         label: "Aktuelle Stunde",
         title: "Noch hat keine Stunde begonnen",
@@ -103,7 +132,7 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
       );
     }
 
-    final nextLessonStart = todaysLessons[todaysLessons.indexOf(previousLesson) + 1].startTime;
+    final nextLessonStart = todaysLessons[todaysLessons.indexOf(previousLesson) + 1].startTime; // ES KRACHT UND PFEIFT
     final previousLessonEnd = previousLesson.endTime;
 
     if (nextLessonStart == null || previousLessonEnd == null) {
@@ -113,7 +142,7 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
       );
     }
 
-    final baseSeconds = nextLessonStart.difference(previousLessonEnd).inMinutes;
+    final baseSeconds = nextLessonStart.difference(previousLessonEnd).inSeconds;
     final secondsPassed = now.difference(previousLessonEnd).inSeconds;
 
     return ContainerWithContent(
