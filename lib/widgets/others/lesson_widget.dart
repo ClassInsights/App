@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LessonWidget extends ConsumerStatefulWidget {
-  const LessonWidget({super.key});
+  final int? roomId;
+  const LessonWidget({this.roomId, super.key});
 
   @override
   ConsumerState<LessonWidget> createState() => _LessonWidgetState();
@@ -20,13 +21,13 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
 
   @override
   void initState() {
-    lesson = ref.read(lessonProvider.notifier).getCurrentLesson();
+    lesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
     super.initState();
     timer = Timer.periodic(
-      const Duration(milliseconds: 500),
+      const Duration(milliseconds: 1000),
       (_) => setState(
         () {
-          final currentLesson = ref.read(lessonProvider.notifier).getCurrentLesson();
+          final currentLesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
           if (currentLesson == null) {
             lesson = null;
             return;
@@ -59,7 +60,7 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
         );
       }
 
-      final baseSeconds = startTime.difference(endTime).inSeconds;
+      final baseSeconds = endTime.difference(startTime).inSeconds;
       final seconds = now.difference(startTime).inSeconds;
 
       return ContainerWithContent(
@@ -73,12 +74,27 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> {
       );
     }
 
-    final todaysLessons = ref.read(lessonProvider.notifier).getLessonsForDay(now);
+    final todaysLessons = ref.read(lessonProvider.notifier).getLessonsForDay(now, roomId: widget.roomId);
+
+    if (todaysLessons.isEmpty) {
+      return const ContainerWithContent(
+        label: "Aktuelle Stunde",
+        title: "Keine Stunden heute",
+      );
+    }
+
+    if (todaysLessons.first.startTime?.isBefore(now) == true) {
+      return const ContainerWithContent(
+        label: "Aktuelle Stunde",
+        title: "Noch hat keine Stunde begonnen",
+      );
+    }
+
     final previousLesson = todaysLessons.reversed.firstWhere((les) {
       final endTime = les.endTime;
       if (endTime == null) return false;
       return endTime.isBefore(now);
-    }, orElse: () => todaysLessons.first);
+    }, orElse: () => todaysLessons.last);
 
     if (previousLesson.id == todaysLessons.last.id) {
       return const ContainerWithContent(
