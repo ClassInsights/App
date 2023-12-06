@@ -65,7 +65,7 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBinding
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    if (timer.isActive) timer.cancel();
+    timer.cancel();
   }
 
   @override
