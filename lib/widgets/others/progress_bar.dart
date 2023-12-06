@@ -52,7 +52,7 @@ class _ProgressBarState extends State<ProgressBar> {
             LayoutBuilder(
               builder: (context, constraints) => TweenAnimationBuilder(
                 tween: Tween<double>(begin: 0.0, end: constraints.maxWidth * (widget.progress / widget.baseValue)),
-                duration: const Duration(milliseconds: 2000),
+                duration: const Duration(milliseconds: 1000),
                 curve: Curves.easeInOut,
                 builder: (context, value, _) => Container(
                   width: value,
