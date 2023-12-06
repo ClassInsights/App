@@ -16,30 +16,38 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
 
   List<Lesson> get lessons => state;
 
-  Lesson? getCurrentLesson() {
+  Lesson? getCurrentLesson({int? roomId}) {
+    final now = DateTime.now();
     final classId = ref.read(authProvider).data.schoolClass?.id;
     if (classId == null) return null;
-    final userLessons = lessons.where((lesson) => lesson.classId == ref.read(authProvider).data.schoolClass?.id).toList();
     try {
-      final date = DateTime.now();
-      return userLessons.firstWhere((lesson) {
-        if (lesson.startTime == null || lesson.endTime == null) return false;
-        return lesson.startTime!.isBefore(date) && lesson.endTime!.isAfter(date);
+      return lessons.firstWhere((lesson) {
+        final startTime = lesson.startTime;
+        final endTime = lesson.endTime;
+        if (startTime == null || endTime == null) return false;
+
+        if (roomId != null) return lesson.roomId == roomId && startTime.isBefore(now) && endTime.isAfter(now);
+        return lesson.classId == classId && startTime.isBefore(now) && endTime.isAfter(now);
       });
     } catch (_) {
       return null;
     }
   }
 
-  List<Lesson> getLessonsForDay(DateTime targetDay) {
+  List<Lesson> getLessonsForDay(DateTime targetDay, {int? roomId}) {
     final classId = ref.read(authProvider).data.schoolClass?.id;
     if (classId == null) return [];
-    final userLessons = lessons.where((lesson) => lesson.classId == classId);
+    return lessons.where((lesson) {
+      bool isSameDay =
+          lesson.startTime?.day == targetDay.day && lesson.startTime?.month == targetDay.month && lesson.startTime?.year == targetDay.year;
+      if (!isSameDay) return false;
 
-    return userLessons
-        .where((lesson) =>
-            lesson.startTime?.day == targetDay.day && lesson.startTime?.month == targetDay.month && lesson.startTime?.year == targetDay.year)
-        .toList();
+      if (roomId != null) {
+        return lesson.roomId == roomId;
+      } else {
+        return lesson.classId == classId;
+      }
+    }).toList();
   }
 
   Future<void> refreshLessons() async {
