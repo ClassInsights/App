@@ -10,6 +10,7 @@ import 'package:classinsights/widgets/others/header.dart';
 import 'package:classinsights/widgets/others/lesson_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -17,9 +18,16 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final roomCount = ref.watch(roomProvider).length;
+
+    void openWebsite() async {
+      if (!await launchUrl(Uri.parse("https://eco-landeck.at"))) {
+        throw Exception("Could not launch Website URL");
+      }
+    }
+
     return Column(
       children: [
-        Header("Willkommen, ${ref.read(authProvider).data.name.split(" ")[0]}."),
+        Header("Willkommen, ${ref.read(authProvider).data.name.split(" ").first}."),
         LayoutBuilder(
           builder: (context, constraints) {
             return Column(
@@ -29,9 +37,11 @@ class DashboardScreen extends ConsumerWidget {
                 Row(
                   children: [
                     ContainerWithContent(
-                      label: "Top",
-                      title: "Hop",
+                      label: "Öffnen",
+                      title: "Website",
                       width: constraints.maxWidth / 2 - App.defaultPadding / 2,
+                      showArrow: true,
+                      onTab: openWebsite,
                     ),
                     const SizedBox(
                       width: App.defaultPadding,
@@ -50,7 +60,7 @@ class DashboardScreen extends ConsumerWidget {
                   height: App.defaultPadding,
                 ),
                 ContainerWithContent(
-                  label: "Aktive Geräte",
+                  label: "Registrierte Geräte",
                   title: ref.read(roomProvider).fold(0, (int previousElement, Room room) => previousElement + room.deviceCount).toString(),
                 ),
                 const SizedBox(
