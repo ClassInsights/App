@@ -1,4 +1,3 @@
-import 'package:classinsights/main.dart';
 import 'package:classinsights/widgets/charts/chart_container.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
