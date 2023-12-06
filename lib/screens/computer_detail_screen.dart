@@ -63,6 +63,7 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
   @override
   void initState() {
     super.initState();
+    Future(() => ref.read(computerDataProvider.notifier).clearComputerData());
     WidgetsBinding.instance.addObserver(this);
     openWebSocket();
   }
@@ -71,6 +72,7 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
   void dispose() async {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    Future(() => ref.read(computerDataProvider.notifier).clearComputerData());
     closeWebSocket();
   }
 
