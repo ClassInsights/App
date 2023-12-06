@@ -5,8 +5,10 @@ import 'package:classinsights/main.dart';
 import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/models/computer_data.dart';
 import 'package:classinsights/models/ethernet_data.dart';
-import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/computer_data_provider.dart';
+import 'package:classinsights/widgets/charts/cpu_usage_chart.dart';
+import 'package:classinsights/widgets/charts/disk_usage_chart.dart';
 import 'package:classinsights/widgets/computer/dangerzone.dart';
 import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:classinsights/widgets/others/sub_screen_container.dart';
@@ -26,7 +28,6 @@ class ComputerDetailScreen extends ConsumerStatefulWidget {
 
 class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> with WidgetsBindingObserver {
   late WebSocketChannel channel;
-  bool loading = true;
   bool didFail = false;
 
   void openWebSocket() {
@@ -49,7 +50,6 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
       }
     });
 
-    setState(() => loading = false);
     debugPrint("Connected to websocket");
   }
 
@@ -138,44 +138,54 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
               ),
             ),
             const SizedBox(height: App.defaultPadding),
-            loading
-                ? Container(
-                    margin: const EdgeInsets.only(top: 50.0),
-                    child: const Center(child: CircularProgressIndicator()),
-                  )
-                : Column(
-                    children: [
-                      StreamBuilder(
-                          stream: channel.stream,
-                          builder: (_, snapshot) {
-                            if (!snapshot.hasData) return const Text("Etwas ist schief gelaufen!");
-                            final data = jsonDecode(snapshot.data)["Data"];
-                            final computerData = ComputerData(
-                              powerConsumption: data["Power"],
-                              ramUsage: data["RamUsage"],
-                              cpuUsage: data["CpuUsage"][0],
-                              diskUsage: data["DiskUsages"][0],
-                              ethernetData: EthernetData(
-                                uploadSpeed: data["EthernetUsages"][0]["Upload Speed"],
-                                downloadSpeed: data["EthernetUsages"][0]["Download Speed"],
-                              ),
-                            );
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Power Consumption: ${computerData.powerConsumption}"),
-                                Text("RAM Usage: ${computerData.ramUsage}"),
-                                Text("CPU Usage: ${computerData.cpuUsage}"),
-                                Text("Disk Usage: ${computerData.diskUsage}"),
-                                Text("Ethernet Upload Speed: ${computerData.ethernetData.uploadSpeed}"),
-                                Text("Ethernet Download Speed: ${computerData.ethernetData.downloadSpeed}"),
-                                const SizedBox(height: App.defaultPadding),
-                              ],
-                            );
-                          }),
-                      ref.read(authProvider).data.role == Role.student ? const SizedBox() : DangerZoneWidget(widget.computer),
-                    ],
-                  )
+            Column(
+              children: [
+                StreamBuilder(
+                  stream: channel.stream,
+                  builder: (_, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(
+                        padding: const EdgeInsets.only(
+                          top: 50.0,
+                          bottom: 50.0,
+                        ),
+                        child: const Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    final data = jsonDecode(snapshot.data)["Data"];
+                    final computerData = ComputerData(
+                      powerConsumption: data["Power"],
+                      ramUsage: data["RamUsage"],
+                      cpuUsage: data["CpuUsage"][0],
+                      diskUsage: data["DiskUsages"][0],
+                      ethernetData: EthernetData(
+                        uploadSpeed: data["EthernetUsages"][0]["Upload Speed"],
+                        downloadSpeed: data["EthernetUsages"][0]["Download Speed"],
+                      ),
+                    );
+                    Future(() => ref.read(computerDataProvider.notifier).addComputerData(computerData));
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Power Consumption: ${computerData.powerConsumption}"),
+                        Text("RAM Usage: ${computerData.ramUsage}"),
+                        Text("CPU Usage: ${computerData.cpuUsage}"),
+                        Text("Disk Usage: ${computerData.diskUsage}"),
+                        Text("Ethernet Upload Speed: ${computerData.ethernetData.uploadSpeed}"),
+                        Text("Ethernet Download Speed: ${computerData.ethernetData.downloadSpeed}"),
+                        const SizedBox(height: App.defaultPadding),
+                        const CpuUsageChart(),
+                        const SizedBox(height: App.defaultPadding),
+                        const DiskUsageChart(),
+                        const SizedBox(height: 50.0),
+                      ],
+                    );
+                  },
+                ),
+                // ref.read(authProvider).data.role == Role.student ? const SizedBox() : DangerZoneWidget(widget.computer),
+                DangerZoneWidget(widget.computer),
+              ],
+            )
           ],
         ),
       ),
