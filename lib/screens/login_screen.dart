@@ -1,4 +1,5 @@
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/screens/microsoft_login_screen.dart';
 import 'package:classinsights/screens/splash_screen.dart';
 import 'package:classinsights/widgets/container/container_content.dart';
 import 'package:classinsights/widgets/others/header.dart';
@@ -17,10 +18,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void showError() {
+      setState(() => alreadySubmited = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          content: const Text("Login fehlgeschlagen! Bitte versuchen Sie es später erneut."),
+        ),
+      );
+    }
+
     void login() {
       setState(() => alreadySubmited = true);
-      ref.read(authProvider.notifier).initialLogin().then(
-        (success) {
+      Navigator.of(context)
+          .push(
+        PageRouteBuilder(
+          pageBuilder: (context, firstAnimation, secondAnimation) => const MicrosoftLoginScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      )
+          .then((code) {
+        ref.read(authProvider.notifier).initialLogin(code).then((success) {
           if (success) {
             Navigator.of(context).pushReplacement(
               PageRouteBuilder(
@@ -30,16 +49,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             );
           } else {
-            setState(() => alreadySubmited = false);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                content: const Text("Login fehlgeschlagen! Bitte versuchen Sie es später erneut."),
-              ),
-            );
+            showError();
           }
-        },
-      );
+        });
+      });
     }
 
     return Scaffold(

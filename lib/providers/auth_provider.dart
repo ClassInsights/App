@@ -8,9 +8,7 @@ import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/localstore_provider.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 
 class Auth {
   final AuthCredentials creds;
@@ -164,26 +162,11 @@ class AuthNotifier extends StateNotifier<Auth> {
     return true;
   }
 
-  Future<bool> initialLogin() async {
-    String result;
-    try {
-      result = await FlutterWebAuth2.authenticate(
-        url: dotenv.env["AUTH_URL"] ?? "",
-        callbackUrlScheme: "classinsights",
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-      return false;
-    }
+  Future<bool> initialLogin(dynamic code) async {
+    if (code is! String) return false;
 
-    final code = Uri.parse(result).queryParameters["code"];
-    if (code == null) return false;
-
-    debugPrint("Send code to Server: $code");
     final client = await CustomHttpClient.create();
     final response = await client.get("/login/$code");
-
-    debugPrint("Response: ${response.statusCode} | ${response.body}");
 
     if (response.statusCode != 200) return false;
 
