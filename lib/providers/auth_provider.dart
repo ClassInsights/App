@@ -41,10 +41,23 @@ class AuthNotifier extends StateNotifier<Auth> {
 
     final payload = tokenData.payload;
     final classId = payload["class"];
-    final client = await CustomHttpClient.create();
+
+    final userRole = Role.values.firstWhere((data) => data.name.toLowerCase() == payload["role"].toString().toLowerCase());
+
+    if (classId == null) {
+      return AuthData(
+        name: payload["name"],
+        id: payload["sub"],
+        email: payload["email"],
+        role: userRole,
+        schoolClass: null,
+        expirationDate: DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
+      );
+    }
 
     dynamic body;
     try {
+      final client = await CustomHttpClient.create();
       final response = await client.get("/classes/$classId");
       if (response.statusCode != 200) return null;
       body = jsonDecode(response.body);
@@ -57,7 +70,7 @@ class AuthNotifier extends StateNotifier<Auth> {
       name: payload["name"],
       id: payload["sub"],
       email: payload["email"],
-      role: Role.values.firstWhere((data) => data.name.toLowerCase() == payload["role"].toString().toLowerCase()),
+      role: userRole,
       schoolClass: SchoolClass(id: int.tryParse(classId) ?? 0, name: body["name"], headTeacher: body["head"]),
       expirationDate: DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
     );
@@ -163,10 +176,13 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> initialLogin(dynamic code) async {
+    debugPrint("Code: $code");
     if (code is! String) return false;
 
     final client = await CustomHttpClient.create();
-    final response = await client.get("/login/$code");
+    final response = await client.get("/login/?code=$code");
+
+    debugPrint("Response: ${response.statusCode}");
 
     if (response.statusCode != 200) return false;
 
@@ -174,8 +190,9 @@ class AuthNotifier extends StateNotifier<Auth> {
     final accessToken = body["access_token"];
     final refreshToken = body["refresh_token"];
 
-    ref.read(localstoreProvider.notifier).setItem("ci_accessToken", accessToken);
-    ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", refreshToken);
+    final localstore = ref.read(localstoreProvider.notifier);
+    localstore.setItem("ci_accessToken", accessToken);
+    localstore.setItem("ci_refreshToken", refreshToken);
 
     final authData = await getAuthData(accessToken: accessToken);
     if (authData == null) return false;
