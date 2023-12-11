@@ -1,6 +1,7 @@
 import 'package:classinsights/main.dart';
 import 'package:classinsights/providers/computer_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
+import 'package:classinsights/providers/ratelimit_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/computer/computer_list.dart';
 import 'package:classinsights/widgets/others/lesson_widget.dart';
@@ -50,6 +51,7 @@ class RoomDetailScreen extends ConsumerWidget {
         await ref.read(roomProvider.notifier).refreshRooms();
         await ref.read(lessonProvider.notifier).refreshLessons();
         await ref.read(computerProvider.notifier).fetchComputers(roomID);
+        ref.read(ratelimitProvider.notifier).addRateLimit("reload-${room.id}");
       },
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
