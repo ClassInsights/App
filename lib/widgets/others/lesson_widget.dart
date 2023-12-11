@@ -131,11 +131,11 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBinding
         title: "Keine weiteren Stunden heute",
       );
     }
-
-    final nextLessonStart = todaysLessons[todaysLessons.indexOf(previousLesson) + 1].startTime; // ES KRACHT UND PFEIFT
+    final nextLesson = todaysLessons.elementAtOrNull(todaysLessons.indexOf(previousLesson) + 1);
+    final nextLessonStart = nextLesson?.startTime;
     final previousLessonEnd = previousLesson.endTime;
 
-    if (nextLessonStart == null || previousLessonEnd == null) {
+    if (nextLesson == null || nextLessonStart == null || previousLessonEnd == null) {
       return const ContainerWithContent(
         label: "Aktuelle Stunde",
         title: "unerwarteter Fehler",
@@ -145,11 +145,18 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBinding
     final baseSeconds = nextLessonStart.difference(previousLessonEnd).inSeconds;
     final secondsPassed = now.difference(previousLessonEnd).inSeconds;
 
+    if (baseSeconds > 60 * 50) {
+      return const ContainerWithContent(
+        label: "Aktuelle Stunde",
+        title: "Gerade keine Stunde",
+      );
+    }
+
     return ContainerWithContent(
-      label: "Aktuelle Stunde",
-      title: "Pause",
+      label: "Nächste Stunde",
+      title: nextLesson.subject.name,
       child: ProgressBar(
-        title: 'noch ${((baseSeconds - secondsPassed) / 60).ceil().toStringAsFixed(0)} Minuten',
+        title: 'in ${((baseSeconds - secondsPassed) / 60).ceil().toStringAsFixed(0)} Minuten',
         progress: secondsPassed,
         baseValue: baseSeconds,
       ),
