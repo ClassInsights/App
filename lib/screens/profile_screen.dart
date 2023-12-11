@@ -45,7 +45,7 @@ class ProfileScreen extends ConsumerWidget {
         authData.schoolClass != null
             ? Text("${authData.schoolClass!.name} ${authData.schoolClass?.headTeacher != null ? "(${authData.schoolClass!.headTeacher})" : ""}")
             : const SizedBox.shrink(),
-        const SizedBox(height: App.smallPadding),
+        if (authData.schoolClass != null) const SizedBox(height: App.smallPadding),
         todaysLessons.isEmpty ? const Text("Schulfreier Tag") : Text("${todaysLessons.length} Stunden heute"),
         const SizedBox(height: 40.0),
         ContainerWithContent(
