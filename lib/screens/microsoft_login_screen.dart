@@ -12,10 +12,10 @@ class MicrosoftLoginScreen extends StatelessWidget {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onNavigationRequest: (request) async {
-          final redirectUri = Uri.parse(request.url).queryParameters["redirect_uri"];
+          final redirectUri = uri.queryParameters["redirect_uri"];
           if (redirectUri == null) {
             Navigator.of(context).pop();
-            return NavigationDecision.prevent;
+            throw Exception("redirect_uri not set in AUTH_URL env");
           }
           if (request.url.startsWith(redirectUri)) {
             final code = Uri.parse(request.url).queryParameters["code"];
@@ -25,7 +25,8 @@ class MicrosoftLoginScreen extends StatelessWidget {
           return NavigationDecision.navigate;
         },
       ))
-      ..loadRequest(uri);
+      ..loadRequest(uri)
+      ..clearCache();
     return Scaffold(
       body: WebViewWidget(
         controller: webController,

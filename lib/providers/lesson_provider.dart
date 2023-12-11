@@ -19,7 +19,20 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
   Lesson? getCurrentLesson({int? roomId}) {
     final now = DateTime.now();
     final classId = ref.read(authProvider).data.schoolClass?.id;
-    if (classId == null) return null;
+    if (classId == null) {
+      if (roomId == null) return null;
+      try {
+        return lessons.firstWhere((lesson) {
+          final startTime = lesson.startTime;
+          final endTime = lesson.endTime;
+          if (startTime == null || endTime == null) return false;
+
+          return lesson.roomId == roomId && startTime.isBefore(now) && endTime.isAfter(now);
+        });
+      } catch (e) {
+        return null;
+      }
+    }
     try {
       return lessons.firstWhere((lesson) {
         final startTime = lesson.startTime;
@@ -36,12 +49,11 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
 
   List<Lesson> getLessonsForDay(DateTime targetDay, {int? roomId}) {
     final classId = ref.read(authProvider).data.schoolClass?.id;
-    if (classId == null) return [];
+    if (classId == null) {
+      if (roomId == null) return [];
+      return lessons.where((lesson) => lesson.roomId == roomId).toList();
+    }
     return lessons.where((lesson) {
-      bool isSameDay =
-          lesson.startTime?.day == targetDay.day && lesson.startTime?.month == targetDay.month && lesson.startTime?.year == targetDay.year;
-      if (!isSameDay) return false;
-
       if (roomId != null) {
         return lesson.roomId == roomId;
       } else {

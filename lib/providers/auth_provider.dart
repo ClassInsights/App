@@ -176,7 +176,6 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> initialLogin(dynamic code) async {
-    debugPrint("Code: $code");
     if (code is! String) return false;
 
     final client = await CustomHttpClient.create();
