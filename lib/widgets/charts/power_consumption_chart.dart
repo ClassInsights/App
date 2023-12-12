@@ -92,7 +92,7 @@ class PowerConsumptionChart extends ConsumerWidget {
                   getTooltipItems: (touchedSpots) => touchedSpots
                       .map(
                         (spot) => LineTooltipItem(
-                          "${spot.y.toStringAsFixed(1)}%",
+                          "${spot.y.toStringAsFixed(1)} Watt",
                           TextStyle(
                             color: Theme.of(context).colorScheme.background,
                           ),
