@@ -17,7 +17,7 @@ class ComputerDataNotifier extends StateNotifier<List<ComputerData>> {
   ComputerDataNotifier() : super([emptyData]);
 
   void addComputerData(ComputerData data) {
-    if (state.length >= 20) state.removeAt(0);
+    if (state.length >= 40) state.removeAt(0);
     state = [...state, data];
   }
 
