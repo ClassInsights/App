@@ -1,5 +1,6 @@
 import 'package:classinsights/main.dart';
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/classes_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/localstore_provider.dart';
 import 'package:classinsights/providers/theme_provider.dart';
@@ -31,6 +32,9 @@ class ProfileScreen extends ConsumerWidget {
 
     final authData = ref.read(authProvider).data;
     final todaysLessons = ref.read(lessonProvider.notifier).getLessonsForDay(DateTime.now());
+
+    final schoolClass = authData.schoolClasses.length == 1 ? ref.read(classesProvider.notifier).findClassById(authData.schoolClasses.first) : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -42,10 +46,10 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: App.defaultPadding),
         authData.role != null ? Text(ref.read(authProvider.notifier).translateRole(authData.role!)) : const SizedBox.shrink(),
         const SizedBox(height: App.smallPadding),
-        authData.schoolClass != null
-            ? Text("${authData.schoolClass!.name} ${authData.schoolClass?.headTeacher != null ? "(${authData.schoolClass!.headTeacher})" : ""}")
+        schoolClass != null
+            ? Text("${schoolClass.name} ${schoolClass.headTeacher != null ? "(${schoolClass.headTeacher})" : ""}")
             : const SizedBox.shrink(),
-        if (authData.schoolClass != null) const SizedBox(height: App.smallPadding),
+        if (schoolClass != null) const SizedBox(height: App.smallPadding),
         todaysLessons.isEmpty ? const Text("Schulfreier Tag") : Text("${todaysLessons.length} Stunden heute"),
         const SizedBox(height: 40.0),
         ContainerWithContent(

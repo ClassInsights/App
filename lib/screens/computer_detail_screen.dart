@@ -5,6 +5,7 @@ import 'package:classinsights/main.dart';
 import 'package:classinsights/models/computer.dart';
 import 'package:classinsights/models/computer_data.dart';
 import 'package:classinsights/models/ethernet_data.dart';
+import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/computer_data_provider.dart';
 import 'package:classinsights/widgets/charts/cpu_usage_chart.dart';
@@ -70,10 +71,10 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
 
   @override
   void dispose() async {
+    closeWebSocket();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     Future(() => ref.read(computerDataProvider.notifier).clearComputerData());
-    closeWebSocket();
   }
 
   @override
@@ -184,7 +185,9 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
                     );
                   },
                 ),
-                // ref.read(authProvider).data.role == Role.student ? const SizedBox() : DangerZoneWidget(widget.computer),
+                // ref.read(authProvider).data.role != Role.admin && ref.read(authProvider).data.role != Role.teacher
+                //     ? const SizedBox()
+                //     : DangerZoneWidget(widget.computer),
                 DangerZoneWidget(widget.computer),
               ],
             )

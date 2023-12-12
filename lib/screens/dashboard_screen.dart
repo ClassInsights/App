@@ -32,7 +32,7 @@ class DashboardScreen extends ConsumerWidget {
           builder: (context, constraints) {
             return Column(
               children: [
-                if (ref.read(authProvider).data.schoolClass != null) const LessonWidget(),
+                if (ref.read(authProvider).data.schoolClasses.isNotEmpty) const LessonWidget(),
                 const SizedBox(height: App.defaultPadding),
                 Row(
                   children: [

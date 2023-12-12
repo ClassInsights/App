@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/lesson.dart';
+import 'package:classinsights/providers/classes_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/widgets/container/container_content.dart';
 import 'package:classinsights/widgets/others/progress_bar.dart';
@@ -18,46 +17,29 @@ class LessonWidget extends ConsumerStatefulWidget {
 }
 
 class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBindingObserver {
-  Lesson? lesson;
-  String? className;
+  int currentIndex = 0;
+  List<Lesson?> lessons = [];
   DateTime now = DateTime.now();
   late Timer timer;
-
-  Future<String?> fetchClass(int classId) async {
-    final client = await CustomHttpClient.create();
-    final response = await client.get("/classes/$classId");
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data["name"];
-    }
-    return null;
-  }
 
   void startTimer() {
     timer = Timer.periodic(const Duration(milliseconds: 1000), (_) {
       setState(() => now = DateTime.now());
-      final currentLesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
-      if (currentLesson == null) {
-        if (lesson != null) setState(() => lesson = null);
+      final currentLessons = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
+      if (currentLessons.isEmpty) {
+        if (lessons.isEmpty) setState(() => lessons = []);
         return;
       }
-      if (currentLesson.id == (lesson?.id ?? -1)) return;
-      setState(() => lesson = currentLesson);
+      if (currentLessons.every((lesson) => lessons.contains(lesson))) return;
+      setState(() => lessons = currentLessons);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    lesson = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
+    lessons = ref.read(lessonProvider.notifier).getCurrentLesson(roomId: widget.roomId);
     startTimer();
-    final classId = lesson?.classId;
-    if (widget.roomId != null && classId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        final name = await fetchClass(classId);
-        if (name != null) setState(() => className = name);
-      });
-    }
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -77,88 +59,104 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBinding
     }
   }
 
+  void updateIndex(int newIndex) {
+    setState(() => currentIndex = newIndex);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (lesson != null) {
-      final startTime = lesson?.startTime;
-      final endTime = lesson?.endTime;
+    if (lessons.isEmpty) {
+      final todaysLessons = ref.read(lessonProvider.notifier).getLessonsForDay(now, roomId: widget.roomId);
+      if (todaysLessons.isEmpty) {
+        return const ContainerWithContent(
+          label: "Aktuelle Stunde",
+          title: "Keine Stunden heute",
+        );
+      }
 
-      if (startTime == null || endTime == null) {
+      if (todaysLessons.first.startTime?.isAfter(now) == true) {
+        return const ContainerWithContent(
+          label: "Aktuelle Stunde",
+          title: "Noch hat keine Stunde begonnen",
+        );
+      }
+
+      final previousLesson = todaysLessons.reversed.firstWhere((les) {
+        final endTime = les.endTime;
+        if (endTime == null) return false;
+        return endTime.isBefore(now);
+      }, orElse: () => todaysLessons.last);
+
+      if (previousLesson.id == todaysLessons.last.id) {
+        return const ContainerWithContent(
+          label: "Aktuelle Stunde",
+          title: "Keine weiteren Stunden heute",
+        );
+      }
+      final nextLesson = todaysLessons.elementAtOrNull(todaysLessons.indexOf(previousLesson) + 1);
+      final nextLessonStart = nextLesson?.startTime;
+      final previousLessonEnd = previousLesson.endTime;
+
+      if (nextLesson == null || nextLessonStart == null || previousLessonEnd == null) {
         return const ContainerWithContent(
           label: "Aktuelle Stunde",
           title: "unerwarteter Fehler",
         );
       }
 
-      final baseSeconds = endTime.difference(startTime).inSeconds;
-      final seconds = now.difference(startTime).inSeconds;
+      final baseSeconds = nextLessonStart.difference(previousLessonEnd).inSeconds;
+      final secondsPassed = now.difference(previousLessonEnd).inSeconds;
+
+      if (baseSeconds > 60 * 50) {
+        return const ContainerWithContent(
+          label: "Aktuelle Stunde",
+          title: "Gerade keine Stunde",
+        );
+      }
 
       return ContainerWithContent(
-        label: "Aktuelle Stunde",
-        title: "${lesson?.subject.name ?? "Fach nicht gefunden"}${className != null ? " ($className)" : ""}",
+        label: "Nächste Stunde",
+        title: nextLesson.subject.name,
         child: ProgressBar(
-          title: 'noch ${((baseSeconds - seconds) / 60).ceil().toStringAsFixed(0)} Minuten',
-          progress: seconds,
+          title: 'in ${((baseSeconds - secondsPassed) / 60).ceil().toStringAsFixed(0)} Minuten',
+          progress: secondsPassed,
           baseValue: baseSeconds,
         ),
       );
     }
 
-    final todaysLessons = ref.read(lessonProvider.notifier).getLessonsForDay(now, roomId: widget.roomId);
-    if (todaysLessons.isEmpty) {
-      return const ContainerWithContent(
+    final startTime = lessons.elementAtOrNull(currentIndex)?.startTime;
+    final endTime = lessons.elementAtOrNull(currentIndex)?.endTime;
+
+    if (startTime == null || endTime == null) return const SizedBox.shrink();
+
+    final baseSeconds = endTime.difference(startTime).inSeconds;
+    final seconds = now.difference(startTime).inSeconds;
+
+    final className = widget.roomId != null ? ref.read(classesProvider.notifier).findClassById(lessons[currentIndex]?.classId ?? -1)?.name : null;
+
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        final velocity = details.primaryVelocity;
+        if (velocity == null) return;
+        if (velocity > 0) {
+          if (currentIndex == 0) return;
+          updateIndex(currentIndex - 1);
+        } else {
+          if (currentIndex == lessons.length - 1) return;
+          updateIndex(currentIndex + 1);
+        }
+      },
+      child: ContainerWithContent(
         label: "Aktuelle Stunde",
-        title: "Keine Stunden heute",
-      );
-    }
-
-    if (todaysLessons.first.startTime?.isAfter(now) == true) {
-      return const ContainerWithContent(
-        label: "Aktuelle Stunde",
-        title: "Noch hat keine Stunde begonnen",
-      );
-    }
-
-    final previousLesson = todaysLessons.reversed.firstWhere((les) {
-      final endTime = les.endTime;
-      if (endTime == null) return false;
-      return endTime.isBefore(now);
-    }, orElse: () => todaysLessons.last);
-
-    if (previousLesson.id == todaysLessons.last.id) {
-      return const ContainerWithContent(
-        label: "Aktuelle Stunde",
-        title: "Keine weiteren Stunden heute",
-      );
-    }
-    final nextLesson = todaysLessons.elementAtOrNull(todaysLessons.indexOf(previousLesson) + 1);
-    final nextLessonStart = nextLesson?.startTime;
-    final previousLessonEnd = previousLesson.endTime;
-
-    if (nextLesson == null || nextLessonStart == null || previousLessonEnd == null) {
-      return const ContainerWithContent(
-        label: "Aktuelle Stunde",
-        title: "unerwarteter Fehler",
-      );
-    }
-
-    final baseSeconds = nextLessonStart.difference(previousLessonEnd).inSeconds;
-    final secondsPassed = now.difference(previousLessonEnd).inSeconds;
-
-    if (baseSeconds > 60 * 50) {
-      return const ContainerWithContent(
-        label: "Aktuelle Stunde",
-        title: "Gerade keine Stunde",
-      );
-    }
-
-    return ContainerWithContent(
-      label: "Nächste Stunde",
-      title: nextLesson.subject.name,
-      child: ProgressBar(
-        title: 'in ${((baseSeconds - secondsPassed) / 60).ceil().toStringAsFixed(0)} Minuten',
-        progress: secondsPassed,
-        baseValue: baseSeconds,
+        title: "${lessons.elementAtOrNull(currentIndex)?.subject.name ?? "Unbekanntes Fach"} ${className != null ? "($className)" : ""}",
+        pages: lessons.length,
+        currentIndex: currentIndex,
+        child: ProgressBar(
+          title: 'noch ${((baseSeconds - seconds) / 60).ceil().toStringAsFixed(0)} Minuten',
+          progress: seconds,
+          baseValue: baseSeconds,
+        ),
       ),
     );
   }

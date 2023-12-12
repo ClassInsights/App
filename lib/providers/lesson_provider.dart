@@ -16,40 +16,42 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
 
   List<Lesson> get lessons => state;
 
-  Lesson? getCurrentLesson({int? roomId}) {
+  List<Lesson> getCurrentLesson({int? roomId}) {
     final now = DateTime.now();
-    final classId = ref.read(authProvider).data.schoolClass?.id;
-    if (classId == null) {
-      if (roomId == null) return null;
+    if (roomId != null) {
       try {
-        return lessons.firstWhere((lesson) {
+        return lessons.where((lesson) {
           final startTime = lesson.startTime;
           final endTime = lesson.endTime;
           if (startTime == null || endTime == null) return false;
 
           return lesson.roomId == roomId && startTime.isBefore(now) && endTime.isAfter(now);
-        });
+        }).toList();
       } catch (e) {
-        return null;
+        return [];
       }
     }
+
+    final classes = ref.read(authProvider).data.schoolClasses;
+    if (classes.isEmpty) return [];
+
     try {
-      return lessons.firstWhere((lesson) {
+      return lessons.where((lesson) {
         final startTime = lesson.startTime;
         final endTime = lesson.endTime;
         if (startTime == null || endTime == null) return false;
 
         if (roomId != null) return lesson.roomId == roomId && startTime.isBefore(now) && endTime.isAfter(now);
-        return lesson.classId == classId && startTime.isBefore(now) && endTime.isAfter(now);
-      });
+        return classes.contains(lesson.classId) && startTime.isBefore(now) && endTime.isAfter(now);
+      }).toList();
     } catch (_) {
-      return null;
+      return [];
     }
   }
 
   List<Lesson> getLessonsForDay(DateTime targetDay, {int? roomId}) {
-    final classId = ref.read(authProvider).data.schoolClass?.id;
-    if (classId == null) {
+    final classes = ref.read(authProvider).data.schoolClasses;
+    if (classes.isEmpty) {
       if (roomId == null) return [];
       return lessons.where((lesson) => lesson.roomId == roomId).toList();
     }
@@ -57,7 +59,7 @@ class LessonNotifier extends StateNotifier<List<Lesson>> {
       if (roomId != null) {
         return lesson.roomId == roomId;
       } else {
-        return lesson.classId == classId;
+        return classes.contains(lesson.classId);
       }
     }).toList();
   }

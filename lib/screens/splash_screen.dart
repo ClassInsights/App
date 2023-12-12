@@ -1,5 +1,6 @@
 import 'package:classinsights/helpers/host_checker.dart';
 import 'package:classinsights/providers/auth_provider.dart';
+import 'package:classinsights/providers/classes_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/providers/subject_provider.dart';
@@ -50,6 +51,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     updateHint("Lade App Meta Daten...");
     await ref.read(versionProvider.notifier).fetchVersion();
+    updateHint("Lade Klassen...");
+    await ref.read(classesProvider.notifier).fetchClasses();
     updateHint("Lade Schulräume...");
     await ref.read(roomProvider.notifier).fetchRooms();
     updateHint("Lade Unterrichtsfächer...");

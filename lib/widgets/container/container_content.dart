@@ -9,6 +9,8 @@ class ContainerWithContent extends StatelessWidget {
   final Widget? child;
   final Function? onTab;
   final bool showArrow;
+  final int pages;
+  final int currentIndex;
 
   const ContainerWithContent({
     super.key,
@@ -19,6 +21,8 @@ class ContainerWithContent extends StatelessWidget {
     this.child,
     this.onTab,
     this.showArrow = false,
+    this.pages = 1,
+    this.currentIndex = 0,
   });
 
   @override
@@ -37,11 +41,36 @@ class ContainerWithContent extends StatelessWidget {
                   if (label != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 6.0),
-                      child: Text(
-                        label!,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondaryContainer,
-                            ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            label!,
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                  color: primary ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.secondaryContainer,
+                                ),
+                          ),
+                          if (pages > 1)
+                            Expanded(
+                                child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                for (var i = 0; i < pages; i++)
+                                  Container(
+                                    width: 6.0,
+                                    height: 6.0,
+                                    margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                                    decoration: BoxDecoration(
+                                      color: i == currentIndex
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Theme.of(context).colorScheme.secondaryContainer,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                  ),
+                              ],
+                            ))
+                        ],
                       ),
                     ),
                   if (title != null)

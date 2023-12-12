@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:classinsights/helpers/custom_http_client.dart';
 import 'package:classinsights/models/auth_credentials.dart';
 import 'package:classinsights/models/auth_data.dart';
-import 'package:classinsights/models/schoolclass.dart';
 import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/localstore_provider.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -44,34 +43,18 @@ class AuthNotifier extends StateNotifier<Auth> {
 
     final userRole = Role.values.firstWhere((data) => data.name.toLowerCase() == payload["role"].toString().toLowerCase());
 
-    if (classId == null) {
-      return AuthData(
-        name: payload["name"],
-        id: payload["sub"],
-        email: payload["email"],
-        role: userRole,
-        schoolClass: null,
-        expirationDate: DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
-      );
-    }
-
-    dynamic body;
-    try {
-      final client = await CustomHttpClient.create();
-      final response = await client.get("/classes/$classId");
-      if (response.statusCode != 200) return null;
-      body = jsonDecode(response.body);
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
-    }
+    final classes = classId is String
+        ? [int.parse(classId)]
+        : classId is List<int>
+            ? classId
+            : [];
 
     return AuthData(
       name: payload["name"],
       id: payload["sub"],
       email: payload["email"],
       role: userRole,
-      schoolClass: SchoolClass(id: int.tryParse(classId) ?? 0, name: body["name"], headTeacher: body["head"]),
+      schoolClasses: classes as List<int>,
       expirationDate: DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
     );
   }

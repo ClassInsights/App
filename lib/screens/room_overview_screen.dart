@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:classinsights/main.dart';
+import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/lesson_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/others/header.dart';
@@ -35,9 +36,10 @@ class _RoomOverviewScreenState extends ConsumerState<RoomOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int currentRoomID = ref.read(lessonProvider.notifier).getCurrentLesson()?.roomId ?? 0;
+    final isPartOfMultipleClasses = ref.read(authProvider).data.schoolClasses.length > 1;
+    final currentRoomID = isPartOfMultipleClasses ? -1 : ref.read(lessonProvider.notifier).getCurrentLesson().firstOrNull?.roomId ?? -1;
     final rooms = ref.read(roomProvider);
-    final currentRoom = ref.read(roomProvider.notifier).getRoomById(currentRoomID);
+    final currentRoom = currentRoomID != -1 ? ref.read(roomProvider.notifier).getRoomById(currentRoomID) : null;
 
     return Column(
       children: [

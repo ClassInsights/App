@@ -28,8 +28,15 @@ class MicrosoftLoginScreen extends StatelessWidget {
       ..loadRequest(uri)
       ..clearCache();
     return Scaffold(
-      body: WebViewWidget(
-        controller: webController,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 50.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+              child: WebViewWidget(
+                controller: webController,
+              )),
+        ),
       ),
     );
   }

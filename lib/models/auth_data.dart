@@ -1,4 +1,3 @@
-import 'package:classinsights/models/schoolclass.dart';
 import 'package:classinsights/models/user_role.dart';
 
 class AuthData {
@@ -6,7 +5,7 @@ class AuthData {
   final String id;
   final String email;
   final Role? role;
-  final SchoolClass? schoolClass;
+  final List<int> schoolClasses;
   final DateTime expirationDate;
 
   const AuthData({
@@ -14,7 +13,7 @@ class AuthData {
     required this.id,
     required this.email,
     required this.role,
-    required this.schoolClass,
+    required this.schoolClasses,
     required this.expirationDate,
   });
 
@@ -24,7 +23,7 @@ class AuthData {
       id: "",
       email: "",
       role: Role.student,
-      schoolClass: SchoolClass.blank(),
+      schoolClasses: [],
       expirationDate: DateTime.now(),
     );
   }
