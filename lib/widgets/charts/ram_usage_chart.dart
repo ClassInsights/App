@@ -4,8 +4,8 @@ import 'package:classinsights/widgets/charts/custom_pie_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DiskUsageChart extends ConsumerWidget {
-  const DiskUsageChart({super.key});
+class RamUsageChart extends ConsumerWidget {
+  const RamUsageChart({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -13,10 +13,9 @@ class DiskUsageChart extends ConsumerWidget {
     if (data == null) return const SizedBox.shrink();
 
     final lastData = data.last;
-
     return CustomPieChart(
-      title: "Festplattenverwendung",
-      progress: lastData.diskUsage,
+      title: "RAM-Verwendung",
+      progress: lastData.ramUsage,
       primaryName: "Belegt",
       secondaryName: "Frei",
     );

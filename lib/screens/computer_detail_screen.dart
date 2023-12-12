@@ -10,6 +10,8 @@ import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/computer_data_provider.dart';
 import 'package:classinsights/widgets/charts/cpu_usage_chart.dart';
 import 'package:classinsights/widgets/charts/disk_usage_chart.dart';
+import 'package:classinsights/widgets/charts/power_consumption_chart.dart';
+import 'package:classinsights/widgets/charts/ram_usage_chart.dart';
 import 'package:classinsights/widgets/computer/dangerzone.dart';
 import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:classinsights/widgets/others/sub_screen_container.dart';
@@ -114,6 +116,8 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
       );
     }
 
+    final role = ref.read(authProvider).data.role;
+
     return SubScreenContainer(
       title: widget.computer.name,
       body: LayoutBuilder(
@@ -177,6 +181,10 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
                         Text("Ethernet Upload Speed: ${computerData.ethernetData.uploadSpeed}"),
                         Text("Ethernet Download Speed: ${computerData.ethernetData.downloadSpeed}"),
                         const SizedBox(height: App.defaultPadding),
+                        const PowerConsumptionChart(),
+                        const SizedBox(height: App.defaultPadding),
+                        const RamUsageChart(),
+                        const SizedBox(height: App.defaultPadding),
                         const CpuUsageChart(),
                         const SizedBox(height: App.defaultPadding),
                         const DiskUsageChart(),
@@ -185,10 +193,8 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
                     );
                   },
                 ),
-                // ref.read(authProvider).data.role != Role.admin && ref.read(authProvider).data.role != Role.teacher
-                //     ? const SizedBox()
-                //     : DangerZoneWidget(widget.computer),
-                DangerZoneWidget(widget.computer),
+                role != Role.admin && role != Role.teacher ? const SizedBox() : DangerZoneWidget(widget.computer),
+                // DangerZoneWidget(widget.computer),
               ],
             )
           ],
