@@ -25,7 +25,7 @@ class _ComputerListState extends ConsumerState<ComputerList> {
 
   @override
   Widget build(BuildContext context) {
-    final computers = ref.watch(computerProvider).where((computer) => computer.roomId == widget.roomId).toList();
+    final computers = ref.watch(computerProvider).where((computer) => computer.roomId == widget.roomId).toList()..sort((a, b) => a.online ? 0 : 1);
     if (loading) return const Center(child: CircularProgressIndicator());
     return computers.isNotEmpty
         ? ListView.separated(
