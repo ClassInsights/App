@@ -26,7 +26,7 @@ class ComputerWidget extends StatelessWidget {
           icon: Icons.computer,
           data: computer.macAddress!,
         ),
-      if (computer.lastUser != null)
+      if (computer.lastUser != null && computer.lastUser?.startsWith("NT") == false)
         ComputerDetailItem(
           icon: Icons.person,
           data: computer.lastUser!,

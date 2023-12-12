@@ -8,6 +8,8 @@ import 'package:classinsights/models/ethernet_data.dart';
 import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/auth_provider.dart';
 import 'package:classinsights/providers/computer_data_provider.dart';
+import 'package:classinsights/providers/computer_provider.dart';
+import 'package:classinsights/providers/ratelimit_provider.dart';
 import 'package:classinsights/widgets/charts/cpu_usage_chart.dart';
 import 'package:classinsights/widgets/charts/disk_usage_chart.dart';
 import 'package:classinsights/widgets/charts/power_consumption_chart.dart';
@@ -118,7 +120,18 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
 
     final role = ref.read(authProvider).data.role;
 
+    final hasLastUser = widget.computer.lastUser != null && widget.computer.lastUser?.startsWith("NT") == false;
+
     return SubScreenContainer(
+      refreshAction: () async {
+        final limiter = ref.read(ratelimitProvider.notifier);
+        if (limiter.isRateLimited("refresh-computer-${widget.computer.id}")) return;
+        limiter.addRateLimit("refresh-computer-${widget.computer.id}");
+        ref.read(computerDataProvider.notifier).clearComputerData();
+        closeWebSocket();
+        openWebSocket();
+        ref.read(computerProvider.notifier).fetchComputers(widget.computer.id);
+      },
       title: widget.computer.name,
       body: LayoutBuilder(
         builder: (_, constraints) => Column(
@@ -133,10 +146,10 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(height: App.defaultPadding),
-                  Text("Letzter Nutzer: ${widget.computer.lastUser}"),
-                  const SizedBox(height: App.smallPadding),
+                  if (hasLastUser) Text("Letzter Nutzer: ${widget.computer.lastUser}"),
+                  if (hasLastUser) const SizedBox(height: App.smallPadding),
                   Text(
-                      "Zuletzt verwendet: ${widget.computer.lastSeen.day}-${widget.computer.lastSeen.month}-${widget.computer.lastSeen.year} | ${widget.computer.lastSeen.hour}:${widget.computer.lastSeen.minute} Uhr"),
+                      "Zuletzt verwendet: ${widget.computer.lastSeen.day}/${widget.computer.lastSeen.month}/${widget.computer.lastSeen.year} ${widget.computer.lastSeen.hour}:${widget.computer.lastSeen.minute.toString().padLeft(2, "0")} Uhr"),
                   const SizedBox(height: App.smallPadding),
                   Text("IP: ${widget.computer.ipAddress}"),
                   const SizedBox(height: App.smallPadding),
@@ -171,24 +184,17 @@ class _ComputerDetailScreenState extends ConsumerState<ComputerDetailScreen> wit
                       ),
                     );
                     Future(() => ref.read(computerDataProvider.notifier).addComputerData(computerData));
-                    return Column(
+                    return const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Power Consumption: ${computerData.powerConsumption}"),
-                        Text("RAM Usage: ${computerData.ramUsage}"),
-                        Text("CPU Usage: ${computerData.cpuUsage}"),
-                        Text("Disk Usage: ${computerData.diskUsage}"),
-                        Text("Ethernet Upload Speed: ${computerData.ethernetData.uploadSpeed}"),
-                        Text("Ethernet Download Speed: ${computerData.ethernetData.downloadSpeed}"),
-                        const SizedBox(height: App.defaultPadding),
-                        const PowerConsumptionChart(),
-                        const SizedBox(height: App.defaultPadding),
-                        const RamUsageChart(),
-                        const SizedBox(height: App.defaultPadding),
-                        const CpuUsageChart(),
-                        const SizedBox(height: App.defaultPadding),
-                        const DiskUsageChart(),
-                        const SizedBox(height: 50.0),
+                        PowerConsumptionChart(),
+                        SizedBox(height: App.defaultPadding),
+                        RamUsageChart(),
+                        SizedBox(height: App.defaultPadding),
+                        CpuUsageChart(),
+                        SizedBox(height: App.defaultPadding),
+                        DiskUsageChart(),
+                        SizedBox(height: 50.0),
                       ],
                     );
                   },
