@@ -16,12 +16,13 @@ dependencies:
   shared_preferences: ^2.1.2
   url_launcher: ^6.1.13
   package_info_plus: ^4.1.0
-  flutter_web_auth_2: ^2.2.1
   web_socket_channel: ^2.4.0
   flutter_dotenv: ^5.1.0
   dart_jsonwebtoken: ^2.11.0
   flutter_launcher_icons: ^0.13.1
   fl_chart: ^0.63.0
+  webview_flutter: ^4.4.2
+  restart_app: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -39,4 +40,4 @@ flutter:
   assets:
     - .env
     - assets/images/icon.png
-    - assets/certificates/t-la-SRVCERT-CA.pem
+    - assets/certificates/YourRootCertificate.pem
