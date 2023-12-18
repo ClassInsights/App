@@ -1,9 +1,11 @@
+import 'package:classinsights/providers/localstore_provider.dart';
 import 'package:classinsights/providers/theme_provider.dart';
 import 'package:classinsights/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restart_app/restart_app.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -78,8 +80,38 @@ class App extends ConsumerStatefulWidget {
   ConsumerState<App> createState() => _AppState();
 }
 
-class _AppState extends ConsumerState<App> {
+class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   ThemeMode? themeMode;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      final localstore = ref.read(localstoreProvider.notifier);
+      final closedAt = await localstore.item("closedAt");
+      if (closedAt != null) {
+        final closedAtDateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(closedAt.value));
+        final now = DateTime.now();
+        final difference = now.difference(closedAtDateTime);
+        if (closedAtDateTime.day != now.day || difference.inHours >= 2) Restart.restartApp();
+        localstore.removeItem("closedAt");
+      }
+    } else if (state == AppLifecycleState.paused) {
+      final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      ref.read(localstoreProvider.notifier).setItem("closedAt", timestamp);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +131,7 @@ class _AppState extends ConsumerState<App> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
