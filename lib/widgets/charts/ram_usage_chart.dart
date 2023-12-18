@@ -16,7 +16,7 @@ class RamUsageChart extends ConsumerWidget {
     return CustomPieChart(
       title: "RAM-Verwendung",
       progress: lastData.ramUsage,
-      primaryName: "Belegt",
+      primaryName: "Verwendet",
       secondaryName: "Frei",
     );
   }
