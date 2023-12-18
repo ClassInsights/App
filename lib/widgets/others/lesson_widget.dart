@@ -133,7 +133,10 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBinding
     final baseSeconds = endTime.difference(startTime).inSeconds;
     final seconds = now.difference(startTime).inSeconds;
 
+    final lesson = lessons.elementAtOrNull(currentIndex);
     final className = widget.roomId != null ? ref.read(classesProvider.notifier).findClassById(lessons[currentIndex]?.classId ?? -1)?.name : null;
+
+    if (lesson == null) return const SizedBox.shrink();
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
@@ -149,7 +152,7 @@ class _LessonWidgetState extends ConsumerState<LessonWidget> with WidgetsBinding
       },
       child: ContainerWithContent(
         label: "Aktuelle Stunde",
-        title: "${lessons.elementAtOrNull(currentIndex)?.subject.name ?? "Unbekanntes Fach"} ${className != null ? "($className)" : ""}",
+        title: "${lesson.subject.longName.length < 10 ? lesson.subject.longName : lesson.subject.name} ${className != null ? "($className)" : ""}",
         pages: lessons.length,
         currentIndex: currentIndex,
         child: ProgressBar(

@@ -6,7 +6,6 @@ import 'package:classinsights/models/auth_data.dart';
 import 'package:classinsights/models/user_role.dart';
 import 'package:classinsights/providers/localstore_provider.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Auth {
@@ -163,8 +162,6 @@ class AuthNotifier extends StateNotifier<Auth> {
 
     final client = await CustomHttpClient.create();
     final response = await client.get("/login/?code=$code");
-
-    debugPrint("Response: ${response.statusCode}");
 
     if (response.statusCode != 200) return false;
 
