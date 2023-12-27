@@ -23,7 +23,8 @@ class Auth {
       );
 }
 
-final authProvider = StateNotifierProvider<AuthNotifier, Auth>((ref) => AuthNotifier(ref));
+final authProvider =
+    StateNotifierProvider<AuthNotifier, Auth>((ref) => AuthNotifier(ref));
 
 class AuthNotifier extends StateNotifier<Auth> {
   final StateNotifierProviderRef ref;
@@ -40,7 +41,8 @@ class AuthNotifier extends StateNotifier<Auth> {
     final payload = tokenData.payload;
     final classId = payload["class"];
 
-    final userRole = Role.values.firstWhere((data) => data.name.toLowerCase() == payload["role"].toString().toLowerCase());
+    final userRole = Role.values.firstWhere((data) =>
+        data.name.toLowerCase() == payload["role"].toString().toLowerCase());
 
     final classes = classId is String
         ? [int.parse(classId)]
@@ -54,7 +56,8 @@ class AuthNotifier extends StateNotifier<Auth> {
       email: payload["email"],
       role: userRole,
       schoolClasses: classes as List<int>,
-      expirationDate: DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
+      expirationDate:
+          DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000),
     );
   }
 
@@ -77,19 +80,30 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> reload() async {
-    var accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value;
-    var refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value;
+    var accessToken =
+        (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))
+            ?.value;
+    var refreshToken =
+        (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))
+            ?.value;
 
     if (accessToken == null || refreshToken == null) return false;
 
     final tokenData = JWT.tryDecode(accessToken);
     if (tokenData == null) return false;
-    final expired = DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000).isBefore(DateTime.now());
-    if (expired && await _refreshToken(accessToken, refreshToken) == false) return false;
+    final expired =
+        DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000)
+            .isBefore(DateTime.now());
+    if (expired && await _refreshToken(accessToken, refreshToken) == false)
+      return false;
 
     if (expired) {
-      accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value;
-      refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value;
+      accessToken =
+          (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))
+              ?.value;
+      refreshToken =
+          (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))
+              ?.value;
       if (accessToken == null || refreshToken == null) return false;
     }
 
@@ -121,7 +135,9 @@ class AuthNotifier extends StateNotifier<Auth> {
 
   Future<bool> _refreshToken(String accessToken, String refreshToken) async {
     final userId = JWT.tryDecode(accessToken)?.payload["sub"];
-    if (userId == null) return false;
+    if (userId == null || accessToken == "" || refreshToken == "") {
+      return false;
+    }
     final client = await CustomHttpClient.create();
     final response = await client.post(
       "/token",
@@ -133,15 +149,26 @@ class AuthNotifier extends StateNotifier<Auth> {
     if (response.statusCode != 200) return false;
 
     final body = jsonDecode(response.body);
-    ref.read(localstoreProvider.notifier).setItem("ci_accessToken", body["access_token"]);
-    ref.read(localstoreProvider.notifier).setItem("ci_refreshToken", body["refresh_token"]);
+    ref
+        .read(localstoreProvider.notifier)
+        .setItem("ci_accessToken", body["access_token"]);
+    ref
+        .read(localstoreProvider.notifier)
+        .setItem("ci_refreshToken", body["refresh_token"]);
     return true;
   }
 
   Future<bool> verifyLogin() async {
-    if (state.creds.accessToken.isEmpty || state.creds.refreshToken.isEmpty) return false;
-    final accessToken = (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))?.value ?? "Unknown";
-    final refreshToken = (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))?.value ?? "Unknown";
+    if (state.creds.accessToken.isEmpty || state.creds.refreshToken.isEmpty)
+      return false;
+    final accessToken =
+        (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))
+                ?.value ??
+            "Unknown";
+    final refreshToken =
+        (await ref.read(localstoreProvider.notifier).item("ci_refreshToken"))
+                ?.value ??
+            "Unknown";
 
     final authData = await getAuthData(accessToken: accessToken);
     if (authData == null) return false;

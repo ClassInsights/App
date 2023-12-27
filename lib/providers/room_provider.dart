@@ -7,7 +7,8 @@ import 'package:classinsights/providers/computer_provider.dart';
 import 'package:classinsights/providers/ratelimit_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final roomProvider = StateNotifierProvider<RoomNotifier, List<Room>>((ref) => RoomNotifier(ref));
+final roomProvider =
+    StateNotifierProvider<RoomNotifier, List<Room>>((ref) => RoomNotifier(ref));
 
 class RoomNotifier extends StateNotifier<List<Room>> {
   final StateNotifierProviderRef ref;
@@ -37,7 +38,8 @@ class RoomNotifier extends StateNotifier<List<Room>> {
     final List<Room> rooms = data.map<Room>((room) {
       return Room(
         id: room["roomId"],
-        name: room["longName"].toString().length >= 30 ? room["name"] : room["longName"],
+        name: room["name"],
+        longName: room["longName"],
         deviceCount: room["deviceCount"],
       );
     }).toList();

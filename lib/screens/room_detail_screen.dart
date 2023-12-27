@@ -6,6 +6,7 @@ import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/computer/computer_list.dart';
 import 'package:classinsights/widgets/others/lesson_widget.dart';
 import 'package:classinsights/widgets/container/widget_container.dart';
+import 'package:classinsights/widgets/others/sensor_display_widget.dart';
 import 'package:classinsights/widgets/others/sub_screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +24,8 @@ class RoomDetailScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Klasse nicht gefunden", style: Theme.of(context).textTheme.titleMedium),
+            Text("Klasse nicht gefunden",
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 20.0),
             const Text(
               "Bitte versuche es erneut. Wenn das Problem weiterhin besteht, kontaktiere uns.",
@@ -58,36 +60,7 @@ class RoomDetailScreen extends ConsumerWidget {
         children: [
           LessonWidget(roomId: roomID),
           const SizedBox(height: App.defaultPadding),
-          WidgetContainer(
-            primary: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Raumdaten",
-                  style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-                const SizedBox(height: App.defaultPadding),
-                Text(
-                  "aktuell 21°C",
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-                const SizedBox(height: App.smallPadding),
-                Text(
-                  "hervorragende Luftqualität",
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-                const SizedBox(height: App.smallPadding),
-                Text(
-                  "36% Luftfeuchtigkeit",
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-              ],
-            ),
-          ),
+          SensorDisplayWidget(room.name.toLowerCase()),
           const SizedBox(height: 50.0),
           Text(
             "Registrierte Computer",
