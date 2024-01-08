@@ -27,7 +27,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   showErrorPage() => Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (context, firstAnimation, secondAnimation) => const ConnectionFailedScreen(),
+          pageBuilder: (context, firstAnimation, secondAnimation) =>
+              const ConnectionFailedScreen(),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ),
@@ -77,7 +78,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                     MaterialPageRoute(builder: (context) => const TabsScreen()),
                   )
                 : Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    PageRouteBuilder(
+                      pageBuilder: (context, firstAnimation, secondAnimation) =>
+                          const LoginScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
                   ),
           );
     }
