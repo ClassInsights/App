@@ -17,9 +17,7 @@ class CustomHttpClient {
   CustomHttpClient({String? baseUrl}) {
     final ctx = SecurityContext.defaultContext;
     _baseUrl = baseUrl ?? dotenv.env["API_URL"];
-    rootBundle
-        .loadString("assets/certificates/projekt-DC01PROJEKT-CA.pem")
-        .then((content) {
+    rootBundle.loadString(dotenv.env['ROOT_CERT']!).then((content) {
       ctx.setTrustedCertificatesBytes(content.codeUnits);
       ctx.allowLegacyUnsafeRenegotiation = true;
       _client = HttpClient(context: ctx);
@@ -70,7 +68,6 @@ class CustomHttpClient {
 
   Future<Response> get(String path, {bool withCredentials = true}) async {
     if (!_isReady) {
-      debugPrint("Client not ready!");
       await Future.delayed(const Duration(milliseconds: 500));
       return get(path, withCredentials: withCredentials);
     }
@@ -106,7 +103,6 @@ class CustomHttpClient {
   Future<Response> post(String path,
       {bool withCredentials = true, dynamic body}) async {
     if (!_isReady) {
-      debugPrint("Client not ready!");
       await Future.delayed(const Duration(milliseconds: 500));
       return post(path, withCredentials: withCredentials, body: body);
     }
@@ -144,7 +140,6 @@ class CustomHttpClient {
   Future<Response> delete(String path,
       {bool withCredentials = true, dynamic body}) async {
     if (!_isReady) {
-      debugPrint("Client not ready!");
       await Future.delayed(const Duration(milliseconds: 500));
       return post(path, withCredentials: withCredentials, body: body);
     }
