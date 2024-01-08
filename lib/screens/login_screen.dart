@@ -23,7 +23,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          content: const Text("Login fehlgeschlagen! Bitte versuchen Sie es später erneut."),
+          content: const Text(
+              "Login fehlgeschlagen! Bitte versuchen Sie es später erneut."),
         ),
       );
     }
@@ -33,7 +34,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       Navigator.of(context)
           .push(
         PageRouteBuilder(
-          pageBuilder: (context, firstAnimation, secondAnimation) => const MicrosoftLoginScreen(),
+          pageBuilder: (context, firstAnimation, secondAnimation) =>
+              const MicrosoftLoginScreen(),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ),
@@ -43,7 +45,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           if (success) {
             Navigator.of(context).pushReplacement(
               PageRouteBuilder(
-                pageBuilder: (context, firstAnimation, secondAnimation) => const SplashScreen(),
+                pageBuilder: (context, firstAnimation, secondAnimation) =>
+                    const SplashScreen(),
                 transitionDuration: Duration.zero,
                 reverseTransitionDuration: Duration.zero,
               ),
@@ -66,9 +69,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 const Spacer(),
                 const Header("Herzlich Willkommen!"),
-                const Text("ClassInsights ist eine App, die dir einen Überblick über die IT Infrasturktur an der HAK/HAS/HLW Landeck gibt."),
+                const Text(
+                    "ClassInsights ist eine App, die Ihnen einen Überblick über verschiedensten Raum- und Computerdaten an der HAK/HAS/HLW Landeck gibt. Die App wurde im Rahmen einer Diplomarbeit 2023/2024 entwickelt."),
                 const SizedBox(height: 15.0),
-                const Text("Um die App nutzen zu können, musst du dich mit deinem Microsoft Schulaccount anmelden."),
+                const Text(
+                    "Um die App nutzen zu können, müssen Sie sich mit Ihrem Microsoft Schulaccount anmelden."),
                 const Spacer(),
                 ContainerWithContent(
                   label: "Mit Microsoft",
