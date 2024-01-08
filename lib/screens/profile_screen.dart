@@ -26,14 +26,21 @@ class ProfileScreen extends ConsumerWidget {
 
     void resetData() {
       ref.read(localstoreProvider.notifier).clear();
-      ref.read(themeProvider.notifier).refreshTheme(brightness: MediaQuery.of(context).platformBrightness);
+      ref
+          .read(themeProvider.notifier)
+          .refreshTheme(brightness: MediaQuery.of(context).platformBrightness);
       ref.read(authProvider.notifier).logout();
     }
 
     final authData = ref.read(authProvider).data;
-    final todaysLessons = ref.read(lessonProvider.notifier).getLessonsForDay(DateTime.now());
+    final todaysLessons =
+        ref.read(lessonProvider.notifier).getLessonsForDay(DateTime.now());
 
-    final schoolClass = authData.schoolClasses.length == 1 ? ref.read(classesProvider.notifier).findClassById(authData.schoolClasses.first) : null;
+    final schoolClass = authData.schoolClasses.length == 1
+        ? ref
+            .read(classesProvider.notifier)
+            .findClassById(authData.schoolClasses.first)
+        : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,17 +51,25 @@ class ProfileScreen extends ConsumerWidget {
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: App.defaultPadding),
-        authData.role != null ? Text(ref.read(authProvider.notifier).translateRole(authData.role!)) : const SizedBox.shrink(),
+        authData.role != null
+            ? Text(
+                ref.read(authProvider.notifier).translateRole(authData.role!))
+            : const SizedBox.shrink(),
         const SizedBox(height: App.smallPadding),
         schoolClass != null
-            ? Text("${schoolClass.name} ${schoolClass.headTeacher != null ? "(${schoolClass.headTeacher})" : ""}")
+            ? Text(
+                "${schoolClass.name} ${schoolClass.headTeacher != null ? "(${schoolClass.headTeacher})" : ""}")
             : const SizedBox.shrink(),
         if (schoolClass != null) const SizedBox(height: App.smallPadding),
-        todaysLessons.isEmpty ? const Text("Schulfreier Tag") : Text("${todaysLessons.length} Stunden heute"),
+        todaysLessons.isEmpty
+            ? const Text("Schulfreier Tag")
+            : Text("${todaysLessons.length} Stunden heute"),
         const SizedBox(height: 40.0),
         ContainerWithContent(
           label: "Dunkler Modus",
-          title: ref.read(themeProvider) == ThemeMode.dark ? "Aktiviert" : "Deaktiviert",
+          title: ref.read(themeProvider) == ThemeMode.dark
+              ? "Aktiviert"
+              : "Deaktiviert",
           onTab: () => ref.read(themeProvider.notifier).switchTheme(),
           primary: true,
         ),
@@ -114,17 +129,14 @@ class ProfileScreen extends ConsumerWidget {
             resetData();
             Navigator.of(context).pushReplacement(
               PageRouteBuilder(
-                pageBuilder: (context, firstAnimation, secondAnimation) => const LoginScreen(),
+                pageBuilder: (context, firstAnimation, secondAnimation) =>
+                    const LoginScreen(),
                 transitionDuration: Duration.zero,
                 reverseTransitionDuration: Duration.zero,
               ),
             );
           },
           primary: true,
-        ),
-        ElevatedButton(
-          onPressed: () => debugPrint(ref.read(authProvider).creds.accessToken),
-          child: const Text("Print Token"),
         ),
       ],
     );
