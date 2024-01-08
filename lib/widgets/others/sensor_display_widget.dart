@@ -23,9 +23,8 @@ class SensorDisplayWidgetState extends ConsumerState<SensorDisplayWidget> {
   Future<void> fetchSensorData() async {
     if (widget.roomName == null) return;
     final client = CustomHttpClient();
-    // final response =
-    //     await client.get("/rooms/sensor_${widget.roomName}/sensors");
-    final response = await client.get("/rooms/sensor_og3-3/sensors");
+    final response =
+        await client.get("/rooms/sensor_${widget.roomName}/sensors");
     if (response.statusCode != 200) return;
     final data = jsonDecode(response.body);
 
