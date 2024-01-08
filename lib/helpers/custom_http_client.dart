@@ -89,10 +89,6 @@ class CustomHttpClient {
         request.headers.add("Authorization", "Bearer $accessToken");
       }
 
-      request.headers.forEach((name, values) {
-        print("$name: $values");
-      });
-
       final response = await request.close();
       final body = await response.transform(utf8.decoder).join();
       if (!_keepAlive) _closeClient();

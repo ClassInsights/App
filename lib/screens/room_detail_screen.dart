@@ -5,7 +5,6 @@ import 'package:classinsights/providers/ratelimit_provider.dart';
 import 'package:classinsights/providers/room_provider.dart';
 import 'package:classinsights/widgets/computer/computer_list.dart';
 import 'package:classinsights/widgets/others/lesson_widget.dart';
-import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:classinsights/widgets/others/sensor_display_widget.dart';
 import 'package:classinsights/widgets/others/sub_screen_container.dart';
 import 'package:flutter/material.dart';

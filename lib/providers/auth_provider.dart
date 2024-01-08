@@ -94,8 +94,9 @@ class AuthNotifier extends StateNotifier<Auth> {
     final expired =
         DateTime.fromMillisecondsSinceEpoch(tokenData.payload["exp"] * 1000)
             .isBefore(DateTime.now());
-    if (expired && await _refreshToken(accessToken, refreshToken) == false)
+    if (expired && await _refreshToken(accessToken, refreshToken) == false) {
       return false;
+    }
 
     if (expired) {
       accessToken =
@@ -159,8 +160,9 @@ class AuthNotifier extends StateNotifier<Auth> {
   }
 
   Future<bool> verifyLogin() async {
-    if (state.creds.accessToken.isEmpty || state.creds.refreshToken.isEmpty)
+    if (state.creds.accessToken.isEmpty || state.creds.refreshToken.isEmpty) {
       return false;
+    }
     final accessToken =
         (await ref.read(localstoreProvider.notifier).item("ci_accessToken"))
                 ?.value ??
