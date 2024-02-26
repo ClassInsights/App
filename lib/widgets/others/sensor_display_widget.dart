@@ -5,18 +5,16 @@ import 'package:classinsights/main.dart';
 import 'package:classinsights/models/sensor_data.dart';
 import 'package:classinsights/widgets/container/widget_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SensorDisplayWidget extends ConsumerStatefulWidget {
+class SensorDisplayWidget extends StatefulWidget {
   final String? roomName;
   const SensorDisplayWidget(this.roomName, {super.key});
 
   @override
-  ConsumerState<SensorDisplayWidget> createState() =>
-      SensorDisplayWidgetState();
+  State<SensorDisplayWidget> createState() => SensorDisplayWidgetState();
 }
 
-class SensorDisplayWidgetState extends ConsumerState<SensorDisplayWidget> {
+class SensorDisplayWidgetState extends State<SensorDisplayWidget> {
   List<SensorData> _sensorData = [];
   bool _isLoading = true;
 
