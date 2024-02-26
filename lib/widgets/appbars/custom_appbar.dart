@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_riverpod/flutter_riverpod.dart";
 
-class CustomAppBar extends ConsumerWidget {
+class CustomAppBar extends StatelessWidget {
   final String title;
   final Widget? action;
 
@@ -12,7 +11,7 @@ class CustomAppBar extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -34,7 +33,8 @@ class CustomAppBar extends ConsumerWidget {
               height: 1,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(500),
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(.1),
+                color:
+                    Theme.of(context).colorScheme.onBackground.withOpacity(.1),
               ),
             ),
           ],
